@@ -20,8 +20,17 @@ Check makefile for details.
 
 Code Coverge
 ---
-Most important file is test/gen_rpc.coverspec 
+Most important file is test/gen_rpc.coverspec & rebar.config
 
-It details which modules to instrument, details levels etc. It uses Erlang built in code coverage tool.
+gen_rpc.coverspec details which modules to instrument, details levels etc. It uses Erlang built in code coverage tool.
 
-Please refer to [Code Coverge](http://www.erlang.org/doc/apps/common_test/cover_chapter.html)
+rebar.config (look at ct_opts and tuples with cover e.g. {cover_enabled, true}. ). 
+Some settings are for rebar to recognize common test, but many are pass through to underlying Common Test Framework.
+* Note: Rebar3 is aimed to be backward compatible with older versions of rebar. You may need to refer to both for complete picture.
+
+Please refer:
+* [Code Coverge](http://www.erlang.org/doc/apps/common_test/cover_chapter.html)
+* [Rebar3](https://www.rebar3.org/docs/configuration)
+* [Rebar](https://github.com/rebar/rebar/wiki) and the sample
+* [Common Test Framework Configurations] (http://www.erlang.org/doc/man/common_test.html)
+
