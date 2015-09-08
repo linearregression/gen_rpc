@@ -15,6 +15,7 @@ This framework comes with full distribution although some off-the-shelf distribu
 * To invoke test with code coverge
 
 ``` make testcov ```
+Html result is under log/ct/. Use browser to click on all.html or index.html then nagivate to your tests.
 
 Check makefile for details. 
 
