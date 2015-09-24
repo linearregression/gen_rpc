@@ -17,7 +17,7 @@
 -export([start/2, stop/1]).
 
 %%% Development start/stop functions
--export([start/0, stop/0]).
+-export([start/0, start/1, stop/0]).
 
 %%% Library interface
 -export([call/3, call/4, call/5, call/6, cast/3, cast/4, cast/5]).
@@ -35,6 +35,10 @@ stop(_State) ->
 %%% Application callbacks
 %%% ===================================================
 start() ->
+    start([]).
+
+start(Options) ->
+    [application:set_env(?APP, Key, Value ) || {Key, Value} <- Options],
     application:start(?APP).
 
 stop() ->
