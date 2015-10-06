@@ -4,7 +4,7 @@
 %%% Copyright 2015 Panagiotis Papadomitsos. All Rights Reserved.
 %%%
 
--module(functional_SUITE).
+-module(local_functional_SUITE).
 -author("Panagiotis Papadomitsos <pj@ezgr.net>").
 
 %%% CT Macros
@@ -60,7 +60,7 @@ all() ->
 
 init_per_suite(Config) ->
     %% Starting Distributed Erlang on local node
-    {ok, _Pid} = net_kernel:start([?NODE, longnames]),
+    {ok, _Pid} = gen_rpc_test_helper:start_target(?NODE),
     %% Setup application logging
     ?set_application_environment(),
     %% Starting the application locally
@@ -121,12 +121,13 @@ call_anonymous_function(_Config) ->
 
 call_anonymous_undef(_Config) ->
     ok = ct:pal("Testing [call_anonymous_undef]"),
-    {badrpc, {'EXIT', {undef,[{os,timestamp_undef,_,_},_]}}} = gen_rpc:call(?NODE, erlang, apply, [fun() -> os:timestamp_undef() end, []]),
-    ok = ct:pal("Result [call_anonymous_undef]: signal=EXIT Reason={os,timestamp_undef}").
+    ok = ct:pal("Testing [call_anonymous_undef] Assumping stackstack depth is 5"),
+    {badrpc, {'EXIT', {undef,[{os,timestamp_undef,[],[]},_,_,_,_,_]}}}  = gen_rpc:call(?NODE, erlang, apply, [fun() -> os:timestamp_undef() end, []]),
+   ok = ct:pal("Result [call_anonymous_undef]: signal=EXIT Reason={os,timestamp_undef}").
 
 call_mfa_undef(_Config) ->
     ok = ct:pal("Testing [call_mfa_undef]"),
-    {badrpc, {'EXIT', {undef,[{os,timestamp_undef,_,_},_]}}} = gen_rpc:call(?NODE, os, timestamp_undef),
+    {badrpc, {'EXIT', {undef,[{os,timestamp_undef,_,_},_,_,_,_,_]}}} = gen_rpc:call(?NODE, os, timestamp_undef),
     ok = ct:pal("Result [call_mfa_undef]: signal=EXIT Reason={os,timestamp_undef}").
 
 call_mfa_exit(_Config) ->
@@ -272,3 +273,4 @@ start_slave() ->
     %% Start the application remotely
     {ok, _SlaveApps} = rpc:call(?SLAVE, application, ensure_all_started, [gen_rpc]),
     ok.
+
