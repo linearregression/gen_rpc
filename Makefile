@@ -18,7 +18,8 @@
 # tags:			Builds Emacs tags file
 # epmd:			Runs the Erlang port mapper daemon, required for running the app and tests
 #
-
+# callgraph: 	Builds call graph. Required Graphviz installed.
+# graphviz: 	Checks if you have Graphviz installed.
 # .DEFAULT_GOAL can be overridden in custom.mk if "all" is not the desired
 # default
 
@@ -62,7 +63,14 @@ endif
 
 REBAR_URL = https://s3.amazonaws.com/rebar3/rebar3
 
-PLT_FILE = $(CURDIR)/_plt/*plt
+PLT_DIR = $(CURDIR)/_plt
+
+PLT_FILE = $(PLT_DIR)/*plt
+
+DOT_FILE = $(CURDIR)/gen_rpc.dot
+
+CALL_GRAPH_FILE = gen_rpc.png
+
 
 # =============================================================================
 # Build targets
@@ -75,6 +83,7 @@ test: $(REBAR) epmd
 	@REBAR_PROFILE=test $(REBAR) do ct -v -c
 
 dialyzer: $(REBAR)
+	@mkdir -p $(PLT_DIR)
 	@REBAR_PROFILE=dev $(REBAR) do dialyzer | fgrep -v -f $(CURDIR)/dialyzer.ignore
 
 xref: $(REBAR)
@@ -120,3 +129,13 @@ $(REBAR):
 
 tags:
 	find src _build/default/lib -name "*.[he]rl" -print | etags -
+
+callgraph: $(REBAR) graphviz
+	@REBAR_PROFILE=dev $(REBAR) do dialyzer --plt $(PLT_FILE) --dump_callgraph $(DOT_FILE)
+	@dot -Tpng -o$(CALL_GRAPH_FILE) $(DOT_FILE)
+
+graphviz:
+	$(if $(shell which dot),,$(error "To make the depgraph, you need graphviz installed"))
+
+
+
