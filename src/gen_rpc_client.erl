@@ -28,6 +28,8 @@
 %%% FSM functions
 -export([call/3, call/4, call/5, call/6, cast/3, cast/4, cast/5, safe_cast/3, safe_cast/4, safe_cast/5]).
 
+-export([block_call/4, block_call/5, block_call/6]).
+
 %%% Behaviour callbacks
 -export([init/1, handle_call/3, handle_cast/2,
         handle_info/2, terminate/2, code_change/3]).
@@ -48,7 +50,24 @@ stop(Node) when is_atom(Node) ->
 
 %%% ===================================================
 %%% Server functions
-%%% ===================================================
+%%%
+
+%% Blocking server call with no args and default timeout values
+block_call(Node, M, F, RecvTO) ->
+    block_call(Node, M, F, [], RecvTO, undefined).
+
+%% Blocking server call with no args with custom receive
+block_call(Node, M, F, A, RecvTO) ->
+    block_call(Node, M, F, A, RecvTO, undefined).
+
+%% Blocking server call with no args with custom receive and send timeout values
+%% This is the function that all of the above call
+block_call(Node, M, F, A, RecvTO, SendTO) when is_atom(Node), is_atom(M), is_atom(F), is_list(A),
+                                         RecvTO =:= undefined orelse is_integer(RecvTO) orelse RecvTO =:= infinity,
+                                         SendTO =:= undefined orelse is_integer(SendTO) orelse SendTO =:= infinity,
+                                         RecvTO >= 0, SendTO >= 0 ->
+    block_call(Node, M, F, A, RecvTO, SendTO).
+
 %% Simple server call with no args and default timeout values
 call(Node, M, F) when is_atom(Node), is_atom(M), is_atom(F) ->
     call(Node, M, F, [], undefined, undefined).
