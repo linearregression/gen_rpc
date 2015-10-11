@@ -130,7 +130,7 @@ $(REBAR):
 tags:
 	find src _build/default/lib -name "*.[he]rl" -print | etags -
 
-callgraph: $(REBAR) graphviz dialyzer
+callgraph: $(REBAR) graphviz
 	@REBAR_PROFILE=dev $(REBAR) do dialyzer --plt $(PLT_FILE) -r _build/dev/lib/gen_rpc/ebin/ --dump_callgraph $(CURDIR)/$(DOT_FILE)
 	@dot -Tpng -o$(CALL_GRAPH_FILE) $(CURDIR)/$(DOT_FILE)
 

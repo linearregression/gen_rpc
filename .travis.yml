@@ -17,7 +17,7 @@ addons:
    packages:
     - graphviz
 install: "true"
-script: "make test xref callgraph"
+script: "make test xref dialyzer callgraph"
 branches:
   only:
     - master
