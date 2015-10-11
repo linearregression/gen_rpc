@@ -131,8 +131,8 @@ tags:
 	find src _build/default/lib -name "*.[he]rl" -print | etags -
 
 callgraph: $(REBAR) graphviz dialyzer
-	@REBAR_PROFILE=dev $(REBAR) do dialyzer --plt $(PLT_FILE) --dump_callgraph $(DOT_FILE)
-	@dot -Tpng -o$(CALL_GRAPH_FILE) $(DOT_FILE)
+	@REBAR_PROFILE=dev $(REBAR) do dialyzer --plt $(PLT_FILE) -r _build/dev/lib/gen_rpc/ebin/ --dump_callgraph $(CURDIR)/$(DOT_FILE)
+	@dot -Tpng -o$(CALL_GRAPH_FILE) $(CURDIR)/$(DOT_FILE)
 
 graphviz:
 	$(if $(shell which dot),,$(error "To make the depgraph, you need graphviz installed"))
