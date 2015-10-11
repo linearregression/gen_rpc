@@ -65,7 +65,7 @@ REBAR_URL = https://s3.amazonaws.com/rebar3/rebar3
 
 PLT_DIR = $(CURDIR)/_plt
 
-PLT_FILE = $(PLT_DIR)/*plt
+PLT_FILE = $(PLT_DIR)/gen_rpc.plt
 
 DOT_FILE = $(CURDIR)/gen_rpc.dot
 
