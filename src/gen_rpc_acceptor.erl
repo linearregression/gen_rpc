@@ -115,7 +115,7 @@ waiting_for_data(timeout, State) ->
     {stop, normal, State}.
 
 handle_event(Event, StateName, State) ->
-    ok = lager:critical("function=handle_event socket=\"~p\" event=uknown_event payload=\"~p\" action=stopping", [State#state.socket, Event]),
+    ok = lager:critical("function=handle_event socket=\"~p\" event=unkown_event payload=\"~p\" action=stopping", [State#state.socket, Event]),
     {stop, {StateName, undefined_event, Event}, State}.
 
 %% Gracefully terminate
@@ -124,7 +124,7 @@ handle_sync_event(stop, _From, _StateName, State) ->
     {stop, normal, ok, State};
 
 handle_sync_event(Event, _From, StateName, State) ->
-    ok = lager:critical("function=handle_sync_event event=uknown_event socket=\"~p\" payload=\"~p\" action=stopping", [State#state.socket, Event]),
+    ok = lager:critical("function=handle_sync_event event=unkown_event socket=\"~p\" payload=\"~p\" action=stopping", [State#state.socket, Event]),
     {stop, {StateName, undefined_event, Event}, State}.
 
 %% Incoming data handlers
@@ -164,7 +164,7 @@ handle_info({NodeEvent, _Node, _InfoList}, StateName, State) when NodeEvent =:= 
 
 %% Catch-all for info - our protocol is strict so die!
 handle_info(Msg, StateName, State) ->
-    ok = lager:critical("function=handle_info socket=\"~p\" event=uknown_event action=stopping", [State#state.socket]),
+    ok = lager:critical("function=handle_info socket=\"~p\" event=unkown_event action=stopping", [State#state.socket]),
     {stop, {StateName, unknown_message, Msg}, State}.
 
 code_change(_OldVsn, StateName, State, _Extra) ->
