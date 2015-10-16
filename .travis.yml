@@ -18,7 +18,8 @@ branches:
     - master
     - block_call
     - pinfo
-    - eval_everywhere
+    - evaleverywhere
+
 notifications:
   email:
     - priestjim@gmail.com
