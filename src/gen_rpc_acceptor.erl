@@ -88,12 +88,12 @@ waiting_for_data({data, Data}, #state{socket=Socket,client_node=Node} = State) -
     %% The meat of the whole project: process a function call and return
     %% the data
     try erlang:binary_to_term(Data) of
+        {Node, ClientPid, Ref, {block_call, M, F, A}} ->
+             process_call(Socket, Node, ClientPid, Ref, M, F, A),
+             {next_state, waiting_for_data, State, State#state.inactivity_timeout}; 
         {Node, ClientPid, Ref, {call, M, F, A}} ->
-            WorkerPid = erlang:spawn(?MODULE, call_worker, [self(), ClientPid, Ref, M, F, A]),
-            ok = lager:debug("function=waiting_for_data event=call_received socket=\"~p\" node=\"~s\" call_reference=\"~p\" client_pid=\"~p\" worker_pid=\"~p\"",
-                             [Socket, Node, Ref, ClientPid, WorkerPid]),
-            ok = inet:setopts(Socket, [{active, once}]),
-            {next_state, waiting_for_data, State, State#state.inactivity_timeout};
+             process_call(Socket, Node, ClientPid, Ref, M, F, A),
+             {next_state, waiting_for_data, State, State#state.inactivity_timeout}; 
         {Node, {cast, M, F, A}} ->
             ok = lager:debug("function=waiting_for_data event=cast_received socket=\"~p\" node=\"~s\" module=~s function=~s args=\"~p\"",
                              [Socket, Node, M, F, A]),
@@ -187,6 +187,12 @@ terminate(_Reason, _StateName, #state{socket=Socket}) ->
 make_process_name(Node) ->
     NodeBin = atom_to_binary(Node, latin1),
     binary_to_atom(<<"gen_rpc_acceptor_", NodeBin/binary>>, latin1).
+
+process_call(Socket, Node, ClientPid, Ref, M, F, A) ->
+    WorkerPid = erlang:spawn(?MODULE, call_worker, [self(), ClientPid, Ref, M, F, A]),
+    ok = lager:debug("function=waiting_for_data event=call_received socket=\"~p\" node=\"~s\" call_reference=\"~p\" client_pid=\"~p\" worker_pid=\"~p\"",
+                             [Socket, Node, Ref, ClientPid, WorkerPid]),
+    ok = inet:setopts(Socket, [{active, once}]).
 
 %% Process an RPC call request outside of the FSM
 call_worker(Parent, WorkerPid, Ref, M, F, A) ->
