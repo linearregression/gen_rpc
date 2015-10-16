@@ -28,7 +28,7 @@
 %%% FSM functions
 -export([call/3, call/4, call/5, call/6, cast/3, cast/4, cast/5, safe_cast/3, safe_cast/4, safe_cast/5]).
 
--export([block_call/4, block_call/5, block_call/6]).
+-export([block_call/4, block_call/5]).
 
 %%% Behaviour callbacks
 -export([init/1, handle_call/3, handle_cast/2,
@@ -52,21 +52,29 @@ stop(Node) when is_atom(Node) ->
 %%% Server functions
 %%%
 
-%% Blocking server call with no args and default timeout values
-block_call(Node, M, F, RecvTO) ->
-    block_call(Node, M, F, [], RecvTO, undefined).
+%% Blocking server call with no args and custom send timeout values
+block_call(Node, M, F, SendTO) ->
+    block_call(Node, M, F, [], SendTO).
 
-%% Blocking server call with no args with custom receive
-block_call(Node, M, F, A, RecvTO) ->
-    block_call(Node, M, F, A, RecvTO, undefined).
-
-%% Blocking server call with no args with custom receive and send timeout values
-%% This is the function that all of the above call
-block_call(Node, M, F, A, RecvTO, SendTO) when is_atom(Node), is_atom(M), is_atom(F), is_list(A),
-                                         RecvTO =:= undefined orelse is_integer(RecvTO) orelse RecvTO =:= infinity,
-                                         SendTO =:= undefined orelse is_integer(SendTO) orelse SendTO =:= infinity,
-                                         RecvTO >= 0, SendTO >= 0 ->
-    block_call(Node, M, F, A, RecvTO, SendTO).
+%% Blocking server call with args and custom send timeout values
+block_call(Node, M, F, A, SendTO) when is_atom(Node), is_atom(M), is_atom(F), is_list(A),
+                                       SendTO =:= undefined orelse (is_integer(SendTO) and SendTO >= 0) orelse SendTO =:= infinity ->
+    case whereis(Node) of
+        undefined ->
+            ok = lager:info("function=block_call event=client_process_not_found server_node=\"~s\" action=spawning_client", [Node]),
+            case gen_rpc_dispatcher:start_client(Node) of
+                {ok, NewPid} ->
+                    %% We take care of CALL inside the gen_server
+                    %% This is not resilient enough if the caller's mailbox is full
+                    %% but it's good enough for now
+                    gen_server:call(NewPid, {{block_call,M,F,A},SendTO}, infinity);
+                {error, Reason} ->
+                    Reason
+            end;
+        Pid ->
+            ok = lager:debug("function=block_call event=client_process_found pid=\"~p\" server_node=\"~s\"", [Pid, Node]),
+            gen_server:call(Pid, {{block_call,M,F,A}, SendTO}, infinity)
+    end.
 
 %% Simple server call with no args and default timeout values
 call(Node, M, F) when is_atom(Node), is_atom(M), is_atom(F) ->
@@ -206,6 +214,44 @@ init({Node}) ->
             {stop, {badrpc, Reason}}
     end.
 
+%% This is the actual BLOCK CALL handler.
+handle_call({{block_call,_M,_F,_A} = PacketTuple, USendTO}, _Caller, #state{socket=Socket,server_node=Node} = State) ->
+    {_Ign, SendTO} = merge_timeout_values(State#state.receive_timeout, undefined, State#state.send_timeout, USendTO),
+    Ref = erlang:make_ref(),
+    %WorkerPid = erlang:spawn(?MODULE, call_worker, [Ref, Caller, RecvTO]),
+    %% Let the server know of the responsible process
+    Packet = erlang:term_to_binary({node(), self(), Ref, PacketTuple}),
+    ok = lager:debug("function=handle_call message=block_call event=constructing_call_term socket=\"~p\" call_reference=\"~p\"",
+                     [Socket, Ref]),
+    ok = inet:setopts(Socket, [{send_timeout, SendTO}]),
+    %% Since call can fail because of a timed out connection without gen_rpc knowing it,
+    %% we have to make sure the remote node is reachable somehow before we send data. net_kernel:connect does that
+    case net_kernel:connect(Node) of
+        true ->
+            case gen_tcp:send(Socket, Packet) of
+                {error, timeout} ->
+                    ok = lager:error("function=handle_call message=block_call event=transmission_failed socket=\"~p\" call_reference=\"~p\" reason=\"timeout\"",
+                                     [Socket, Ref]),
+                    %% Reply will be handled from the worker
+                    {stop, {badtcp,send_timeout}, {badtcp,send_timeout}, State};
+                {error, Reason} ->
+                    ok = lager:error("function=handle_call message=block_call event=transmission_failed socket=\"~p\" call_reference=\"~p\" reason=\"~p\"",
+                                     [Socket, Ref, Reason]),
+                    %% Reply will be handled from the worker
+                    {stop, {badtcp,Reason}, {badtcp,Reason}, State};
+                ok ->
+                    ok = lager:debug("function=handle_call message=block_call event=transmission_succeeded socket=\"~p\" call_reference=\"~p\"",
+                                     [Socket, Ref]),
+                    %% We need to enable the socket and perform the call only if the call succeeds
+                    ok = inet:setopts(Socket, [{active, once}]),
+                    %% Reply will be handled from the worker
+                    {noreply, State, State#state.inactivity_timeout}
+            end;
+        _Else ->
+            ok = lager:error("function=handle_call message=block_call event=node_down socket=\"~p\" call_reference=\"~p\"",
+                             [Socket, Ref]),
+            {stop, {badrpc,nodedown}, {badrpc,nodedown}, State}
+    end;
 %% This is the actual CALL handler
 handle_call({{call,_M,_F,_A} = PacketTuple, URecvTO, USendTO}, Caller, #state{socket=Socket,server_node=Node} = State) ->
     {RecvTO, SendTO} = merge_timeout_values(State#state.receive_timeout, URecvTO, State#state.send_timeout, USendTO),
