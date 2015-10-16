@@ -58,7 +58,7 @@ block_call(Node, M, F, SendTO) ->
 
 %% Blocking server call with args and custom send timeout values
 block_call(Node, M, F, A, SendTO) when is_atom(Node), is_atom(M), is_atom(F), is_list(A),
-                                       SendTO =:= undefined orelse (is_integer(SendTO) and SendTO >= 0) orelse SendTO =:= infinity ->
+                                       SendTO =:= undefined orelse is_integer(SendTO) orelse SendTO =:= infinity ->
     case whereis(Node) of
         undefined ->
             ok = lager:info("function=block_call event=client_process_not_found server_node=\"~s\" action=spawning_client", [Node]),
