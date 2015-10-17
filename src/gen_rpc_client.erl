@@ -61,7 +61,6 @@ async_call(Node, M, F, A) when is_atom(Node), is_atom(M), is_atom(F), is_list(A)
     ok = lager:info("function=async_call event=spawning_call_process server_node=\"~s\" action=spawning_call_process", [Node]),
     spawn(fun()-> 
               Reply = call(Node, M, F, A, undefined, undefined),
-              % Need to catch from handle_info and relay back to nb_yield
               ReplyTo ! {self(), {promise_reply, Reply}}
           end).    
 
@@ -163,9 +162,11 @@ safe_cast(Node, M, F, A, SendTO) when is_atom(Node), is_atom(M), is_atom(F), is_
             ok = lager:debug("function=safe_cast event=client_process_found pid=\"~p\" server_node=\"~s\"", [Pid, Node]),
             gen_server:call(Pid, {{cast,M,F,A},SendTO}, infinity)
     end.
-%% Simple server yield with key. Delegate to nb_yield. Timeout is infinity.
+%% Simple server yield with key. Delegate to nb_yield. Default timeout form configuation.
 yield(Key) when is_pid(Key) -> 
-    {ok, YieldTO} = applicaton:get_env(gen_rpc, yield_timeout),
+    % Deviation from rpc. Here, we net user to set from configuration
+    % This is for user protection from accidentally hanging.
+    {ok, YieldTO} = application:get_env(gen_rpc, yield_timeout),
     {value, R} = nb_yield(Key, YieldTO),
     R.
 
