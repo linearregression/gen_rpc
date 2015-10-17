@@ -165,7 +165,8 @@ safe_cast(Node, M, F, A, SendTO) when is_atom(Node), is_atom(M), is_atom(F), is_
     end.
 %% Simple server yield with key. Delegate to nb_yield. Timeout is infinity.
 yield(Key) when is_pid(Key) -> 
-    {value, R} = nb_yield(Key, infinity),
+    {ok, YieldTO} = applicaton:get_env(gen_rpc, yield_timeout),
+    {value, R} = nb_yield(Key, YieldTO),
     R.
 
 %% Simple server non-blocking yield with key, default timeout value of 0
@@ -175,8 +176,8 @@ nb_yield(Key) when is_pid(Key) ->
 %% Simple server non-blocking yield with key and custom timeout value
 nb_yield(Key, Timeout) when is_pid(Key), is_integer(Timeout) orelse Timeout =:= infinity ->
     receive 
-            {Key, promise_reply, Reply} -> {value, Reply} 
-        after Timeout ->
+            {Key, {promise_reply, Reply}} -> {value, Reply}
+    after Timeout ->
             ok = lager:notice("function=nb_yield event=call_timeout yield_key=\"~p\"", [Key]),
             {badrpc, timeout}
             %_Ign = gen_server:reply(Caller, {badrpc, timeout})
@@ -197,7 +198,7 @@ init({Node}) ->
     %% Perform an in-band RPC call to the remote node
     %% asking it to launch a listener for us and return us
     %% the port that has been allocated for us
-    ok = lager:info("function=init event=initializing_client server_node=\"~s\" connect_timeout=~B send_timeout=~B receive_timeout=~B inactivity_timeout=~p",
+    ok = lager:info("function=init event=initializing_client server_node=\"~s\" connect_timeout=~B send_timeout=~B receive_timeout=~B inactivity_timeout=\"~p\"",
                     [Node, ConnTO, SendTO, RecvTO, TTL]),
     case rpc:call(Node, gen_rpc_server_sup, start_child, [node()], ConnTO) of
         {ok, Port} ->
