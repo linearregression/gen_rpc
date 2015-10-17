@@ -21,6 +21,8 @@
         {client_inactivity_timeout, infinity},
         %% Inactivity timeout for server gen_server
         {server_inactivity_timeout, infinity}
+        %% Default yield timeout
+        {yield_timeout, infinity},
     ]},
     {modules, []}]
 }.
