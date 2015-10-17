@@ -254,7 +254,7 @@ async_call_mfa_undef(_Config) ->
     ok = ct:pal("Testing [async_call_mfa_undef]"),
     YieldKey = gen_rpc:async_call(?NODE, os, timestamp_undef),
     {badrpc, {'EXIT', {undef,[{os,timestamp_undef,_,_},_]}}} = gen_rpc:yield(YieldKey),
-    NBYieldKey = gen_rpc:async_call(?NODE, erlang, apply, [fun() -> os:timestamp_undef() end, []]),
+    NBYieldKey = gen_rpc:async_call(?NODE, os, timestamp_undef),
     {value, {badrpc, {'EXIT', {undef,[{os,timestamp_undef,_,_},_]}}}} = gen_rpc:nb_yield(NBYieldKey, 20),
     ok = ct:pal("Result [async_call_mfa_undef]: signal=EXIT Reason={os,timestamp_undef}").
 
