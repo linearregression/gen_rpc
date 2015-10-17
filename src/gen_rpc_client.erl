@@ -28,6 +28,8 @@
 %%% FSM functions
 -export([call/3, call/4, call/5, call/6, cast/3, cast/4, cast/5, safe_cast/3, safe_cast/4, safe_cast/5]).
 
+-export([async_call/3, async_call/4, yield/1, nb_yield/1, nb_yield/2]).
+
 %%% Behaviour callbacks
 -export([init/1, handle_call/3, handle_cast/2,
         handle_info/2, terminate/2, code_change/3]).
@@ -49,6 +51,19 @@ stop(Node) when is_atom(Node) ->
 %%% ===================================================
 %%% Server functions
 %%% ===================================================
+%% Simple server async_call with no args
+async_call(Node, M, F) when is_atom(Node), is_atom(M), is_atom(F) ->
+    async_call(Node, M, F, []).
+
+%% Simple server async_call with args
+async_call(Node, M, F, A) when is_atom(Node), is_atom(M), is_atom(F), is_list(A) ->
+    ReplyTo = erlang:make_ref(),
+    spawn(fun()-> 
+              Reply = call(Node, M, F, A, undefined, undefined),
+              % Need to catch from handle_info and relay abck to nb_yield
+              ReplyTo ! {self(), {promise_reply, Reply}}
+          end).    
+
 %% Simple server call with no args and default timeout values
 call(Node, M, F) when is_atom(Node), is_atom(M), is_atom(F) ->
     call(Node, M, F, [], undefined, undefined).
@@ -146,6 +161,24 @@ safe_cast(Node, M, F, A, SendTO) when is_atom(Node), is_atom(M), is_atom(F), is_
         Pid ->
             ok = lager:debug("function=safe_cast event=client_process_found pid=\"~p\" server_node=\"~s\"", [Pid, Node]),
             gen_server:call(Pid, {{cast,M,F,A},SendTO}, infinity)
+    end.
+%% Simple server yield with key. Delegate to nb_yield. Timeout is infinity.
+yield(Key) when is_pid(Key) -> 
+    {value, R} = nb_yield(Key, infinity),
+    R.
+
+%% Simple server non-blocking yield with key, default timeout value of 0
+nb_yield(Key) when is_pid(Key) ->
+    nb_yield(Key, 0).
+
+%% Simple server non-blocking yield with key and custom timeout value
+nb_yield(Key, Timeout) when is_pid(Key), is_integer(Timeout) -> 
+    receive 
+            {Key, promise_reply, Reply} -> {value, Reply} 
+        after Timeout ->
+            ok = lager:notice("function=nb_yield event=call_timeout yield_key=\"~p\"", [Key]),
+            {badrpc, timeout}
+            %_Ign = gen_server:reply(Caller, {badrpc, timeout})
     end.
 
 %%% ===================================================
