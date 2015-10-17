@@ -160,7 +160,7 @@ interleaved_call(_Config) ->
 
 cast(_Config) ->
     ok = ct:pal("Testing [cast]"),
-    true = gen_rpc:cast(?SLAVE, erlang, timestamp).
+    true = gen_rpc:cast(?SLAVE, os, timestamp).
 
 cast_anonymous_function(_Config) ->
     ok = ct:pal("Testing [cast_anonymous_function]"),
@@ -184,7 +184,7 @@ cast_inexistent_node(_Config) ->
 
 safe_cast(_Config) ->
     ok = ct:pal("Testing [safe_cast]"),
-    true = gen_rpc:safe_cast(?SLAVE, erlang, timestamp).
+    true = gen_rpc:safe_cast(?SLAVE, os, timestamp).
 
 safe_cast_anonymous_function(_Config) ->
     ok = ct:pal("Testing [safe_cast_anonymous_function]"),
@@ -208,9 +208,9 @@ safe_cast_inexistent_node(_Config) ->
 
 async_call(_Config) ->
     ok = ct:pal("Testing [async_call]"),
-    YieldKey0 = gen_rpc:async_call(?SLAVE, erlang, timestamp, []),
+    YieldKey0 = gen_rpc:async_call(?SLAVE, os, timestamp, []),
     {_Mega, _Sec, _Micro} = gen_rpc:yield(YieldKey0),
-    NbYieldKey0 = gen_rpc:async_call(?SLAVE, erlang, timestamp, []),
+    NbYieldKey0 = gen_rpc:async_call(?SLAVE, os, timestamp, []),
     {value,{_,_,_}}= gen_rpc:nb_yield(NbYieldKey0, 10),
     YieldKey = gen_rpc:async_call(?SLAVE, io_lib, print, [yield_key]),
     "yield_key" = gen_rpc:yield(YieldKey),
