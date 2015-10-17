@@ -167,8 +167,10 @@ yield(Key) when is_pid(Key) ->
     % Deviation from rpc. Here, we net user to set from configuration
     % This is for user protection from accidentally hanging.
     {ok, YieldTO} = application:get_env(gen_rpc, yield_timeout),
-    {value, R} = nb_yield(Key, YieldTO),
-    R.
+    case nb_yield(Key, YieldTO) of
+        {value, R} -> R;
+        {badrpc, Reason} -> {badrpc, Reason}
+    end.
 
 %% Simple server non-blocking yield with key, default timeout value of 0
 nb_yield(Key) when is_pid(Key) ->

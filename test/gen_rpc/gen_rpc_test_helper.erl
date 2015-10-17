@@ -22,6 +22,5 @@ start_target(Node)->
         {error, Reason} ->
             ok = ct:pal("function=start_target event=fail_start_target Reason=\"~p\"", [Reason]),
             {error, Reason}
-    end
-    .
+    end.
 
