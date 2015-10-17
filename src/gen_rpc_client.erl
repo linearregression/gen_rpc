@@ -57,10 +57,11 @@ async_call(Node, M, F) when is_atom(Node), is_atom(M), is_atom(F) ->
 
 %% Simple server async_call with args
 async_call(Node, M, F, A) when is_atom(Node), is_atom(M), is_atom(F), is_list(A) ->
-    ReplyTo = erlang:make_ref(),
+    ReplyTo = self(),
+    ok = lager:info("function=async_call event=spawning_call_process server_node=\"~s\" action=spawning_call_process", [Node]),
     spawn(fun()-> 
               Reply = call(Node, M, F, A, undefined, undefined),
-              % Need to catch from handle_info and relay abck to nb_yield
+              % Need to catch from handle_info and relay back to nb_yield
               ReplyTo ! {self(), {promise_reply, Reply}}
           end).    
 
@@ -172,7 +173,7 @@ nb_yield(Key) when is_pid(Key) ->
     nb_yield(Key, 0).
 
 %% Simple server non-blocking yield with key and custom timeout value
-nb_yield(Key, Timeout) when is_pid(Key), is_integer(Timeout) -> 
+nb_yield(Key, Timeout) when is_pid(Key), is_integer(Timeout) orelse Timeout =:= infinity ->
     receive 
             {Key, promise_reply, Reply} -> {value, Reply} 
         after Timeout ->
