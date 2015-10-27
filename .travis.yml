@@ -16,10 +16,7 @@ script: "make test xref dialyzer"
 branches:
   only:
     - master
-    - block_call
-    - pinfo
-    - evaleverywhere
-
+    - develop
 notifications:
   email:
     - priestjim@gmail.com
