@@ -16,8 +16,6 @@
 %%% Testing functions
 -export([supervisor_black_box/1,
         block_call/1,
-        block_call_anonymous_function/1,
-        block_call_anonymous_undef/1,
         block_call_mfa_undef/1,
         block_call_mfa_exit/1,
         block_call_mfa_throw/1,
@@ -119,18 +117,6 @@ block_call(_Config) ->
     ok = ct:pal("Testing [block_call]"),
     SendTO = 200,
     {_Mega, _Sec, _Micro} = gen_rpc:block_call(?SLAVE, os, timestamp, SendTO).
-
-block_call_anonymous_function(_Config) ->
-    ok = ct:pal("Testing [block_call_anonymous_function]"),
-    SendTO = 200,
-    {_,"\"block_call_anonymous_function\""} = gen_rpc:block_call(?SLAVE, erlang, apply,[fun(A) -> {self(), io_lib:print(A)} end,                                                     ["block_call_anonymous_function"], SendTO]).
-
-block_call_anonymous_undef(_Config) ->
-    ok = ct:pal("Testing [block_call_anonymous_undef]"),
-    ok = ct:pal("Testing [block_call_anonymous_undef] Assumping stackstack depth is 5"),
-    SendTO = 200,
-    {badrpc, {'EXIT', {undef,[{os,timestamp_undef,[],[]},_]}}}  = gen_rpc:block_call(?SLAVE, erlang, apply, [fun() -> os:timestamp_undef() end, []], SendTO),
-   ok = ct:pal("Result [block_call_anonymous_undef]: signal=EXIT Reason={os,timestamp_undef}").
 
 block_call_mfa_undef(_Config) ->
     ok = ct:pal("Testing [block_call_mfa_undef]"),
