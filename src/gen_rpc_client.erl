@@ -28,7 +28,7 @@
 %%% FSM functions
 -export([call/3, call/4, call/5, call/6, cast/3, cast/4, cast/5, safe_cast/3, safe_cast/4, safe_cast/5]).
 
--export([block_call/4, block_call/5]).
+-export([block_call/4, block_call/5, block_call/6]).
 
 %%% Behaviour callbacks
 -export([init/1, handle_call/3, handle_cast/2,
@@ -53,12 +53,20 @@ stop(Node) when is_atom(Node) ->
 %%%
 
 %% Blocking server call with no args and custom send timeout values
-block_call(Node, M, F, SendTO) ->
-    block_call(Node, M, F, [], SendTO).
+block_call(Node, M, F, RecvTO) ->
+    block_call(Node, M, F, [], RecvTO, undefined).
+
+block_call(Node, M, F, A, RecvTO) ->
+    block_call(Node, M, F, A, RecvTO, undefined).
 
 %% Blocking server call with args and custom send timeout values
-block_call(Node, M, F, A, SendTO) when is_atom(Node), is_atom(M), is_atom(F), is_list(A),
-                                       SendTO =:= undefined orelse is_integer(SendTO) orelse SendTO =:= infinity ->
+block_call(Node, M, F, A, RecvTO, SendTO) when is_atom(Node), is_atom(M), is_atom(F), is_list(A),
+                                         RecvTO =:= undefined orelse is_integer(RecvTO) orelse RecvTO =:= infinity,
+                                         SendTO =:= undefined orelse is_integer(SendTO) orelse SendTO =:= infinity ->
+    % We don't have worker for block_call. Use timeout on gen_server:call
+    % undefined value for gen_server timeout equals infinity
+    RecvTO1 = normalize_timeout(RecvTO),
+    Reply =
     case whereis(Node) of
         undefined ->
             ok = lager:info("function=block_call event=client_process_not_found server_node=\"~s\" action=spawning_client", [Node]),
@@ -67,14 +75,15 @@ block_call(Node, M, F, A, SendTO) when is_atom(Node), is_atom(M), is_atom(F), is
                     %% We take care of CALL inside the gen_server
                     %% This is not resilient enough if the caller's mailbox is full
                     %% but it's good enough for now
-                    gen_server:call(NewPid, {{block_call,M,F,A},SendTO}, infinity);
+                    catch gen_server:call(NewPid, {{block_call,M,F,A},SendTO}, RecvTO1);
                 {error, Reason} ->
                     Reason
             end;
         Pid ->
             ok = lager:debug("function=block_call event=client_process_found pid=\"~p\" server_node=\"~s\"", [Pid, Node]),
-            gen_server:call(Pid, {{block_call,M,F,A}, SendTO}, infinity)
-    end.
+            catch gen_server:call(Pid, {{block_call,M,F,A}, SendTO}, RecvTO1)
+    end,
+    normalize_reply(Reply).
 
 %% Simple server call with no args and default timeout values
 call(Node, M, F) when is_atom(Node), is_atom(M), is_atom(F) ->
@@ -454,3 +463,13 @@ merge_timeout_values(SRecvTO, undefined, _SSendTO, USendTO) ->
     {SRecvTO, USendTO};
 merge_timeout_values(_SRecvTO, URecvTO, _SSendTO, USendTO) ->
     {URecvTO, USendTO}.
+
+normalize_timeout(undefined) -> infinity;
+normalize_timeout(E) -> E.
+
+normalize_reply({'EXIT', {timeout,_}}) -> {badrpc, timeout};
+normalize_reply(X) -> normalize_reply_t(X).
+	    
+normalize_reply_t({'EXIT', {{nodedown,_},_}}) -> {badrpc, nodedown};
+normalize_reply_t({'EXIT', X}) -> exit(X);
+normalize_reply_t(X) -> X.
