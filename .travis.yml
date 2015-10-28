@@ -14,7 +14,7 @@ cache:
 install: "true"
 script: "make test xref dialyzer"
 after_success:
-  - make coverall
+  - make coverage-report
 branches:
   only:
     - master
