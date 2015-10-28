@@ -10,6 +10,7 @@
 -include_lib("test/gen_rpc/include/ct.hrl").
 
 -export([start_target/1]).
+-export([spawn_long_running/1, spawn_short_running/0]).
 
 %% Start target test erlang node
 start_target(Node)->
@@ -23,4 +24,10 @@ start_target(Node)->
             ok = ct:pal("function=start_target event=fail_start_target Reason=\"~p\"", [Reason]),
             {error, Reason}
     end.
+
+spawn_long_running(TimeSpan) -> 
+    spawn(fun() -> timer:sleep(TimeSpan) end).
+
+spawn_short_running() -> 
+    spawn(fun() -> exit(normal) end).
 
