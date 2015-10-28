@@ -87,7 +87,7 @@ spec: dialyzer
 dist: $(REBAR) test
 	@REBAR_PROFILE=dev $(REBAR) do dialyzer, xref
 
-coverall: $(REBAR) test
+coverall:
 	@REBAR_PROFILE=test $(REBAR) do coveralls send
 
 # =============================================================================

@@ -1,6 +1,6 @@
 # gen_rpc
 
-[![Build Status](https://travis-ci.org/priestjim/gen_rpc.svg)](https://travis-ci.org/priestjim/gen_rpc) [![Coverage Status](https://coveralls.io/repos/priestjim/gen_rpc/badge.png?branch=master)](https://coveralls.io/r/priestjim/gen_rpc?branch=master)
+[![Build Status](https://travis-ci.org/priestjim/gen_rpc.svg)](https://travis-ci.org/priestjim/gen_rpc) [![Coverage Status](https://coveralls.io/repos/linearregression/gen_rpc/badge.png?branch=testing)](https://coveralls.io/r/linearregression/gen_rpc?branch=testing)
 
 An Erlang RPC library for out-of-band messaging
 
