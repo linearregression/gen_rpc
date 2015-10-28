@@ -67,6 +67,7 @@ PLT_FILE = $(CURDIR)/_plt/*plt
 
 ifeq ($(USER),travis)
 COVERDATADIR = $(CURDIR)/log/ct
+ECOVERALL = $(CURDIR)/_build/test/lib/*/ebin
 endif
 
 # =============================================================================
@@ -92,7 +93,7 @@ dist: $(REBAR) test
 	@REBAR_PROFILE=dev $(REBAR) do dialyzer, xref
 
 coverage-report: $(shell ls -1rt `find $(COVERDATADIR) -type f -name \*.coverdata 2>/dev/null` | tail -n1)
-	$(gen_verbose) erl -noshell -pa ./_build/test/lib/*/ebin -eval 'ecoveralls:travis_ci("$?"), init:stop()'
+	$(gen_verbose) erl -noshell -pa $(ECOVERALL) -eval 'ecoveralls:travis_ci("$?"), init:stop()'
 
 # =============================================================================
 # Run targets
