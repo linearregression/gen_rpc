@@ -468,8 +468,6 @@ normalize_timeout(undefined) -> infinity;
 normalize_timeout(E) -> E.
 
 normalize_reply({'EXIT', {timeout,_}}) -> {badrpc, timeout};
-normalize_reply(X) -> normalize_reply_t(X).
-	    
-normalize_reply_t({'EXIT', {{nodedown,_},_}}) -> {badrpc, nodedown};
-normalize_reply_t({'EXIT', X}) -> exit(X);
-normalize_reply_t(X) -> X.
+normalize_reply({'EXIT', {{nodedown,_},_}}) -> {badrpc, nodedown};
+normalize_reply({'EXIT', X}) -> exit(X);
+normalize_reply(X) -> X.
