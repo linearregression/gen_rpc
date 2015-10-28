@@ -30,6 +30,9 @@
 
 -export([block_call/4, block_call/5, block_call/6]).
 
+-export([pinfo/1, pinfo/2]).
+
+
 %%% Behaviour callbacks
 -export([init/1, handle_call/3, handle_cast/2,
         handle_info/2, terminate/2, code_change/3]).
@@ -152,6 +155,18 @@ cast(Node, M, F, A, SendTO) when is_atom(Node), is_atom(M), is_atom(F), is_list(
             ok = gen_server:cast(Pid, {{cast,M,F,A},SendTO}),
             true
     end.
+
+%% @doc Location transparent version of the BIF process_info/2.
+%% P
+-spec pinfo(Pid::pid()) -> [{Item::atom(), Info::term()}] | undefined.
+pinfo(Pid) when is_pid(Pid) ->
+    call(node(Pid), erlang, process_info, [Pid]).
+
+%% @doc Location transparent version of the BIF process_info/2.
+%% 
+-spec pinfo(Pid::pid(), Iterm::atom()) -> {Item::atom(), Info::term()} | undefined | [].
+pinfo(Pid, Item) when is_pid(Pid), is_atom(Item) ->
+    call(node(Pid), erlang, process_info, [Pid, Item]).    
 
 %% Safe server cast with no args and default timeout values
 safe_cast(Node, M, F) when is_atom(Node), is_atom(M), is_atom(F) ->
