@@ -9,6 +9,7 @@
 # distclean: 	rebar3 as dev do clean -a
 #               and explicitly delete other build artifacts
 # test: 		rebar3 as test do ct -v, cover
+# coverall: 	 	rebar3 as test do coveralls send (send coverage to coverall)
 # dialyzer: 	rebar3 as test do dialyzer
 # xref:			rebar3 as dev do xref
 # dist: 		rebar3 as test do compile, ct -v, xref, dialyzer, cover
@@ -85,6 +86,9 @@ spec: dialyzer
 
 dist: $(REBAR) test
 	@REBAR_PROFILE=dev $(REBAR) do dialyzer, xref
+
+coverall: $(REBAR) test
+	@REBAR_PROFILE=test $(REBAR) do coveralls send
 
 # =============================================================================
 # Run targets
