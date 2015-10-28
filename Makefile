@@ -65,6 +65,10 @@ REBAR_URL = https://s3.amazonaws.com/rebar3/rebar3
 
 PLT_FILE = $(CURDIR)/_plt/*plt
 
+ifeq ($(USER),travis)
+COVERDATADIR = $(CURDIR)/log/ct
+endif
+
 # =============================================================================
 # Build targets
 # =============================================================================
@@ -87,7 +91,7 @@ spec: dialyzer
 dist: $(REBAR) test
 	@REBAR_PROFILE=dev $(REBAR) do dialyzer, xref
 
-coverage-report: $(shell ls -1rt `find logs -type f -name \*.coverdata 2>/dev/null` | tail -n1)
+coverage-report: $(shell ls -1rt `find $(COVERDATADIR) -type f -name \*.coverdata 2>/dev/null` | tail -n1)
 	$(gen_verbose) erl -noshell -pa ./_build/test/lib/*/ebin -eval 'ecoveralls:travis_ci("$?"), init:stop()'
 
 # =============================================================================
