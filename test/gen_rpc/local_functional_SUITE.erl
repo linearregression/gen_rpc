@@ -45,7 +45,7 @@
         async_call_mfa_exit/1,
         async_call_mfa_throw/1,
         async_call_yield_timeout/1,
-        async_call_yield_infinity/1,
+        async_call_nb_yield_infinity/1,
         client_inactivity_timeout/1,
         server_inactivity_timeout/1,
         remote_node_call/1]).
@@ -301,13 +301,13 @@ async_call_mfa_throw(_Config) ->
 async_call_yield_timeout(_Config) ->
     ok = ct:pal("Testing [async_call_yield_timeout]"),
     YieldKey = gen_rpc:async_call(?NODE, timer, sleep, [1000]),
-    {badrpc,timeout} = gen_rpc:yield(YieldKey),
+    {badrpc,timeout} = gen_rpc:yield(YieldKey, 5),
     NBYieldKey = gen_rpc:async_call(?NODE, timer, sleep, [1000]),
     {badrpc,timeout} = gen_rpc:nb_yield(NBYieldKey, 5),
 
     ok = ct:pal("Result [async_call_yield_timeout]: signal=EXIT Reason={timeout}").
 
-async_call_yield_infinity(_Config) ->
+async_call_nb_yield_infinity(_Config) ->
     ok = ct:pal("Testing [async_call_yield_infinity]"),
     YieldKey = gen_rpc:async_call(?NODE, timer, sleep, [1000]),
     ok = gen_rpc:yield(YieldKey),

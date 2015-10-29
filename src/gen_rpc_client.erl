@@ -37,6 +37,7 @@
 
 %%% Process exports
 -export([call_worker/3]).
+-export([yield_results/2]).
 
 %%% ===================================================
 %%% Supervisor functions
@@ -83,22 +84,7 @@ call(Node, M, F, A, RecvTO) when is_atom(Node), is_atom(M), is_atom(F), is_list(
 call(Node, M, F, A, RecvTO, SendTO) when is_atom(Node), is_atom(M), is_atom(F), is_list(A),
                                          RecvTO =:= undefined orelse is_integer(RecvTO) orelse RecvTO =:= infinity,
                                          SendTO =:= undefined orelse is_integer(SendTO) orelse SendTO =:= infinity ->
-    case whereis(Node) of
-        undefined ->
-            ok = lager:info("function=call event=client_process_not_found server_node=\"~s\" action=spawning_client", [Node]),
-            case gen_rpc_dispatcher:start_client(Node) of
-                {ok, NewPid} ->
-                    %% We take care of CALL inside the gen_server
-                    %% This is not resilient enough if the caller's mailbox is full
-                    %% but it's good enough for now
-                    gen_server:call(NewPid, {{call,M,F,A},RecvTO,SendTO}, infinity);
-                {error, Reason} ->
-                    Reason
-            end;
-        Pid ->
-            ok = lager:debug("function=call event=client_process_found pid=\"~p\" server_node=\"~s\"", [Pid, Node]),
-            gen_server:call(Pid, {{call,M,F,A},RecvTO,SendTO}, infinity)
-    end.
+    do_call(Node, M, F, A, RecvTO, SendTO).
 
 multicall(Nodes, M, F, RecvTO, SendTO) ->
     multicall(Nodes, M, F, [], RecvTO, SendTO).
@@ -107,24 +93,21 @@ multicall(Nodes, M, F, RecvTO, SendTO) ->
 multicall(Nodes, M, F, A, RecvTO, SendTO) when is_list(Nodes), is_atom(M), is_atom(F), is_list(A),
                                          RecvTO =:= undefined orelse is_integer(RecvTO) orelse RecvTO =:= infinity,
                                          SendTO =:= undefined orelse is_integer(SendTO) orelse SendTO =:= infinity ->
-    %ResultList = BadNodes = [],
-    % Try to get current client process pids or start client process in one go, 
-    % since starting the client can take some time.
-    RecvRef = self(),
-    Pids = lists:map(fun(Node)->  
-                        spawn(fun() -> 
-                                   RecvRef ! {self(), catch spawn_gen_rpc_client(Node)}
-                              end)
-                        end, Nodes),
-    Results = gather_result(normalize_timeout(RecvTO), Pids),
-    [Responds, BadNodes] = 
-    case get_goodPid(Results) of
-         {badrpc, timeout} -> [[], Nodes];
-         [{GoodPids, GoodNodes}, DownNodes] ->
-                               [Results, BadNodes0] = gen_server:multicall(GoodPids, GoodNode, {{call,M,F,A},SendTO}, infinity),
-                               [Results, DownNodes ++ BadNodes0]
-    end,
-    {lists:map(fun({_,R}) -> R end, Responds), BadNodes}. 
+    Ref = self(),
+    % Can't use gen_server:multicall because it needs same peer gen_rpc_server name. 
+    NodeKeyList  = lists:map(fun(Node)-> {Node, async_call(Node, M, F, A)} end, Nodes),
+    Pid = spawn(?MODULE, yield_results, [Ref, NodeKeyList]),
+    link(Pid),
+    wait_for_result(Ref, normalize_timeout(RecvTO)). 
+    %Results = gen_server:call({gather_resultnormalize_timeout(RecvTO), {Nodes, Keys} , [[],[]]),
+    %[Responds, BadNodes] = 
+    %case get_goodPid(Results) of
+    %     {badrpc, timeout} -> [[], Nodes];
+    %     [{GoodPids, GoodNodes}, DownNodes] ->
+    %                           [Results, BadNodes0] = gen_server:multicall(GoodPids, GoodNode, {{call,M,F,A},SendTO}, infinity),
+    %                           [Results, DownNodes ++ BadNodes0]
+    %end,
+    %{lists:map(fun({_,R}) -> R end, Responds), BadNodes}. 
  %   Nodes.
  %   {ok, {Node, NewPid}}
     % GoodNodes = get_goodnodes(Nodes),  
@@ -166,7 +149,7 @@ cast(Node, M, F, A, SendTO) when is_atom(Node), is_atom(M), is_atom(F), is_list(
     end.
 
 %% @doc Location transparent version of the BIF process_info/2.
-%% P
+%% 
 -spec pinfo(Pid::pid()) -> [{Item::atom(), Info::term()}] | undefined.
 pinfo(Pid) when is_pid(Pid) ->
     call(node(Pid), erlang, process_info, [Pid]).
@@ -208,24 +191,22 @@ safe_cast(Node, M, F, A, SendTO) when is_atom(Node), is_atom(M), is_atom(F), is_
             gen_server:call(Pid, {{cast,M,F,A},SendTO}, infinity)
     end.
 
-%% Simple server yield with key. Delegate to nb_yield. Default timeout form configuration.
+%% @doc Simple server yield with key. Delegate to nb_yield. Default timeout value of infinity.
 yield(Key)-> 
-    % Deviation from rpc. Here, we net user to set from configuration
-    % This is for user protection from accidentally hanging.
-    % {ok, YieldTO} = application:get_env(gen_rpc, yield_timeout),
     yield(Key, infinity).
 
+%% @doc Simple server yield with key. Delegate to nb_yield. Custom timeout value in msec.
 yield(Key, YieldTO) when is_pid(Key) -> 
     case nb_yield(Key, YieldTO) of
         {value, R} -> R;
         {badrpc, Reason} -> {badrpc, Reason}
     end.
 
-%% Simple server non-blocking yield with key, default timeout value of 0
+%% @doc Simple server non-blocking yield with key, default timeout value of 0
 nb_yield(Key) when is_pid(Key) ->
     nb_yield(Key, 0).
 
-%% Simple server non-blocking yield with key and custom timeout value
+%% @doc Simple server non-blocking yield with key and custom timeout value
 nb_yield(Key, Timeout) when is_pid(Key), is_integer(Timeout) orelse Timeout =:= infinity ->
     receive 
             {Key, {promise_reply, Reply}} -> {value, Reply}
@@ -466,42 +447,58 @@ call_worker(Ref, Caller, Timeout) when is_tuple(Caller), is_reference(Ref) ->
             _Ign = gen_server:reply(Caller, {badrpc, timeout})
     end.
 
-%% For multicall. Spawn up gen_rpc on node if not found.
-spawn_gen_rpc_client(Node) ->
+do_call(Node, M, F, A, RecvTO, SendTO)->
     case whereis(Node) of
         undefined ->
-            ok = lager:info("function=cast event=client_process_not_found server_node=\"~s\" action=spawning_client", [Node]),
+            ok = lager:info("function=call event=client_process_not_found server_node=\"~s\" action=spawning_client", [Node]),
             case gen_rpc_dispatcher:start_client(Node) of
-                {ok, NewPid} -> {ok, {NewPid, Node}};
-                {error, Reason} -> {error, {Node, Reason}}
+                {ok, NewPid} ->
+                    %% We take care of CALL inside the gen_server
+                    %% This is not resilient enough if the caller's mailbox is full
+                    %% but it's good enough for now
+                    gen_server:call(NewPid, {{call,M,F,A},RecvTO,SendTO}, infinity);
+                {error, Reason} ->
+                    Reason
             end;
         Pid ->
-            ok = lager:debug("function=cast event=client_process_found pid=\"~p\" server_node=\"~s\"", [Pid, Node]),
-            Pid
+            ok = lager:debug("function=call event=client_process_found pid=\"~p\" server_node=\"~s\"", [Pid, Node]),
+            gen_server:call(Pid, {{call,M,F,A},RecvTO,SendTO}, infinity)
     end.
 
-% Gather the Pids
+wait_for_result(Ref, Timeout) ->
+    receive 
+          {Ref, Reply} ->  gather_result(Reply, [[], []]) 
+    after Timeout -> {badrpc, timeout}
+    end.
 
-gather_result(_, []) -> [];
-gather_result(Timeout, [H|T]) ->
+yield_results(_, []) -> [];
+yield_results(Ref, Keys) ->
+    Ref ! {self(), lists:map(fun({Node, Key}) -> {Node, nb_yield(Key, infinity)} end, Keys)}.
+
+gather_result([], _) -> [];
+gather_result([H|T], [ResultList, BadNodes]) ->
     receive
-        {H, Result} -> 
-                N = extract_node(Result), 
-                [N|gather_result(Timeout, T)]
-    after 
-        Timeout -> {badrpc, timeout}    
+        {_Node, {value, Result}} -> 
+                [H|gather_result(T, [Result ++ ResultList, BadNodes])];
+        {Node, {badrpc, _}} -> 
+                [H|gather_result(T, [ResultList, Node ++ BadNodes])];
+        {Node, {badtcp, _}} -> 
+                [H|gather_result(T, [ResultList, Node ++ BadNodes])];
+        {Node, {error, _}} -> 
+                [H|gather_result(T, [ResultList, Node ++ BadNodes])];
+        _ -> 
+                [H|gather_result(T, [ResultList, BadNodes])]    
     end.
 
-extract_node({ok,{GoodPid, GoodNode}}) -> {GoodPid, GoodNode};
-extract_node({_,{BadNode,{_,_}}}) -> {bad, BadNode};
-extract_node(_) -> [].
+%extract_node({ok,{GoodPid, GoodNode}}) -> {GoodPid, GoodNode};
+%extract_node({_,_}) -> {bad, BadNode};
+%extract_node(_) -> [].
 
 %[{bad,'3@127.0.0.1'}], [], 
-get_goodPid({badrpc, timeout}) -> {badrpc, timeout};
-get_goodPid(Results) ->
-    BadNodes = [ X || {bad, X} <- lists:flatten(Results)],
-    [Results -- BadNodes, BadNodes].
-    %,GoodNodes = lists:splitwith(fun(A) -> {bad, BadNode} =:= A
+%get_goodPid({badrpc, timeout}) -> {badrpc, timeout};
+%get_goodPid(Results) ->
+%    BadNodes = [ X || {bad, X} <- lists:flatten(Results)],
+%    [Results -- BadNodes, BadNodes].
 
 %% Merges user-define timeout values with state timeout values
 merge_timeout_values(SRecvTO, undefined, SSendTO, undefined) ->

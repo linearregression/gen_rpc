@@ -106,7 +106,7 @@ safe_cast(Node, M, F, A, SendTO) ->
 yield(Key) ->
     gen_rpc_client:yield(Key).
 
--spec yield(Key::pid(), RecvTO::timeout() -> term() | {badrpc, term()}.
+-spec yield(Key::pid(), RecvTO::timeout()) -> term() | {badrpc, term()}.
 yield(Key, RecvTO) ->
     gen_rpc_client:yield(Key, RecvTO).
 
