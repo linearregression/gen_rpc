@@ -27,9 +27,8 @@
 
 %%% FSM functions
 -export([call/3, call/4, call/5, call/6, cast/3, cast/4, cast/5, safe_cast/3, safe_cast/4, safe_cast/5]).
-
 -export([multicall/5, multicall/6]).
-
+-export([async_call/3, async_call/4, yield/1, yield/2, nb_yield/1, nb_yield/2]).
 -export([pinfo/1, pinfo/2]).
 
 %%% Behaviour callbacks
@@ -53,6 +52,19 @@ stop(Node) when is_atom(Node) ->
 %%% ===================================================
 %%% Server functions
 %%% ===================================================
+%% Simple server async_call with no args
+async_call(Node, M, F) when is_atom(Node), is_atom(M), is_atom(F) ->
+    async_call(Node, M, F, []).
+
+%% Simple server async_call with args
+async_call(Node, M, F, A) when is_atom(Node), is_atom(M), is_atom(F), is_list(A) ->
+    ReplyTo = self(),
+    ok = lager:info("function=async_call event=spawning_call_process server_node=\"~s\" action=spawning_call_process", [Node]),
+    spawn(fun()-> 
+              Reply = call(Node, M, F, A, undefined, undefined),
+              ReplyTo ! {self(), {promise_reply, Reply}}
+          end).    
+
 %% Simple server call with no args and default timeout values
 call(Node, M, F) when is_atom(Node), is_atom(M), is_atom(F) ->
     call(Node, M, F, [], undefined, undefined).
@@ -196,6 +208,32 @@ safe_cast(Node, M, F, A, SendTO) when is_atom(Node), is_atom(M), is_atom(F), is_
             gen_server:call(Pid, {{cast,M,F,A},SendTO}, infinity)
     end.
 
+%% Simple server yield with key. Delegate to nb_yield. Default timeout form configuration.
+yield(Key)-> 
+    % Deviation from rpc. Here, we net user to set from configuration
+    % This is for user protection from accidentally hanging.
+    % {ok, YieldTO} = application:get_env(gen_rpc, yield_timeout),
+    yield(Key, infinity).
+
+yield(Key, YieldTO) when is_pid(Key) -> 
+    case nb_yield(Key, YieldTO) of
+        {value, R} -> R;
+        {badrpc, Reason} -> {badrpc, Reason}
+    end.
+
+%% Simple server non-blocking yield with key, default timeout value of 0
+nb_yield(Key) when is_pid(Key) ->
+    nb_yield(Key, 0).
+
+%% Simple server non-blocking yield with key and custom timeout value
+nb_yield(Key, Timeout) when is_pid(Key), is_integer(Timeout) orelse Timeout =:= infinity ->
+    receive 
+            {Key, {promise_reply, Reply}} -> {value, Reply}
+    after Timeout ->
+            ok = lager:notice("function=nb_yield event=call_timeout yield_key=\"~p\"", [Key]),
+            {badrpc, timeout}
+    end.
+
 %%% ===================================================
 %%% Behaviour callbacks
 %%% ===================================================
@@ -211,7 +249,7 @@ init({Node}) ->
     %% Perform an in-band RPC call to the remote node
     %% asking it to launch a listener for us and return us
     %% the port that has been allocated for us
-    ok = lager:info("function=init event=initializing_client server_node=\"~s\" connect_timeout=~B send_timeout=~B receive_timeout=~B inactivity_timeout=~p",
+    ok = lager:info("function=init event=initializing_client server_node=\"~s\" connect_timeout=~B send_timeout=~B receive_timeout=~B inactivity_timeout=\"~p\"",
                     [Node, ConnTO, SendTO, RecvTO, TTL]),
     case rpc:call(Node, gen_rpc_server_sup, start_child, [node()], ConnTO) of
         {ok, Port} ->
