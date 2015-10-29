@@ -439,11 +439,16 @@ spawn_gen_rpc_client(Node) ->
 gather_result([]) -> [];
 gather_result([H|T]) ->
     receive
-        {H, Result} -> [Result| gather_result(T)]
+        {H, Result} -> 
+                GoodPid = extract_goodnode(Result), 
+                [GoodPid| gather_result(T)]
     after 
         5000 -> {badrpc, timeout}    
     end.
 
+extract_goodnode({ok,{_GoodNode, GoodPid}}) -> GoodPid;
+extract_goodnode({_,{BadNode,{_,_}}}) -> {bad, BadNode};
+extract_goodnode(_) -> [].
 
 %% Merges user-define timeout values with state timeout values
 merge_timeout_values(SRecvTO, undefined, SSendTO, undefined) ->
