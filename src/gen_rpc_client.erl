@@ -27,7 +27,7 @@
 
 %%% FSM functions
 -export([call/3, call/4, call/5, call/6, cast/3, cast/4, cast/5, safe_cast/3, safe_cast/4, safe_cast/5]).
--export([async_call/3, async_call/4, yield/1, nb_yield/1, nb_yield/2]).
+-export([async_call/3, async_call/4, yield/1, yield/2, nb_yield/1, nb_yield/2]).
 -export([pinfo/1, pinfo/2]).
 
 %%% Behaviour callbacks
@@ -175,10 +175,12 @@ safe_cast(Node, M, F, A, SendTO) when is_atom(Node), is_atom(M), is_atom(F), is_
             gen_server:call(Pid, {{cast,M,F,A},SendTO}, infinity)
     end.
 %% Simple server yield with key. Delegate to nb_yield. Default timeout form configuation.
-yield(Key) when is_pid(Key) -> 
-    % Deviation from rpc. Here, we net user to set from configuration
-    % This is for user protection from accidentally hanging.
-    {ok, YieldTO} = application:get_env(gen_rpc, yield_timeout),
+
+%% Simple server yield with key. Delegate to nb_yield. Default timeout form configuration.
+yield(Key)-> 
+    yield(Key, infinity).
+
+yield(Key, YieldTO) when is_pid(Key) -> 
     case nb_yield(Key, YieldTO) of
         {value, R} -> R;
         {badrpc, Reason} -> {badrpc, Reason}

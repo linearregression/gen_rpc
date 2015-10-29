@@ -18,6 +18,7 @@
         cast/4,
         cast/5,
         yield/1,
+        yield/2,
         nb_yield/1,
         nb_yield/2,
         pinfo/1,
@@ -94,6 +95,10 @@ safe_cast(Node, M, F, A, SendTO) ->
 -spec yield(Key::pid()) -> term() | {badrpc, term()}.
 yield(Key) ->
     gen_rpc_client:yield(Key).
+
+-spec yield(Key::pid(), RecvTO::timeout()) -> term() | {badrpc, term()}.
+yield(Key, RecvTO) ->
+    gen_rpc_client:yield(Key, RecvTO).
 
 -spec nb_yield(Key::pid()) -> {value, term()} | {badrpc, term()}.
 nb_yield(Key) ->
