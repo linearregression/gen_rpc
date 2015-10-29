@@ -95,16 +95,23 @@ multicall(Nodes, M, F, RecvTO, SendTO) ->
 multicall(Nodes, M, F, A, RecvTO, SendTO) when is_list(Nodes), is_atom(M), is_atom(F), is_list(A),
                                          RecvTO =:= undefined orelse is_integer(RecvTO) orelse RecvTO =:= infinity,
                                          SendTO =:= undefined orelse is_integer(SendTO) orelse SendTO =:= infinity ->
-    %BadNodes = [],
+    %ResultList = BadNodes = [],
+    % Try to get current client process pids or start client process in one go, 
+    % since starting the client can take some time.
+    RecvRef = self(),
     Pids = lists:map(fun(Node)->  
                         spawn(fun() -> 
-                                   self() ! spawn_gen_rpc_client(Node)
+                                   RecvRef ! {self(), catch spawn_gen_rpc_client(Node)}
                               end)
                         end, Nodes),
-    Pids.
+    Replies = gather_result(Pids),
+         Replies.
+
  %   {ok, {Node, NewPid}}
-  
-    %gen_rpc_client:multicall(Nodes, M, F, A, RecvTO, SendTO).
+    % GoodNodes = get_goodnodes(Nodes),  
+    %gen_rpc_client:multicall(GoodNodes, M, F, A, RecvTO, SendTO).
+   % {ResultList, BadNodes}.
+
 
 %% Simple server cast with no args and default timeout values
 cast(Node, M, F) when is_atom(Node), is_atom(M), is_atom(F) ->
@@ -416,8 +423,6 @@ call_worker(Ref, Caller, Timeout) when is_tuple(Caller), is_reference(Ref) ->
 
 %% For multicall. Spawn up gen_rpc on node if not found.
 spawn_gen_rpc_client(Node) ->
-    %% Naming our gen_server as the node we're calling as it is extremely efficent:
-    %% We'll never deplete atoms because all connected node names are already atoms in this VM
     case whereis(Node) of
         undefined ->
             ok = lager:info("function=cast event=client_process_not_found server_node=\"~s\" action=spawning_client", [Node]),
@@ -431,8 +436,13 @@ spawn_gen_rpc_client(Node) ->
     end.
 
 % Gather the Pids
-%gatherPids([]) -> [];
-%gatherPids(PidList) ->
+gather_result([]) -> [];
+gather_result([H|T]) ->
+    receive
+        {H, Result} -> [Result| gather_result(T)]
+    after 
+        5000 -> {badrpc, timeout}    
+    end.
 
 
 %% Merges user-define timeout values with state timeout values
