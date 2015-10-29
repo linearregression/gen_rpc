@@ -104,9 +104,16 @@ multicall(Nodes, M, F, A, RecvTO, SendTO) when is_list(Nodes), is_atom(M), is_at
                                    RecvRef ! {self(), catch spawn_gen_rpc_client(Node)}
                               end)
                         end, Nodes),
-    Replies = gather_result(Pids),
-         Replies.
-
+    Results = gather_result(normalize_timeout(RecvTO), Pids),
+    [Responds, BadNodes] = 
+    case get_goodPid(Results) of
+         {badrpc, timeout} -> [[], Nodes];
+         [{GoodPids, GoodNodes}, DownNodes] ->
+                               [Results, BadNodes0] = gen_server:multicall(GoodPids, GoodNode, {{call,M,F,A},SendTO}, infinity),
+                               [Results, DownNodes ++ BadNodes0]
+    end,
+    {lists:map(fun({_,R}) -> R end, Responds), BadNodes}. 
+ %   Nodes.
  %   {ok, {Node, NewPid}}
     % GoodNodes = get_goodnodes(Nodes),  
     %gen_rpc_client:multicall(GoodNodes, M, F, A, RecvTO, SendTO).
@@ -427,7 +434,7 @@ spawn_gen_rpc_client(Node) ->
         undefined ->
             ok = lager:info("function=cast event=client_process_not_found server_node=\"~s\" action=spawning_client", [Node]),
             case gen_rpc_dispatcher:start_client(Node) of
-                {ok, NewPid} -> {ok, {Node, NewPid}};
+                {ok, NewPid} -> {ok, {NewPid, Node}};
                 {error, Reason} -> {error, {Node, Reason}}
             end;
         Pid ->
@@ -436,19 +443,27 @@ spawn_gen_rpc_client(Node) ->
     end.
 
 % Gather the Pids
-gather_result([]) -> [];
-gather_result([H|T]) ->
+
+gather_result(_, []) -> [];
+gather_result(Timeout, [H|T]) ->
     receive
         {H, Result} -> 
-                GoodPid = extract_goodnode(Result), 
-                [GoodPid| gather_result(T)]
+                N = extract_node(Result), 
+                [N|gather_result(Timeout, T)]
     after 
-        5000 -> {badrpc, timeout}    
+        Timeout -> {badrpc, timeout}    
     end.
 
-extract_goodnode({ok,{_GoodNode, GoodPid}}) -> GoodPid;
-extract_goodnode({_,{BadNode,{_,_}}}) -> {bad, BadNode};
-extract_goodnode(_) -> [].
+extract_node({ok,{GoodPid, GoodNode}}) -> {GoodPid, GoodNode};
+extract_node({_,{BadNode,{_,_}}}) -> {bad, BadNode};
+extract_node(_) -> [].
+
+%[{bad,'3@127.0.0.1'}], [], 
+get_goodPid({badrpc, timeout}) -> {badrpc, timeout};
+get_goodPid(Results) ->
+    BadNodes = [ X || {bad, X} <- lists:flatten(Results)],
+    [Results -- BadNodes, BadNodes].
+    %,GoodNodes = lists:splitwith(fun(A) -> {bad, BadNode} =:= A
 
 %% Merges user-define timeout values with state timeout values
 merge_timeout_values(SRecvTO, undefined, SSendTO, undefined) ->
@@ -459,3 +474,6 @@ merge_timeout_values(SRecvTO, undefined, _SSendTO, USendTO) ->
     {SRecvTO, USendTO};
 merge_timeout_values(_SRecvTO, URecvTO, _SSendTO, USendTO) ->
     {URecvTO, USendTO}.
+
+normalize_timeout(undefined) -> infinity;
+normalize_timeout(E) -> E.
