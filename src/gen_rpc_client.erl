@@ -28,6 +28,8 @@
 %%% FSM functions
 -export([call/3, call/4, call/5, call/6, cast/3, cast/4, cast/5, safe_cast/3, safe_cast/4, safe_cast/5]).
 
+-export([multicall/5, multicall/6]).
+
 -export([pinfo/1, pinfo/2]).
 
 %%% Behaviour callbacks
@@ -85,6 +87,24 @@ call(Node, M, F, A, RecvTO, SendTO) when is_atom(Node), is_atom(M), is_atom(F), 
             ok = lager:debug("function=call event=client_process_found pid=\"~p\" server_node=\"~s\"", [Pid, Node]),
             gen_server:call(Pid, {{call,M,F,A},RecvTO,SendTO}, infinity)
     end.
+
+multicall(Nodes, M, F, RecvTO, SendTO) ->
+    multicall(Nodes, M, F, [], RecvTO, SendTO).
+
+%% multicall with args and custom send timeout values
+multicall(Nodes, M, F, A, RecvTO, SendTO) when is_list(Nodes), is_atom(M), is_atom(F), is_list(A),
+                                         RecvTO =:= undefined orelse is_integer(RecvTO) orelse RecvTO =:= infinity,
+                                         SendTO =:= undefined orelse is_integer(SendTO) orelse SendTO =:= infinity ->
+    %BadNodes = [],
+    Pids = lists:map(fun(Node)->  
+                        spawn(fun() -> 
+                                   self() ! spawn_gen_rpc_client(Node)
+                              end)
+                        end, Nodes),
+    Pids.
+ %   {ok, {Node, NewPid}}
+  
+    %gen_rpc_client:multicall(Nodes, M, F, A, RecvTO, SendTO).
 
 %% Simple server cast with no args and default timeout values
 cast(Node, M, F) when is_atom(Node), is_atom(M), is_atom(F) ->
@@ -393,6 +413,27 @@ call_worker(Ref, Caller, Timeout) when is_tuple(Caller), is_reference(Ref) ->
             ok = lager:notice("function=call_worker event=call_timeout call_reference=\"~p\"", [Ref]),
             _Ign = gen_server:reply(Caller, {badrpc, timeout})
     end.
+
+%% For multicall. Spawn up gen_rpc on node if not found.
+spawn_gen_rpc_client(Node) ->
+    %% Naming our gen_server as the node we're calling as it is extremely efficent:
+    %% We'll never deplete atoms because all connected node names are already atoms in this VM
+    case whereis(Node) of
+        undefined ->
+            ok = lager:info("function=cast event=client_process_not_found server_node=\"~s\" action=spawning_client", [Node]),
+            case gen_rpc_dispatcher:start_client(Node) of
+                {ok, NewPid} -> {ok, {Node, NewPid}};
+                {error, Reason} -> {error, {Node, Reason}}
+            end;
+        Pid ->
+            ok = lager:debug("function=cast event=client_process_found pid=\"~p\" server_node=\"~s\"", [Pid, Node]),
+            Pid
+    end.
+
+% Gather the Pids
+%gatherPids([]) -> [];
+%gatherPids(PidList) ->
+
 
 %% Merges user-define timeout values with state timeout values
 merge_timeout_values(SRecvTO, undefined, SSendTO, undefined) ->
