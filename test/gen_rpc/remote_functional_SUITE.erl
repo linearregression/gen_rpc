@@ -42,6 +42,7 @@
         async_call_mfa_throw/1,
         async_call_yield_timeout/1,
         async_call_nb_yield_infinity/1,
+        async_call_inexistent_node/1,
         client_inactivity_timeout/1,
         server_inactivity_timeout/1]).
 
@@ -246,7 +247,7 @@ async_call_mfa_undef(_Config) ->
     YieldKey = gen_rpc:async_call(?SLAVE, os, timestamp_undef),
     {badrpc, {'EXIT', {undef,[{os,timestamp_undef,_,_},_]}}} = gen_rpc:yield(YieldKey),
     NBYieldKey = gen_rpc:async_call(?SLAVE, os, timestamp_undef),
-    {value, {badrpc, {'EXIT', {undef,[{os,timestamp_undef,_,_},_]}}}} = gen_rpc:nb_yield(NBYieldKey, 20),
+    {badrpc, {'EXIT', {undef,[{os,timestamp_undef,_,_},_]}}} = gen_rpc:nb_yield(NBYieldKey, 20),
     ok = ct:pal("Result [async_call_mfa_undef]: signal=EXIT Reason={os,timestamp_undef}").
 
 async_call_mfa_exit(_Config) ->
@@ -254,7 +255,7 @@ async_call_mfa_exit(_Config) ->
     YieldKey = gen_rpc:async_call(?SLAVE, erlang, exit, ['die']),
     {badrpc, {'EXIT', die}} = gen_rpc:yield(YieldKey),
     NBYieldKey = gen_rpc:async_call(?SLAVE, erlang, exit, ['die']),
-    {value, {badrpc, {'EXIT', die}}} = gen_rpc:nb_yield(NBYieldKey, 10),
+    {badrpc, {'EXIT', die}} = gen_rpc:nb_yield(NBYieldKey, 10),
     ok = ct:pal("Result [async_call_mfa_undef]: signal=EXIT Reason={os,timestamp_undef}").
 
 async_call_mfa_throw(_Config) ->
@@ -280,6 +281,13 @@ async_call_nb_yield_infinity(_Config) ->
     NBYieldKey = gen_rpc:async_call(?SLAVE, timer, sleep, [1000]),
     {value, ok} = gen_rpc:nb_yield(NBYieldKey, infinity),
     ok = ct:pal("Result [async_call_yield_infinity]: signal=EXIT Reason={ok}").
+
+async_call_inexistent_node(_Config) ->
+    ok = ct:pal("Testing [async_call_inexistent_node]"),
+    YieldKey1 = gen_rpc:async_call(?FAKE_NODE, os, timestamp, []),
+    {badrpc, nodedown} = gen_rpc:yield(YieldKey1),
+    YieldKey2 = gen_rpc:async_call(?FAKE_NODE, os, timestamp, []),
+    {badrpc, nodedown} = gen_rpc:nb_yield(YieldKey2, 5000).
 
 client_inactivity_timeout(_Config) ->
     ok = ct:pal("Testing [client_inactivity_timeout]"),
