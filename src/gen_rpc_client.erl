@@ -196,7 +196,7 @@ nb_yield(Key, Timeout) when is_pid(Key), is_integer(Timeout) orelse Timeout =:= 
             {Key, {promise_reply, Reply}} -> {value, Reply}
     after Timeout ->
             ok = lager:notice("function=nb_yield event=call_timeout yield_key=\"~p\"", [Key]),
-            {badrpc, timeout}
+            {value, {badrpc, timeout}}
     end.
 
 %%% ===================================================
