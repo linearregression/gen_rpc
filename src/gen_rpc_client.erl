@@ -111,34 +111,13 @@ multicall(Nodes, M, F, A, RecvTO, SendTO) when is_list(Nodes), is_atom(M), is_at
                                          SendTO =:= undefined orelse is_integer(SendTO) orelse SendTO =:= infinity ->
     Ref = self(),
     % Can't use gen_server:multicall because it needs same peer gen_rpc_server name. 
-    ok = lager:info("function=multicall SelfRef: \"~p\"", [Ref]),
     NodeKeyList  = lists:map(fun(Node)->
                                 Key = async_call(Node, M, F, A),
-                                ok = lager:info("function=multicall asyncallkey=\"~p\"", [Key]),
                                 {Node, Key}
                              end, Nodes),
-    ok = lager:info("function=multicall NodeKeyList=\"~p\"", [NodeKeyList]),
-    R = yield_results(Ref, NodeKeyList),
-    ok = lager:info("function=multicall YR=\"~p\"", [R]),
-    Result = wait_for_result(Ref, normalize_timeout(RecvTO)),
-    %unlink(Pid),
-    Result. 
-    %Results = gen_server:call({gather_resultnormalize_timeout(RecvTO), {Nodes, Keys} , [[],[]]),
-    %[Responds, BadNodes] = 
-    %case get_goodPid(Results) of
-    %     {badrpc, timeout} -> [[], Nodes];
-    %     [{GoodPids, GoodNodes}, DownNodes] ->
-    %                           [Results, BadNodes0] = gen_server:multicall(GoodPids, GoodNode, {{call,M,F,A},SendTO}, infinity),
-    %                           [Results, DownNodes ++ BadNodes0]
-    %end,
-    %{lists:map(fun({_,R}) -> R end, Responds), BadNodes}. 
- %   Nodes.
- %   {ok, {Node, NewPid}}
-    % GoodNodes = get_goodnodes(Nodes),  
-    %gen_rpc_client:multicall(GoodNodes, M, F, A, RecvTO, SendTO).
-   % {ResultList, BadNodes}.
-
-
+    ok = yield_results(Ref, NodeKeyList),
+    wait_for_result(Ref, normalize_timeout(RecvTO)). 
+ 
 %% Simple server cast with no args and default timeout values
 cast(Node, M, F) when is_atom(Node), is_atom(M), is_atom(F) ->
     cast(Node, M, F, [], undefined).
@@ -222,9 +201,9 @@ yield(Key)->
 %% @doc Simple server yield with key. Delegate to nb_yield. Custom timeout value in msec.
 yield(Key, YieldTO) when is_pid(Key) -> 
     case nb_yield(Key, YieldTO) of
+
         {value, R} -> R;
-        {badrpc, Reason} -> {badrpc, Reason};
-        {badtcp, Reason} -> {badtcp, Reason}
+        {badrpc, Reason} -> {badrpc, Reason}
     end.
 
 %% @doc Simple server non-blocking yield with key, default timeout value of 0
@@ -234,10 +213,11 @@ nb_yield(Key) when is_pid(Key) ->
 %% @doc Simple server non-blocking yield with key and custom timeout value
 nb_yield(Key, Timeout) when is_pid(Key), is_integer(Timeout) orelse Timeout =:= infinity ->
     receive 
-            {Key, {promise_reply, {badrpc, Reason}}} -> {badrpc, Reason}; 
-            {Key, {promise_reply, {badtcp, Reason}}} -> {badtcp, Reason}; 
-            {Key, {promise_reply, Reply}} -> {value, Reply};
-            {badtcp, Reason} -> {badtcp, Reason}
+           % original rpc wants it this way
+           % {Key, {promise_reply, {badrpc, Reason}}} -> {badrpc, Reason}; 
+           % {Key, {promise_reply, {badtcp, Reason}}} -> {badtcp, Reason}; 
+            {Key, {promise_reply, Reply}} -> {value, Reply}
+           % {badtcp, Reason} -> {badtcp, Reason}
     after Timeout ->
             ok = lager:notice("function=nb_yield event=call_timeout yield_key=\"~p\"", [Key]),
             {badrpc, timeout}
@@ -477,30 +457,32 @@ call_worker(Ref, Caller, Timeout) when is_tuple(Caller), is_reference(Ref) ->
 
 wait_for_result(Ref, Timeout) ->
     receive 
-          {Ref, Reply} ->
-           ok = lager:info("function=waitforresult Reply=\"~p\"", [Reply]),
-           gather_result(Reply, [[], []]) 
+          {Ref, Reply} -> gather_result(Reply)
     after Timeout -> {badrpc, timeout}
     end.
 
-yield_results(_, []) -> [];
+yield_results(_, []) -> ok;
 yield_results(Ref, Keys) ->
-    Ref ! {Ref, lists:map(fun({Node, Key}) -> {Node, yield(Key, infinity)} end, Keys)}.
+    Ref ! {Ref, lists:map(fun({Node, Key}) -> 
+                              Result = nb_yield(Key, infinity),
+                              case normalize_result(Result) of 
+                                   bad -> {bad, Node};
+                                   {value, Result} -> Result;
+                                   _Ign -> _Ign
+                              end 
+                          end, Keys)},
+    ok.
 
-gather_result([], _) -> [];
-gather_result([H|T], [ResultList, BadNodes]) ->
-    case H of
-        {_Node, {value, Result}} -> 
-                [H|gather_result(T, [Result ++ ResultList, BadNodes])];
-        {Node, {badrpc, _}} -> 
-                [H|gather_result(T, [ResultList, Node ++ BadNodes])];
-        {Node, {badtcp, _}} -> 
-                [H|gather_result(T, [ResultList, Node ++ BadNodes])];
-        {Node, {error, _}} -> 
-                [H|gather_result(T, [ResultList, Node ++ BadNodes])];
-        _ -> 
-                [H|gather_result(T, [ResultList, BadNodes])]    
-    end.
+normalize_result({value, {badrpc, _}}) -> bad;
+normalize_result({value, {badtcp, _}}) -> bad;
+normalize_result({value, Result}) -> {value, Result};
+normalize_result(Else) -> Else.
+
+gather_result([]) -> [];
+gather_result(Responses) ->
+    BadNodes = [Node || {bad, Node}  <- Responses],
+    GoodResults = [Result || {value, Result}  <- Responses],
+    [GoodResults, BadNodes]. 
 
 %% Merges user-define timeout values with state timeout values
 merge_timeout_values(SRecvTO, undefined, SSendTO, undefined) ->

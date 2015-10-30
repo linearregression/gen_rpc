@@ -271,7 +271,7 @@ async_call_anonymous_undef(_Config) ->
     YieldKey = gen_rpc:async_call(?NODE, erlang, apply, [fun() -> os:timestamp_undef() end, []]),
     {badrpc, {'EXIT', {undef,[{os,timestamp_undef,[],[]},_]}}} = gen_rpc:yield(YieldKey),
     NBYieldKey = gen_rpc:async_call(?NODE, erlang, apply, [fun() -> os:timestamp_undef() end, []]),
-    {badrpc, {'EXIT', {undef,[{os,timestamp_undef,[],[]},_]}}} = gen_rpc:nb_yield(NBYieldKey, 10),
+    {value, {badrpc, {'EXIT', {undef,[{os,timestamp_undef,[],[]},_]}}}} = gen_rpc:nb_yield(NBYieldKey, 10),
     ok = ct:pal("Result [async_call_anonymous_undef]: signal=EXIT Reason={os,timestamp_undef}").
 
 async_call_mfa_undef(_Config) ->
@@ -279,7 +279,7 @@ async_call_mfa_undef(_Config) ->
     YieldKey = gen_rpc:async_call(?NODE, os, timestamp_undef),
     {badrpc, {'EXIT', {undef,[{os,timestamp_undef,_,_},_]}}} = gen_rpc:yield(YieldKey),
     NBYieldKey = gen_rpc:async_call(?NODE, os, timestamp_undef),
-    {badrpc, {'EXIT', {undef,[{os,timestamp_undef,_,_},_]}}} = gen_rpc:nb_yield(NBYieldKey, 20),
+    {value, {badrpc, {'EXIT', {undef,[{os,timestamp_undef,_,_},_]}}}} = gen_rpc:nb_yield(NBYieldKey, 20),
     ok = ct:pal("Result [async_call_mfa_undef]: signal=EXIT Reason={os,timestamp_undef}").
 
 async_call_mfa_exit(_Config) ->
@@ -287,7 +287,7 @@ async_call_mfa_exit(_Config) ->
     YieldKey = gen_rpc:async_call(?NODE, erlang, exit, ['die']),
     {badrpc, {'EXIT', die}} = gen_rpc:yield(YieldKey),
     NBYieldKey = gen_rpc:async_call(?NODE, erlang, exit, ['die']),
-    {badrpc, {'EXIT', die}} = gen_rpc:nb_yield(NBYieldKey, 10),
+    {value, {badrpc, {'EXIT', die}}} = gen_rpc:nb_yield(NBYieldKey, 10),
     ok = ct:pal("Result [async_call_mfa_undef]: signal=EXIT Reason={os,timestamp_undef}").
 
 async_call_mfa_throw(_Config) ->
@@ -304,7 +304,6 @@ async_call_yield_timeout(_Config) ->
     {badrpc,timeout} = gen_rpc:yield(YieldKey, 5),
     NBYieldKey = gen_rpc:async_call(?NODE, timer, sleep, [1000]),
     {badrpc,timeout} = gen_rpc:nb_yield(NBYieldKey, 5),
-
     ok = ct:pal("Result [async_call_yield_timeout]: signal=EXIT Reason={timeout}").
 
 async_call_nb_yield_infinity(_Config) ->
@@ -384,4 +383,3 @@ start_slave() ->
     %% Start the application remotely
     {ok, _SlaveApps} = rpc:call(?SLAVE, application, ensure_all_started, [gen_rpc]),
     ok.
-
