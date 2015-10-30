@@ -79,7 +79,7 @@ supervisor_black_box(_Config) ->
 %% Test main functions
 multi_call(_Config) ->
     ok = ct:pal("Testing [multi_call]"),
-    [[?SLAVE1,?SLAVE2], []] = gen_rpc:multicall([?SLAVE1, ?SLAVE2], erlang, node, 100, 100).
+    [[?SLAVE1,?SLAVE2], []] = gen_rpc:multicall([?SLAVE1, ?SLAVE2], erlang, node, 5000, 100).
 
 multi_call_timeout(_Config) ->
     ok = ct:pal("Testing [multi_call]"),
@@ -87,16 +87,16 @@ multi_call_timeout(_Config) ->
 
 multi_call_mfa_undef(_Config) ->
     ok = ct:pal("Testing [multi_call_mfa_undef]"),
-    [[], [?SLAVE1,?SLAVE2]] = gen_rpc:multicall([?SLAVE1, ?SLAVE2], erlang, undef, ['die'], 100, 100).
+    [[], [?SLAVE1,?SLAVE2]] = gen_rpc:multicall([?SLAVE1, ?SLAVE2], erlang, undef, ['die'], 5000, 100).
 
 multi_call_mfa_exit(_Config) ->
     ok = ct:pal("Testing [multi_call_mfa_exit]"),
-    [[], [?SLAVE1,?SLAVE2]] = gen_rpc:multicall([?SLAVE1, ?SLAVE2], erlang, exit, ['die'], 100, 100).
+    [[], [?SLAVE1,?SLAVE2]] = gen_rpc:multicall([?SLAVE1, ?SLAVE2], erlang, exit, ['die'], 5000, 100).
 
 multi_call_mfa_throw(_Config) ->
     ok = ct:pal("Testing [multi_call_mfa_throw]"),
 
-    [['throwXdown', 'throwXdown'], []] = gen_rpc:multicall([?SLAVE1, ?SLAVE2], erlang, throw, ['throwXdown'], 100, 100).
+    [['throwXdown', 'throwXdown'], []] = gen_rpc:multicall([?SLAVE1, ?SLAVE2], erlang, throw, ['throwXdown'], 5000, 100).
 
 multi_call_inexistent_node(_Config) ->
     ok = ct:pal("Testing [multi_call_inexistent_node]"),
@@ -108,7 +108,7 @@ multi_call_no_node(_Config) ->
 
 multi_call_multiple_nodes(_Config) ->
     ok = ct:pal("Testing [multi_call_multiple_nodes]"),
-    [[_,_],[?FAKE_NODE]] = gen_rpc:multicall([?SLAVE1, ?SLAVE2, ?FAKE_NODE], os, timestamp, 10, 10).
+    [[_,_],[?FAKE_NODE]] = gen_rpc:multicall([?SLAVE1, ?SLAVE2, ?FAKE_NODE], os, timestamp, 5000, 100).
 
 %%% ===================================================
 %%% Auxiliary functions for test cases
