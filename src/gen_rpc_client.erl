@@ -209,7 +209,6 @@ yield(Key)->
 %% @doc Simple server yield with key. Delegate to nb_yield. Custom timeout value in msec.
 yield(Key, YieldTO) when is_pid(Key) -> 
     case nb_yield(Key, YieldTO) of
-
         {value, R} -> R;
         {badrpc, Reason} -> {badrpc, Reason}
     end.
