@@ -270,7 +270,7 @@ async_call_yield_timeout(_Config) ->
     YieldKey = gen_rpc:async_call(?SLAVE, timer, sleep, [1000]),
     {badrpc,timeout} = gen_rpc:yield(YieldKey, 5),
     NBYieldKey = gen_rpc:async_call(?SLAVE, timer, sleep, [1000]),
-    {badrpc,timeout} = gen_rpc:nb_yield(NBYieldKey, 5),
+    {value, {badrpc,timeout}} = gen_rpc:nb_yield(NBYieldKey, 5),
     ok = ct:pal("Result [async_call_yield_timeout]: signal=EXIT Reason={timeout}").
 
 async_call_nb_yield_infinity(_Config) ->
