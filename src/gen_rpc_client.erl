@@ -461,7 +461,7 @@ call_worker(Ref, Caller, Timeout) when is_tuple(Caller), is_reference(Ref) ->
             _Ign = gen_server:reply(Caller, {badrpc, timeout})
     end.
 
-yield_results([]) -> ok;
+yield_results([]) -> [[],[]];
 yield_results(Keys) ->
     Results = lists:map(fun({Node, Key}) -> 
                               Reply = nb_yield(Key, infinity),
