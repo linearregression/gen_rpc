@@ -82,7 +82,7 @@ multi_call(_Config) ->
     [[?SLAVE1,?SLAVE2], []] = gen_rpc:multicall([?SLAVE1, ?SLAVE2], erlang, node, 5000, 100).
 
 multi_call_timeout(_Config) ->
-    ok = ct:pal("Testing [multi_call]"),
+    ok = ct:pal("Testing [multi_call_timeout]"),
     [[], [?SLAVE1]] = gen_rpc:multicall([?SLAVE1], timer, sleep, [10000], 1, 1).
 
 multi_call_mfa_undef(_Config) ->

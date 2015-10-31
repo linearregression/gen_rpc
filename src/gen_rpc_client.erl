@@ -123,8 +123,7 @@ multicall(Nodes, M, F, A, RecvTO, SendTO) when is_list(Nodes), is_atom(M), is_at
                                 Key = async_call(Node, M, F, A, RecvTO, SendTO),
                                 {Node, Key}
                              end, Nodes),
-    Reply = yield_results(NodeKeyList),
-    gather_result(Reply).
+    yield_results(NodeKeyList).
 
 %% Simple server cast with no args and default timeout values
 cast(Node, M, F) when is_atom(Node), is_atom(M), is_atom(F) ->
@@ -464,25 +463,22 @@ call_worker(Ref, Caller, Timeout) when is_tuple(Caller), is_reference(Ref) ->
 
 yield_results([]) -> ok;
 yield_results(Keys) ->
-    lists:map(fun({Node, Key}) -> 
+    Results = lists:map(fun({Node, Key}) -> 
                               Reply = nb_yield(Key, infinity),
                               case normalize_result(Reply) of 
                                    bad -> {bad, Node};
-                                   {value, Reply} -> Reply;
+                                   {value, Result} -> {value, Result};
                                    _Ign -> _Ign
                               end
-              end, Keys).
+              end, Keys), 
+    BadNodes = [Node || {bad, Node}  <- Results],
+    GoodResults = [Result || {value, Result}  <- Results],
+    [GoodResults, BadNodes]. 
 
 normalize_result({value, {badrpc, _}}) -> bad;
 normalize_result({value, {badtcp, _}}) -> bad;
-normalize_result({value, Result}) -> {value, Result};
-normalize_result(Else) -> Else.
-
-gather_result([]) -> [];
-gather_result(Responses) ->
-    BadNodes = [Node || {bad, Node}  <- Responses],
-    GoodResults = [Result || {value, Result}  <- Responses],
-    [GoodResults, BadNodes]. 
+normalize_result({value, Result}) -> {value, Result}; 
+normalize_result(_Else) -> _Else.
 
 %% Merges user-define timeout values with state timeout values
 merge_timeout_values(SRecvTO, undefined, SSendTO, undefined) ->
