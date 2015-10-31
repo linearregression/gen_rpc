@@ -95,7 +95,6 @@ multi_call_mfa_exit(_Config) ->
 
 multi_call_mfa_throw(_Config) ->
     ok = ct:pal("Testing [multi_call_mfa_throw]"),
-
     [['throwXdown', 'throwXdown'], []] = gen_rpc:multicall([?SLAVE1, ?SLAVE2], erlang, throw, ['throwXdown'], 5000, 100).
 
 multi_call_inexistent_node(_Config) ->
