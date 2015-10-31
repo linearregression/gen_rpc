@@ -296,7 +296,7 @@ async_call_mfa_throw(_Config) ->
     'throwXdown' = gen_rpc:yield(YieldKey),
     NBYieldKey = gen_rpc:async_call(?NODE, erlang, throw, ['throwXdown']),
     {value, 'throwXdown'} = gen_rpc:nb_yield(NBYieldKey, 10),
-    ok = ct:pal("Result [async_call_mfa_undef]: signal=EXIT Reason={throwXdown}").
+    ok = ct:pal("Result [async_call_mfa_undef]: signal=throw Reason={throwXdown}").
 
 async_call_yield_timeout(_Config) ->
     ok = ct:pal("Testing [async_call_yield_timeout]"),
@@ -304,7 +304,7 @@ async_call_yield_timeout(_Config) ->
     {badrpc,timeout} = gen_rpc:yield(YieldKey, 5),
     NBYieldKey = gen_rpc:async_call(?NODE, timer, sleep, [1000]),
     {value, {badrpc,timeout}} = gen_rpc:nb_yield(NBYieldKey, 5),
-    ok = ct:pal("Result [async_call_yield_timeout]: signal=EXIT Reason={timeout}").
+    ok = ct:pal("Result [async_call_yield_timeout]: signal=timeout Reason={timeout}").
 
 async_call_nb_yield_infinity(_Config) ->
     ok = ct:pal("Testing [async_call_yield_infinity]"),
@@ -312,7 +312,7 @@ async_call_nb_yield_infinity(_Config) ->
     ok = gen_rpc:yield(YieldKey),
     NBYieldKey = gen_rpc:async_call(?NODE, timer, sleep, [1000]),
     {value, ok} = gen_rpc:nb_yield(NBYieldKey, infinity),
-    ok = ct:pal("Result [async_call_yield_infinity]: signal=EXIT Reason={ok}").
+    ok = ct:pal("Result [async_call_yield_infinity]: signal=sleep Reason={ok}").
 
 
 client_inactivity_timeout(_Config) ->
