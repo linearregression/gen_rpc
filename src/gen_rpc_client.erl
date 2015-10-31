@@ -470,7 +470,7 @@ yield_results(Keys) ->
                                    {value, Result} -> {value, Result};
                                    _Ign -> _Ign
                               end
-              end, Keys), 
+                        end, Keys), 
     BadNodes = [Node || {bad, Node}  <- Results],
     GoodResults = [Result || {value, Result}  <- Results],
     [GoodResults, BadNodes]. 
