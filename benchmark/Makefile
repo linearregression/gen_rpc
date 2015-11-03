@@ -74,6 +74,10 @@ all: $(REBAR)
 test: $(REBAR) epmd
 	@REBAR_PROFILE=test $(REBAR) do ct -v -c
 
+benchtest: $(REBAR) epmd
+	@cd _build/default/lib/basho_bench && ./build_test_tool.sh && cd ../../../..
+	@./start_target.sh
+
 dialyzer: $(REBAR)
 	@REBAR_PROFILE=dev $(REBAR) do dialyzer | fgrep -v -f $(CURDIR)/dialyzer.ignore
 
