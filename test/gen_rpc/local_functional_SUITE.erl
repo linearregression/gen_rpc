@@ -39,6 +39,7 @@
         safe_cast_mfa_throw/1,
         safe_cast_inexistent_node/1,
         async_call/1,
+        async_call_repeated_yields/1,
         async_call_anonymous_function/1,
         async_call_anonymous_undef/1,
         async_call_mfa_undef/1,
@@ -256,6 +257,26 @@ async_call(_Config) ->
     YieldKey = gen_rpc:async_call(?NODE, io_lib, print, [yield_key]),
     "yield_key" = gen_rpc:yield(YieldKey),
     NbYieldKey = gen_rpc:async_call(?NODE, io_lib, print, [nb_yield_key]),
+    {value, "nb_yield_key"} = gen_rpc:nb_yield(NbYieldKey, 10).
+
+async_call_repeated_yields(_Config) ->
+    ok = ct:pal("Testing [async_call_repeated_yields]"),
+    YieldKey0 = gen_rpc:async_call(?NODE, os, timestamp, []),
+    {_Mega, _Sec, _Micro} = R0= gen_rpc:yield(YieldKey0),
+ %   {_Mega, _Sec, _Micro} = R1= gen_rpc:yield(YieldKey0),
+    ok = ct:pal("Testing [async_call_repeated_yields] ~p", [R0]),
+ %   ok = ct:pal("Testing [async_call_repeated_yields] ~p", [R1]),
+    NbYieldKey0 = gen_rpc:async_call(?NODE, os, timestamp, []),
+    R3 = {value,{_,_,_}}= gen_rpc:nb_yield(NbYieldKey0, 10),
+    R4  = {value,{_,_,_}}= gen_rpc:nb_yield(NbYieldKey0, 10),
+    YieldKey = gen_rpc:async_call(?NODE, io_lib, print, [yield_key]),
+    "yield_key" = gen_rpc:yield(YieldKey),
+    "yield_key" = gen_rpc:yield(YieldKey),
+    ok = ct:pal("Testing [async_call_repeated_yields] ~p", [R3]),
+    ok = ct:pal("Testing [async_call_repeated_yields] ~p", [R4]),
+
+    NbYieldKey = gen_rpc:async_call(?NODE, io_lib, print, [nb_yield_key]),
+    {value, "nb_yield_key"} = gen_rpc:nb_yield(NbYieldKey, 10),
     {value, "nb_yield_key"} = gen_rpc:nb_yield(NbYieldKey, 10).
 
 async_call_anonymous_function(_Config) ->

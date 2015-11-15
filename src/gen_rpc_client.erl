@@ -59,11 +59,16 @@ async_call(Node, M, F) when is_atom(Node), is_atom(M), is_atom(F) ->
 async_call(Node, M, F, A) when is_atom(Node), is_atom(M), is_atom(F), is_list(A) ->
     ReplyTo = self(),
     ok = lager:info("function=async_call event=spawning_call_process server_node=\"~s\" action=spawning_call_process", [Node]),
-    spawn(fun()-> 
+    Ref1 = make_ref(),
+    Pid = proc_lib:spawn(fun()-> 
               Reply = call(Node, M, F, A, undefined, undefined),
-              ReplyTo ! {self(), {promise_reply, Reply}}
-          end).    
-
+              ok = lager:info("function=async_call event=called_call server_node=\"~s\" action=called_call", [Node]),
+              erlang:send(ReplyTo, {{ReplyTo, Ref1}, {promise_reply, Reply}}) , 
+              ok = lager:info("function=async_call event=sent_reply server_node=\"~s\" action=sent_reply", [Node])           
+          end),
+    %Ref2 = erlang:monitor(process, Pid),
+    {ReplyTo, Ref1, Pid}.
+    
 %% Simple server call with no args and default timeout values
 call(Node, M, F) when is_atom(Node), is_atom(M), is_atom(F) ->
     call(Node, M, F, [], undefined, undefined).
@@ -180,10 +185,17 @@ safe_cast(Node, M, F, A, SendTO) when is_atom(Node), is_atom(M), is_atom(F), is_
 yield(Key)-> 
     yield(Key, infinity).
 
-yield(Key, YieldTO) when is_pid(Key) -> 
+yield(Key, YieldTO) -> 
     case nb_yield(Key, YieldTO) of
-        {value, R} -> R;
-        {badrpc, Reason} -> {badrpc, Reason}
+        {value, R} -> 
+ok = lager:info("function=yield event=got_value yield_key=\"~p\", unknown_value =\"~p\"", [Key, R]),
+                       R;
+        {badrpc, Reason} ->
+ok = lager:info("function=yield event=badrpc yield_key=\"~p\", unknown_value =\"~p\"", [Key, Reason]),
+                       {badrpc, Reason};
+        Unknown -> ok = lager:info("function=yield event=unknown_value yield_key=\"~p\", unknown_value =\"~p\"", [Key, Unknown]),
+            %true = erlang:demonitor(Ref2, [flush]),
+            {value, {badrpc, timeout}}
     end.
 
 %% Simple server non-blocking yield with key, default timeout value of 0
@@ -191,13 +203,25 @@ nb_yield(Key) when is_pid(Key) ->
     nb_yield(Key, 0).
 
 %% Simple server non-blocking yield with key and custom timeout value
-nb_yield(Key, Timeout) when is_pid(Key), is_integer(Timeout) orelse Timeout =:= infinity ->
+nb_yield({Pid, Ref1, Ref2} = Key, Timeout) when is_pid(Pid), is_reference(Ref1), is_pid(Ref2),  is_integer(Timeout) orelse Timeout =:= infinity ->
+    ok = lager:info("function=nb_yield event=nb_yield server_node=\"~p\" action=spawning_client", [Pid]),
     receive 
-            {Key, {promise_reply, Reply}} -> {value, Reply}
+         %   {{ReplyTo, Ref1}, {promise_reply, Reply}}
+            {{Pid, Ref1}, {promise_reply, Reply}} ->
+                           %true = erlang:demonitor(Ref2, [flush]),
+    ok = lager:info("function=nb_yield event=got_result server_node=\"~p\" action=got_result", [Reply]),
+                           {value, Reply};
+            {'DOWN', Ref1, _, _, Reason}  ->
+                           ok = lager:error("function=nb_yield event=process_down yield_key=\"~p\" reason=\"~p\"", [Key, Reason]),
+                           {value, {badrpc, timeout}};
+            UnknownMsg  -> ok = lager:error("function=nb_yield event=unknown_msg yield_key=\"~p\" reason=\"~p\"", [Key, UnknownMsg]),
+                           {value, {badrpc, timeout}}
     after Timeout ->
             ok = lager:notice("function=nb_yield event=call_timeout yield_key=\"~p\"", [Key]),
+            %true = erlang:demonitor(Ref2, [flush]),
             {value, {badrpc, timeout}}
-    end.
+    end;
+nb_yield(_Key, _Timeout) -> {value, {badrpc, badarg}}.
 
 %%% ===================================================
 %%% Behaviour callbacks
@@ -293,7 +317,7 @@ handle_call(stop, _Caller, State) ->
 
 %% Catch-all for calls - die if we get a message we don't expect
 handle_call(Msg, _Caller, State) ->
-    ok = lager:critical("function=handle_call event=uknown_call_received socket=\"~p\" message=\"~p\" action=stopping", [State#state.socket, Msg]),
+    ok = lager:critical("function=handle_call event=unknown_call_received socket=\"~p\" message=\"~p\" action=stopping", [State#state.socket, Msg]),
     {stop, {unknown_call, Msg}, {unknown_call, Msg}, State}.
 
 %% This is the actual CAST handler for CAST
@@ -307,7 +331,7 @@ handle_cast({{cast,_M,_F,_A} = PacketTuple, USendTO}, #state{socket=Socket,serve
 
 %% Catch-all for casts - die if we get a message we don't expect
 handle_cast(Msg, State) ->
-    ok = lager:critical("function=handle_call event=uknown_cast_received socket=\"~p\" message=\"~p\" action=stopping", [State#state.socket, Msg]),
+    ok = lager:critical("function=handle_call event=unknown_cast_received socket=\"~p\" message=\"~p\" action=stopping", [State#state.socket, Msg]),
     {stop, {unknown_cast, Msg}, State}.
 
 %% Handle any TCP packet coming in
@@ -357,7 +381,7 @@ handle_info(timeout, State) ->
 
 %% Catch-all for info - our protocol is strict so die!
 handle_info(Msg, State) ->
-    ok = lager:critical("function=handle_info event=uknown_message_received socket=\"~p\" message=\"~p\" action=stopping", [State#state.socket, Msg]),
+    ok = lager:critical("function=handle_info event=unknown_message_received socket=\"~p\" message=\"~p\" action=stopping", [State#state.socket, Msg]),
     {stop, {unknown_info, Msg}, State}.
 
 %% Stub functions
