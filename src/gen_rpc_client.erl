@@ -58,11 +58,10 @@ async_call(Node, M, F) when is_atom(Node), is_atom(M), is_atom(F) ->
 %% Simple server async_call with args
 async_call(Node, M, F, A) when is_atom(Node), is_atom(M), is_atom(F), is_list(A) ->
     ReplyTo = self(),
-    ok = lager:info("function=async_call event=spawning_call_process server_node=\"~s\" action=spawning_call_process", [Node]),
     spawn(fun()-> 
               Reply = call(Node, M, F, A, undefined, undefined),
               ReplyTo ! {self(), {promise_reply, Reply}}
-          end).    
+          end).
 
 %% Simple server call with no args and default timeout values
 call(Node, M, F) when is_atom(Node), is_atom(M), is_atom(F) ->
@@ -193,7 +192,10 @@ nb_yield(Key) when is_pid(Key) ->
 %% Simple server non-blocking yield with key and custom timeout value
 nb_yield(Key, Timeout) when is_pid(Key), is_integer(Timeout) orelse Timeout =:= infinity ->
     receive 
-            {Key, {promise_reply, Reply}} -> {value, Reply}
+            {Key, {promise_reply, Reply}} -> {value, Reply};
+            UnknownMsg -> 
+                    ok = lager:notice("function=nb_yield event=unknown_msg yield_key=\"~p\" message=\"~p\"", [Key, UnknownMsg]),
+                    {value, {badrpc, timeout}}
     after Timeout ->
             ok = lager:notice("function=nb_yield event=call_timeout yield_key=\"~p\"", [Key]),
             {value, {badrpc, timeout}}

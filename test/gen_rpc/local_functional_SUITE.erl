@@ -262,15 +262,14 @@ async_call(_Config) ->
 async_call_yield_reentrant(_Config) ->
     ok = ct:pal("Testing [async_call_yield_reentrant]"),
     YieldKey0 = gen_rpc:async_call(?NODE, os, timestamp, []),
+    {_Mega, _Sec, _Micro} = gen_rpc:yield(YieldKey0),
     Pid = proc_lib:spawn(fun()->  
                                 {value, {badrpc, timeout}} = gen_rpc:yield(YieldKey0),
                                 ok = ct:pal("yield/1 waits forever. Should never see this.")
                          end),
     {ok, _} = timer:kill_after(5000, Pid),
-    ok = ct:pal("gen_rpc:yield/1 will hang on reentrant call since timeout is infinity"),
-    % {_Mega, _Sec, _Micro} = gen_rpc:yield(YieldKey0),
     NbYieldKey0 = gen_rpc:async_call(?NODE, os, timestamp, []),
-    {value, {_,_,_}} = gen_rpc:nb_yield(NbYieldKey0, 10),
+    {value, {_,_,_}} = gen_rpc:nb_yield(NbYieldKey0, 100),
     {value, {badrpc, timeout}} = gen_rpc:nb_yield(NbYieldKey0, 10),
     YieldKey = gen_rpc:async_call(?NODE, io_lib, print, [yield_key]),
     "yield_key" = gen_rpc:yield(YieldKey),
