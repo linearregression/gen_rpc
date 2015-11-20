@@ -66,6 +66,7 @@ get_port(Pid) when is_pid(Pid) ->
 init({Node}) ->
     ok = lager:info("function=init client_node=\"~s\"", [Node]),
     {ok, TransportMode} = application:get_env(?APP, transport_mode),
+    ok = gen_rpc_helper:verify_transport_mode(TransportMode),
     process_flag(trap_exit, true),
     ClientIp = get_remote_node_ip(Node),
     case TransportMode:listen(0, gen_rpc_helper:default_tcp_opts(?DEFAULT_TCP_OPTS)) of

@@ -172,6 +172,7 @@ init({Node}) ->
     %% Extract application-specific settings
     Settings = application:get_all_env(?APP),
     {transport_mode, TransportMode} = lists:keyfind(transport_mode, 1, Settings),
+    ok = gen_rpc_helper:verify_transport_mode(TransportMode),
     {connect_timeout, ConnTO} = lists:keyfind(connect_timeout, 1, Settings),
     {send_timeout, SendTO} = lists:keyfind(send_timeout, 1, Settings),
     {receive_timeout, RecvTO} = lists:keyfind(receive_timeout, 1, Settings),
@@ -407,3 +408,4 @@ merge_timeout_values(SRecvTO, undefined, _SSendTO, USendTO) ->
     {SRecvTO, USendTO};
 merge_timeout_values(_SRecvTO, URecvTO, _SSendTO, USendTO) ->
     {URecvTO, USendTO}.
+
