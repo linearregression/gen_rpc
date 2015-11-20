@@ -17,6 +17,7 @@
 
 %%% Local state
 -record(state, {socket :: port(),
+        transport_node :: atom(),
         server_node :: atom(),
         send_timeout :: non_neg_integer(),
         receive_timeout :: non_neg_integer(),
@@ -170,6 +171,7 @@ init({Node}) ->
     ok = net_kernel:monitor_nodes(true, [nodedown_reason]),
     %% Extract application-specific settings
     Settings = application:get_all_env(?APP),
+    {transport_mode, TransportMode} = lists:keyfind(transport_mode, 1, Settings),
     {connect_timeout, ConnTO} = lists:keyfind(connect_timeout, 1, Settings),
     {send_timeout, SendTO} = lists:keyfind(send_timeout, 1, Settings),
     {receive_timeout, RecvTO} = lists:keyfind(receive_timeout, 1, Settings),
@@ -187,11 +189,12 @@ init({Node}) ->
             Address = get_remote_node_ip(Node),
             ok = lager:debug("function=init event=remote_server_started_successfully server_node=\"~s\" server_ip=\"~p:~B\"",
                              [Node, Address, Port]),
-            case gen_tcp:connect(Address, Port, gen_rpc_helper:default_tcp_opts(?DEFAULT_TCP_OPTS), ConnTO) of
+            case TransportMode:connect(Address, Port, gen_rpc_helper:default_tcp_opts(?DEFAULT_TCP_OPTS), ConnTO) of
                 {ok, Socket} ->
                     ok = lager:debug("function=init event=connecting_to_server server_node=\"~s\" server_ip=\"~p:~B\" result=success",
                                      [Node, Address, Port]),
-                    {ok, #state{socket=Socket,server_node=Node,send_timeout=SendTO,receive_timeout=RecvTO,inactivity_timeout=TTL}, TTL};
+                    {ok, #state{socket=Socket,transport_node=TransportMode,server_node=Node,
+                                send_timeout=SendTO,receive_timeout=RecvTO,inactivity_timeout=TTL}, TTL};
                 {error, Reason} ->
                     ok = lager:error("function=init event=connecting_to_server server_node=\"~s\" server_ip=\"~s:~B\" result=failure reason=\"~p\"",
                                      [Node, Address, Port, Reason]),
@@ -202,7 +205,7 @@ init({Node}) ->
     end.
 
 %% This is the actual CALL handler
-handle_call({{call,_M,_F,_A} = PacketTuple, URecvTO, USendTO}, Caller, #state{socket=Socket,server_node=Node} = State) ->
+handle_call({{call,_M,_F,_A} = PacketTuple, URecvTO, USendTO}, Caller, #state{socket=Socket,server_node=Node, transport_node=TransportMode} = State) ->
     {RecvTO, SendTO} = merge_timeout_values(State#state.receive_timeout, URecvTO, State#state.send_timeout, USendTO),
     Ref = erlang:make_ref(),
     %% Spawn the worker that will wait for the server's reply
@@ -216,7 +219,7 @@ handle_call({{call,_M,_F,_A} = PacketTuple, URecvTO, USendTO}, Caller, #state{so
     %% we have to make sure the remote node is reachable somehow before we send data. net_kernel:connect does that
     case net_kernel:connect(Node) of
         true ->
-            case gen_tcp:send(Socket, Packet) of
+            case TransportMode:send(Socket, Packet) of
                 {error, timeout} ->
                     ok = lager:error("function=handle_call message=call event=transmission_failed socket=\"~p\" call_reference=\"~p\" reason=\"timeout\"",
                                      [Socket, Ref]),
@@ -346,9 +349,10 @@ do_cast(PacketTuple, USendTO, Socket, Node, State) ->
     ok = inet:setopts(Socket, [{send_timeout, SendTO}]),
     %% Since cast can fail because of a timed out connection without gen_rpc knowing it,
     %% we have to make sure the remote node is reachable somehow before we send data. net_kernel:connect does that
+    TransportMode = State#state.transport_node,
     case net_kernel:connect(Node) of
         true ->
-            case gen_tcp:send(Socket, Packet) of
+            case TransportMode:send(Socket, Packet) of
                 {error, timeout} ->
                     %% Terminate will handle closing the socket
                     ok = lager:error("function=do_cast message=cast event=transmission_failed socket=\"~p\" reason=\"timeout\"", [Socket]),

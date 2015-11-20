@@ -11,6 +11,8 @@
     {registered, [gen_rpc_dispatcher]},
     {applications, [kernel, stdlib, lager, crypto, asn1, public_key, ssl]},
     {env,[
+        %% Transpot Mode. gen_tcp or ssl
+        {transport_mode, gen_tcp},
         %% Client connect timeout
         {connect_timeout, 5000},
         %% Client and Server send timeout

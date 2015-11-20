@@ -17,6 +17,7 @@
 
 %%% Local state
 -record(state, {client_ip :: tuple(),
+        transport_node :: atom(),
         client_node :: node(),
         socket :: port(),
         acceptor_pid :: pid(),
@@ -64,13 +65,16 @@ get_port(Pid) when is_pid(Pid) ->
 %%% ===================================================
 init({Node}) ->
     ok = lager:info("function=init client_node=\"~s\"", [Node]),
+    {ok, TransportMode} = application:get_env(?APP, transport_mode),
     process_flag(trap_exit, true),
     ClientIp = get_remote_node_ip(Node),
-    case gen_tcp:listen(0, gen_rpc_helper:default_tcp_opts(?DEFAULT_TCP_OPTS)) of
+    case TransportMode:listen(0, gen_rpc_helper:default_tcp_opts(?DEFAULT_TCP_OPTS)) of
         {ok, Socket} ->
             ok = lager:info("function=init event=listener_started_successfully client_node=\"~s\"", [Node]),
             {ok, Ref} = prim_inet:async_accept(Socket, -1),
-            {ok, #state{client_ip = ClientIp,
+            {ok, #state{
+                        transport_node = TransportMode,
+                        client_ip = ClientIp,
                         client_node = Node,
                         socket = Socket,
                         acceptor = Ref}};
@@ -101,7 +105,7 @@ handle_cast(Msg, State) ->
     {stop, {unknown_cast, Msg}, State}.
 
 handle_info({inet_async, ListSock, Ref, {ok, AccSocket}},
-            #state{client_ip=ClientIp, client_node=Node, socket=ListSock, acceptor=Ref} = State) ->
+            #state{transport_node=TransportMode, client_ip=ClientIp, client_node=Node, socket=ListSock, acceptor=Ref} = State) ->
     try
         ok = lager:info("function=handle_info event=client_connection_received client_ip=\"~p\" client_node=\"~s\" socket=\"~p\" action=starting_acceptor",
                           [ClientIp, Node, ListSock]),
@@ -112,11 +116,11 @@ handle_info({inet_async, ListSock, Ref, {ok, AccSocket}},
         %% Link to acceptor, if they die so should we, since we are single-receiver
         %% to single-acceptor service
         true = erlang:link(AccPid),
-        case set_sockopt(ListSock, AccSocket) of
+        case set_sockopt(ListSock, AccSocket, TransportMode) of
             ok -> ok;
             {error, Reason} -> exit({set_sockopt, Reason})
         end,
-        ok = gen_tcp:controlling_process(AccSocket, AccPid),
+        ok = TransportMode:controlling_process(AccSocket, AccPid),
         ok = gen_rpc_acceptor:set_socket(AccPid, AccSocket),
         %% We want the acceptor to drop the connection, so we remain
         %% open to accepting new connections, otherwise
@@ -178,16 +182,16 @@ make_process_name(Node) ->
 
 %% Taken from prim_inet.  We are merely copying some socket options from the
 %% listening socket to the new acceptor socket.
-set_sockopt(ListSock, AccSocket) ->
+set_sockopt(ListSock, AccSocket, TransportMode) ->
     true = inet_db:register_socket(AccSocket, inet_tcp),
     case prim_inet:getopts(ListSock, acceptor_tcp_opts()) of
         {ok, Opts} ->
             case prim_inet:setopts(AccSocket, Opts) of
                 ok    -> ok;
-                Error -> gen_tcp:close(AccSocket), Error
+                Error -> TransportMode:close(AccSocket), Error
             end;
         Error ->
-            (catch gen_tcp:close(AccSocket)),
+            (catch TransportMode:close(AccSocket)),
             Error
         end.
 
