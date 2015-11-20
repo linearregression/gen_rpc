@@ -17,7 +17,7 @@
 
 %%% Local state
 -record(state, {socket :: port(),
-        transport_node :: atom(),
+        transport_node :: module(),
         server_node :: atom(),
         send_timeout :: non_neg_integer(),
         receive_timeout :: non_neg_integer(),

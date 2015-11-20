@@ -17,7 +17,7 @@
 
 %%% Local state
 -record(state, {client_ip :: tuple(),
-        transport_node :: atom(),
+        transport_node ::module(),
         client_node :: node(),
         socket :: port(),
         acceptor_pid :: pid(),
