@@ -206,7 +206,7 @@ init({Node}) ->
     end.
 
 %% This is the actual CALL handler
-handle_call({{call,_M,_F,_A} = PacketTuple, URecvTO, USendTO}, Caller, #state{socket=Socket,server_node=Node, transport_node=TransportMode} = State) ->
+handle_call({{call,_M,_F,_A} = PacketTuple, URecvTO, USendTO}, Caller, #state{transport_node=TransportMode, socket=Socket,server_node=Node, transport_node=TransportMode} = State) ->
     {RecvTO, SendTO} = merge_timeout_values(State#state.receive_timeout, URecvTO, State#state.send_timeout, USendTO),
     Ref = erlang:make_ref(),
     %% Spawn the worker that will wait for the server's reply
@@ -215,7 +215,7 @@ handle_call({{call,_M,_F,_A} = PacketTuple, URecvTO, USendTO}, Caller, #state{so
     Packet = erlang:term_to_binary({node(), WorkerPid, Ref, PacketTuple}),
     ok = lager:debug("function=handle_call message=call event=constructing_call_term socket=\"~p\" call_reference=\"~p\"",
                      [Socket, Ref]),
-    ok = inet:setopts(Socket, [{send_timeout, SendTO}]),
+    ok = TransportMode:setopts(Socket, [{send_timeout, SendTO}]),
     %% Since call can fail because of a timed out connection without gen_rpc knowing it,
     %% we have to make sure the remote node is reachable somehow before we send data. net_kernel:connect does that
     case net_kernel:connect(Node) of
@@ -235,7 +235,7 @@ handle_call({{call,_M,_F,_A} = PacketTuple, URecvTO, USendTO}, Caller, #state{so
                     ok = lager:debug("function=handle_call message=call event=transmission_succeeded socket=\"~p\" call_reference=\"~p\"",
                                      [Socket, Ref]),
                     %% We need to enable the socket and perform the call only if the call succeeds
-                    ok = inet:setopts(Socket, [{active, once}]),
+                    ok = TransportMode:setopts(Socket, [{active, once}]),
                     %% Reply will be handled from the worker
                     {noreply, State, State#state.inactivity_timeout}
             end;
@@ -278,7 +278,7 @@ handle_cast(Msg, State) ->
     {stop, {unknown_cast, Msg}, State}.
 
 %% Handle any TCP packet coming in
-handle_info({tcp,Socket,Data}, #state{socket=Socket} = State) ->
+handle_info({tcp,Socket,Data}, #state{transport_node=TransportMode, socket=Socket} = State) ->
     _Reply = try erlang:binary_to_term(Data) of
         {WorkerPid, Ref, Reply} ->
             case erlang:is_process_alive(WorkerPid) of
@@ -297,7 +297,7 @@ handle_info({tcp,Socket,Data}, #state{socket=Socket} = State) ->
         error:badarg ->
             ok = lager:error("function=handle_info message=tcp event=corrupt_data_received socket=\"~p\" action=ignoring", [Socket])
     end,
-    ok = inet:setopts(Socket, [{active, once}]),
+    ok = TransportMode:setopts(Socket, [{active, once}]),
     {noreply, State, State#state.inactivity_timeout};
 
 %% Handle VM node down information
@@ -341,13 +341,13 @@ terminate(_Reason, #state{socket=Socket}) ->
 %%% ===================================================
 
 %% DRY function for cast and safe_cast
-do_cast(PacketTuple, USendTO, Socket, Node, State) ->
+do_cast(PacketTuple, USendTO, Socket, Node, #state{transport_node=TransportMode}=State) ->
     {_RecvTO, SendTO} = merge_timeout_values(undefined, undefined, State#state.send_timeout, USendTO),
     %% Cast requests do not need a reference
     Packet = erlang:term_to_binary({node(), PacketTuple}),
     ok = lager:debug("function=do_cast message=cast event=constructing_cast_term socket=\"~p\"", [Socket]),
     %% Set the send timeout and do not run in active mode - we're a cast!
-    ok = inet:setopts(Socket, [{send_timeout, SendTO}]),
+    ok = TransportMode:setopts(Socket, [{send_timeout, SendTO}]),
     %% Since cast can fail because of a timed out connection without gen_rpc knowing it,
     %% we have to make sure the remote node is reachable somehow before we send data. net_kernel:connect does that
     TransportMode = State#state.transport_node,

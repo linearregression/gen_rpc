@@ -17,6 +17,7 @@
 
 %%% Local state
 -record(state, {socket = undefined :: port() | undefined,
+        transport_node ::module(),
         send_timeout :: non_neg_integer(),
         inactivity_timeout :: non_neg_integer() | infinity,
         client_ip :: tuple(),
@@ -64,12 +65,14 @@ init({ClientIp, Node}) ->
     ok = lager:info("function=init client_node=\"~s\" client_ip=\"~p\"", [Node, ClientIp]),
     {ok, SendTO} = application:get_env(?APP, send_timeout),
     {ok, TTL} = application:get_env(?APP, server_inactivity_timeout),
+    {ok, TransportMode} = application:get_env(?APP, transport_mode),
+    ok = gen_rpc_helper:verify_transport_mode(TransportMode),
     %% Store the client's IP and the node in our state
-    {ok, waiting_for_socket, #state{client_ip=ClientIp,client_node=Node,send_timeout=SendTO,inactivity_timeout=TTL}}.
+    {ok, waiting_for_socket, #state{transport_node = TransportMode,client_ip=ClientIp,client_node=Node,send_timeout=SendTO,inactivity_timeout=TTL}}.
 
-waiting_for_socket({socket_ready, Socket}, #state{client_ip=ClientIp} = State) ->
+waiting_for_socket({socket_ready, Socket}, #state{transport_node = TransportMode, client_ip=ClientIp} = State) ->
     %% Filter the ports we're willing to accept connections from
-    {ok, {Ip, _Port}} = inet:peername(Socket),
+    {ok, {Ip, _Port}} = TransportMode:peername(Socket),
     if
         ClientIp =/= Ip ->
             ok = lager:notice("function=waiting_for_socket event=rejecting_unauthorized_connection socket=\"~p\" client_ip=\"~p\" connected_ip=\"~p\"",
@@ -79,12 +82,12 @@ waiting_for_socket({socket_ready, Socket}, #state{client_ip=ClientIp} = State) -
             % Now we own the socket
             ok = lager:debug("function=waiting_for_socket event=acquiring_socket_ownership socket=\"~p\" client_ip=\"~p\" connected_ip=\"~p\"",
                              [Socket, ClientIp, Ip]),
-            ok = inet:setopts(Socket, [{send_timeout, State#state.send_timeout}|gen_rpc_helper:default_tcp_opts(?ACCEPTOR_DEFAULT_TCP_OPTS)]),
+            ok = TransportMode:setopts(Socket, [{send_timeout, State#state.send_timeout}|gen_rpc_helper:default_tcp_opts(?ACCEPTOR_DEFAULT_TCP_OPTS)]),
             {next_state, waiting_for_data, State#state{socket=Socket}}
     end.
 
 %% Notification event coming from client
-waiting_for_data({data, Data}, #state{socket=Socket,client_node=Node} = State) ->
+waiting_for_data({data, Data}, #state{transport_node = TransportMode, socket=Socket,client_node=Node} = State) ->
     %% The meat of the whole project: process a function call and return
     %% the data
     try erlang:binary_to_term(Data) of
@@ -92,13 +95,13 @@ waiting_for_data({data, Data}, #state{socket=Socket,client_node=Node} = State) -
             WorkerPid = erlang:spawn(?MODULE, call_worker, [self(), ClientPid, Ref, M, F, A]),
             ok = lager:debug("function=waiting_for_data event=call_received socket=\"~p\" node=\"~s\" call_reference=\"~p\" client_pid=\"~p\" worker_pid=\"~p\"",
                              [Socket, Node, Ref, ClientPid, WorkerPid]),
-            ok = inet:setopts(Socket, [{active, once}]),
+            ok = TransportMode:setopts(Socket, [{active, once}]),
             {next_state, waiting_for_data, State, State#state.inactivity_timeout};
         {Node, {cast, M, F, A}} ->
             ok = lager:debug("function=waiting_for_data event=cast_received socket=\"~p\" node=\"~s\" module=~s function=~s args=\"~p\"",
                              [Socket, Node, M, F, A]),
             _Pid = erlang:spawn(M, F, A),
-            ok = inet:setopts(Socket, [{active, once}]),
+            ok = TransportMode:setopts(Socket, [{active, once}]),
             {next_state, waiting_for_data, State, State#state.inactivity_timeout};
         OtherData ->
             ok = lager:debug("function=waiting_for_data event=erroneous_data_received socket=\"~p\" node=\"~s\" data=\"~p\"",
@@ -132,9 +135,9 @@ handle_info({tcp, Socket, Data}, waiting_for_data, #state{socket=Socket} = State
     waiting_for_data({data, Data}, State);
 
 %% Handle a call worker message
-handle_info({call_reply, PacketBin}, waiting_for_data, #state{socket=Socket} = State) when Socket =/= undefined ->
+handle_info({call_reply, PacketBin}, waiting_for_data, #state{socket=Socket, transport_node = TransportMode} = State) when Socket =/= undefined -
     ok = lager:debug("function=handle_info message=call_reply event=call_reply_received socket=\"~p\"", [Socket]),
-    case gen_tcp:send(Socket, PacketBin) of
+    case TransportMode:send(Socket, PacketBin) of
         ok ->
             ok = lager:debug("function=handle_info message=call_reply event=call_reply_sent socket=\"~p\"", [Socket]),
             {next_state, waiting_for_data, State, State#state.inactivity_timeout};
