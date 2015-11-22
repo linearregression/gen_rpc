@@ -69,7 +69,7 @@ init({Node}) ->
     ok = gen_rpc_helper:verify_transport_mode(TransportMode),
     process_flag(trap_exit, true),
     ClientIp = get_remote_node_ip(Node),
-    case TransportMode:listen(0, gen_rpc_helper:default_tcp_opts(?DEFAULT_TCP_OPTS)) of
+    case TransportMode:listen() of
         {ok, Socket} ->
             ok = lager:info("function=init event=listener_started_successfully client_node=\"~s\"", [Node]),
             {ok, Ref} = prim_inet:async_accept(Socket, -1),
