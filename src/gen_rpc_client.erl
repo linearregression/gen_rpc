@@ -206,7 +206,7 @@ init({Node}) ->
     end.
 
 %% This is the actual CALL handler
-handle_call({{call,_M,_F,_A} = PacketTuple, URecvTO, USendTO}, Caller, #state{transport_node=TransportMode, socket=Socket,server_node=Node, transport_node=TransportMode} = State) ->
+handle_call({{call,_M,_F,_A} = PacketTuple, URecvTO, USendTO}, Caller, #state{transport_node=TransportMode, socket=Socket,server_node=Node} = State) ->
     {RecvTO, SendTO} = merge_timeout_values(State#state.receive_timeout, URecvTO, State#state.send_timeout, USendTO),
     Ref = erlang:make_ref(),
     %% Spawn the worker that will wait for the server's reply

@@ -135,7 +135,7 @@ handle_info({tcp, Socket, Data}, waiting_for_data, #state{socket=Socket} = State
     waiting_for_data({data, Data}, State);
 
 %% Handle a call worker message
-handle_info({call_reply, PacketBin}, waiting_for_data, #state{socket=Socket, transport_node = TransportMode} = State) when Socket =/= undefined -
+handle_info({call_reply, PacketBin}, waiting_for_data, #state{socket=Socket, transport_node = TransportMode} = State) when Socket =/= undefined ->
     ok = lager:debug("function=handle_info message=call_reply event=call_reply_received socket=\"~p\"", [Socket]),
     case TransportMode:send(Socket, PacketBin) of
         ok ->
