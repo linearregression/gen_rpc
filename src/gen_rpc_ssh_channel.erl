@@ -97,35 +97,36 @@ handle_data(<<Len:32/unsigned-big-integer, Msg:Len/binary, Rest/binary>>,
 	    #state{connectionMgr = ConnectionManager, 
 		   channelId = ChannelId,
 		   payload = <<>>} = State) ->
-    {Reply, Status} = exec_bin(Msg),
-    Bin = term_to_binary({answer,{Reply, Status}}),
-    Len = size(Bin),
+    
+    Reply = decode(Msg),
+    Payload = erlang:term_to_binary(Reply),
+    Len0 = size(Payload),
     ssh_connection:send(ConnectionManager, ChannelId, 
-			<<Len:32/unsigned-big-integer, Bin/binary>>),
+			<<Len0:32/unsigned-big-integer, Payload/binary>>),
     case Rest of
-        <<>> -> State;
-	_ -> handle_data(Rest, State)
+         <<>> -> State;
+         _ -> handle_data(Rest, State)
     end;
 
-handle_data(Data, State = #state{payload = <<>>}) ->
+handle_data(Data, #state{payload = <<>>} = State) ->
     State#state{payload = Data};
 
-handle_data(Data, State = #state{payload = Pending}) ->
+handle_data(Data, #state{payload = Pending} = State) ->
      handle_data(<<Pending/binary, Data/binary>>,
                  State#state{payload = <<>>}).
 
 %% parsing a tuple and apply it
+decode(Payload) -> 
+    case erlang:binary_to_term(Payload) of
+	    {mfa, {M, F, A}} -> try_apply(M,F,A);
+	    Error ->  {badrpc, {'EXIT', {Error, erlang:get_stacktrace()}}}
+    end.
 
-exec_bin(Cmdbin) -> 
-    case binary_to_term(Cmdbin) of
-	{mfa, {M, F, A}} -> 
-	    case catch apply(M, F, A) of
-		{'EXIT', _} = Exit ->
-		    {{exec_badrpc, Exit}, -1};
-		Reply ->
-		    {Reply, 0}
-	    end;
-	Error -> 
-	    {{exec_error,Error}, -1}
+try_apply(M,F,A) ->
+    try erlang:apply(M, F, A) 
+    catch 
+         throw:Term -> Term;
+         exit:Reason -> {badrpc, {'EXIT', Reason}};
+         error:Reason -> {badrpc, {'EXIT', {Reason, erlang:get_stacktrace()}}}
     end.
 
