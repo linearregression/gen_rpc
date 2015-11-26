@@ -56,3 +56,7 @@ init([]) ->
     {ok, {{simple_one_for_one, 100, 1}, [
         {gen_rpc_server, {gen_rpc_server,start_link,[]}, temporary, 5000, worker, [gen_rpc_server]}
     ]}}.
+
+
+
+
