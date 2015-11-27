@@ -48,6 +48,17 @@ stop_child(Pid) when is_pid(Pid) ->
     _ = supervisor:delete_child(?MODULE, Pid),
     ok.
 
+%% Listen for incoming request to start_child
+-spec listen() -> {ok, pid()} | {error, term()}.
+listen() ->
+    case gen_tcp:listen(0, gen_rpc_helper:default_tcp_opts(?DEFAULT_TCP_OPTS)) of
+        {ok, Socket} ->
+            ok = lager:info("function=init event=listener_started_successfully", []),
+            {ok, Socket} 
+        {error, Reason} ->
+            ok = lager:critical("function=init event=failed_to_start_listener client_node=\"~s\" reason=\"~p\"", [Node, Reason]),
+            {stop, Reason}
+    end.
 
 %%% ===================================================
 %%% Supervisor callbacks

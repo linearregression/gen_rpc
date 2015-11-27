@@ -17,6 +17,9 @@
         connectionMgr = undefined :: pid() | undefined,
         payload = <<>> :: iodata()}).
 
+%%% Helper Macro
+-define(UINT32(X), X:32/unsigned-big-integer).
+
 %%% ssh_daemon_channel callbacks
 -export([subsystem_spec/1]).
 -export([init/1, handle_ssh_msg/2, handle_msg/2, terminate/2, code_change/3]).
@@ -93,16 +96,14 @@ code_change(_OldVsn, State, _Extra) ->
 %%% ===================================================
 %%% Private functions
 %%% ===================================================
-handle_data(<<Len:32/unsigned-big-integer, Msg:Len/binary, Rest/binary>>,
-	    #state{connectionMgr = ConnectionManager, 
+handle_data(<<?UINT32(Len), Msg:Len/binary, Rest/binary>>, #state{connectionMgr = ConnectionManager, 
 		   channelId = ChannelId,
 		   payload = <<>>} = State) ->
-    
     Reply = decode(Msg),
     Payload = erlang:term_to_binary(Reply),
     Len0 = size(Payload),
     ssh_connection:send(ConnectionManager, ChannelId, 
-			<<Len0:32/unsigned-big-integer, Payload/binary>>),
+			<<?UINT32(Len0), Payload/binary>>),
     case Rest of
          <<>> -> State;
          _ -> handle_data(Rest, State)
@@ -112,8 +113,7 @@ handle_data(Data, #state{payload = <<>>} = State) ->
     State#state{payload = Data};
 
 handle_data(Data, #state{payload = Pending} = State) ->
-     handle_data(<<Pending/binary, Data/binary>>,
-                 State#state{payload = <<>>}).
+    handle_data(<<Pending/binary, Data/binary>>, State#state{payload = <<>>}).
 
 %% parsing a tuple and apply it
 decode(Payload) -> 
@@ -122,11 +122,11 @@ decode(Payload) ->
 	    Error ->  {badrpc, {'EXIT', {Error, erlang:get_stacktrace()}}}
     end.
 
-try_apply(M,F,A) ->
+try_apply(M,F,A) when is_atom(M), is_atom(F), is_list(A)->
     try erlang:apply(M, F, A) 
     catch 
          throw:Term -> Term;
          exit:Reason -> {badrpc, {'EXIT', Reason}};
          error:Reason -> {badrpc, {'EXIT', {Reason, erlang:get_stacktrace()}}}
-    end.
-
+    end;
+try_apply(_M, _F, _A) -> {badrpc, {'EXIT', badarg}}.
