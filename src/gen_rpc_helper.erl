@@ -38,6 +38,7 @@ default_tcp_opts(DefaultTcpOpts) ->
     end.
 
 -spec verify_transport_mode(gen_tcp|ssl) -> ok | {unsupported, term()}.
+verify_transport_mode(gen_tcp) -> {ok, 'gen_tcp'};  %TODO: temporary
 verify_transport_mode(gen_rpc_tcp) -> {ok, 'gen_rpc_tcp'};
 verify_transport_mode(gen_rpc_ssl) -> {ok, 'gen_rpc_ssl'};
 verify_transport_mode(Else) -> {unspported, Else}.
