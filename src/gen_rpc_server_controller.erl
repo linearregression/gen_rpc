@@ -16,9 +16,7 @@
 -include("app.hrl").
 
 %%% Local state
--record(state, {client_ip :: tuple(),
-        trasport_node :: module(),
-        client_node :: node(),
+-record(state, {trasport_node :: module(),
         socket :: port(),
         acceptor_pid :: pid(),
         acceptor :: non_neg_integer()}).
@@ -51,15 +49,14 @@ stop(Pid) when is_pid(Pid) ->
 %%% Behaviour callbacks
 %%% ===================================================
 init([]) ->
-    ok = lager:info("function=init client_node=\"~s\"", [Node]),
+    ok = lager:info("function=init", []),
     process_flag(trap_exit, true),
-    Port = get_listen_port(),  
-    case listen() of
+    {ok, Module} = get_transport_module(),
+    case listen(Module) of
         {ok, Socket} ->
             ok = lager:info("function=init event=listener_started_successfully", []),
-            {ok, Ref} = prim_inet:async_accept(Socket, -1),
-            {ok, #state{client_ip = ClientIp,
-                        client_node = Node,
+            {ok, _Ref} = prim_inet:async_accept(Socket, -1),
+            {ok, #state{trasport_node = Module,
                         socket = Socket}};
         {error, Reason} ->
             ok = lager:critical("function=init event=failed_to_start_listener reason=\"~p\"", [Reason]),
@@ -67,15 +64,15 @@ init([]) ->
     end.
 
 %% Listen for incoming request to start_child
--spec listen() -> {ok, pid()} | {error, term()}.
-listen() ->
+-spec listen(module()) -> {ok, pid()} | {error, term()}.
+listen(Module) ->
     Port = get_listen_port(),  
-    case gen_tcp:listen(Port, gen_rpc_helper:default_tcp_opts(?DEFAULT_TCP_OPTS)) of
+    case Module:listen(Port, gen_rpc_helper:default_tcp_opts(Module)) of
         {ok, Socket} ->
             ok = lager:info("function=init event=listener_started_successfully", []),
             {ok, Socket}; 
         {error, Reason} ->
-            ok = lager:critical("function=init event=failed_to_start_listener client_node=\"~s\" reason=\"~p\"", [Node, Reason]),
+            ok = lager:critical("function=init event=failed_to_start_listener reason=\"~p\"", [Reason]),
             {stop, Reason}
     end.
 
@@ -111,6 +108,11 @@ code_change(_OldVsn, State, _Extra) ->
 %%% ===================================================
 %%% Private functions
 %%% ===================================================
+
+get_transport_module() ->
+    {ok, Module} = application:get_env(?APP, 'transport_module'),
+    {file, _} = code:is_loaded(Module),
+    {ok, Module}.
 
 get_listen_port() ->
     {ok, Module} = application:get_env(?APP, 'transport_module'),

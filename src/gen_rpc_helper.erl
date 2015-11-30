@@ -9,7 +9,7 @@
 
 -include("app.hrl").
 
--export([otp_release/0, default_tcp_opts/1, verify_transport_mode/1]).
+-export([otp_release/0, default_socket_opts/1, default_tcp_opts/1, verify_transport_mode/1]).
 
 -spec otp_release() -> integer().
 otp_release() ->
@@ -23,6 +23,10 @@ otp_release() ->
             %% of the show_econnreset feature, 16 is good enough.
             16
     end.
+
+-spec default_socket_opts(module()) -> gen_tcp:option() | ssl:option().
+default_socket_opts('gen_rpc_tcp') -> default_tcp_opts(?DEFAULT_TCP_OPTS);
+default_socket_opts('gen_rpc_ssl') -> throw('not_implemented').
 
 -spec default_tcp_opts(gen_tcp:option()) ->  gen_tcp:option().
 default_tcp_opts(DefaultTcpOpts) ->
