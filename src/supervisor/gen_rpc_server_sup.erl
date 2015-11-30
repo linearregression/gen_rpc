@@ -54,5 +54,6 @@ stop_child(Pid) when is_pid(Pid) ->
 %%% ===================================================
 init([]) ->
     {ok, {{simple_one_for_one, 100, 1}, [
+        {gen_rpc_server_controller, {gen_rpc_server_controller,start_link,[]}, transient, 5000, worker, [gen_rpc_server_controller]},
         {gen_rpc_server, {gen_rpc_server,start_link,[]}, temporary, 5000, worker, [gen_rpc_server]}
     ]}}.

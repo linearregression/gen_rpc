@@ -9,7 +9,7 @@
 
 -include("app.hrl").
 
--export([otp_release/0, default_tcp_opts/1]).
+-export([otp_release/0, default_tcp_opts/1, verify_transport_mode/1]).
 
 -spec otp_release() -> integer().
 otp_release() ->
@@ -33,4 +33,7 @@ default_tcp_opts(DefaultTcpOpts) ->
             DefaultTcpOpts
     end.
 
-
+-spec verify_transport_mode(gen_tcp|ssl) -> ok | {unsupported, term()}.
+verify_transport_mode(gen_rpc_tcp) -> {ok, 'gen_rpc_tcp'};
+verify_transport_mode(gen_rpc_ssl) -> {ok, 'gen_rpc_ssl'};
+verify_transport_mode(Else) -> {unspported, Else}.
