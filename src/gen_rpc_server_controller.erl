@@ -28,8 +28,8 @@
 %%% Supervisor functions
 -export([start_link/1, stop/1]).
 
-%%% Server functions
-
+%%% API
+-export([connect/1, call/1]).
 
 %%% Behaviour callbacks
 -export([init/1, handle_call/3, handle_cast/2,
@@ -38,9 +38,9 @@
 %%% ===================================================
 %%% Supervisor functions
 %%% ===================================================
-start_link(Node) when is_atom(Node) ->
+start_link(Node) ->
     Name = make_process_name(Node),
-    gen_server:start_link({local,Name}, ?MODULE, {Node}, [{spawn_opt, [{priority, high}]}]).
+    gen_server:start_link({local,Name}, ?MODULE, [], [{spawn_opt, [{priority, high}]}]).
 
 stop(Pid) when is_pid(Pid) ->
     gen_server:call(Pid, stop).
@@ -50,7 +50,7 @@ stop(Pid) when is_pid(Pid) ->
 %%% ===================================================
 init([]) ->
     ok = lager:info("function=init", []),
-    process_flag(trap_exit, true),
+    process_flag(trap_exit, true),  
     {ok, Settings} = get_transport_settings(),
     {ok, Module} = get_transport_module(Settings),
     {ok, Port} = get_listen_port(Settings), 

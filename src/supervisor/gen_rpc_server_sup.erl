@@ -53,7 +53,7 @@ stop_child(Pid) when is_pid(Pid) ->
 %%% Supervisor callbacks
 %%% ===================================================
 init([]) ->
-    {ok, {{simple_one_for_one, 100, 1}, [
-        {gen_rpc_server_controller, {gen_rpc_server_controller,start_link,[]}, transient, 5000, worker, [gen_rpc_server_controller]},
-        {gen_rpc_server, {gen_rpc_server,start_link,[]}, temporary, 5000, worker, [gen_rpc_server]}
+    GenRPCSvr = {gen_rpc_server, {gen_rpc_server,start_link,[]}, temporary, 5000, worker, [gen_rpc_server]},
+    {ok, {{one_for_all, 100, 1}, [
+        {gen_rpc_server_controller, {gen_rpc_server_controller,start_link,[]}, transient, 5000, worker, [gen_rpc_server_controller]}, GenRPCSvr
     ]}}.

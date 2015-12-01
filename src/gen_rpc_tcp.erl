@@ -14,7 +14,9 @@
 
 -behaviour(gen_rpc_transport).
 
--export([name/0, accept/2, close/1, controlling_process/2, connect/3, is_secure/0, listen/0, listen/1, peername/1, send/2, getopts/2, setopts/2]).
+-export([name/0, accept/2, close/1, controlling_process/2, connect/3,
+         is_secure/0, listen/0, listen/1, peername/1, send/2,
+         getopts/2, setopts/2]).
 
 -spec name() -> atom().
 name() -> tcp.
