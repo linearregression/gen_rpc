@@ -51,8 +51,10 @@ stop(Pid) when is_pid(Pid) ->
 init([]) ->
     ok = lager:info("function=init", []),
     process_flag(trap_exit, true),
-    {ok, Module} = get_transport_module(),
-    case listen(Module) of
+    {ok, Settings} = get_transport_settings(),
+    {ok, Module} = get_transport_module(Settings),
+    {ok, Port} = get_listen_port(Settings), 
+    case listen(Port, Module) of
         {ok, Socket} ->
             ok = lager:info("function=init event=listener_started_successfully", []),
             {ok, _Ref} = prim_inet:async_accept(Socket, -1),
@@ -64,9 +66,8 @@ init([]) ->
     end.
 
 %% Listen for incoming request to start_child
--spec listen(module()) -> {ok, pid()} | {error, term()}.
-listen(Module) ->
-    Port = get_listen_port(),  
+-spec listen(port(), module()) -> {ok, pid()} | {error, term()}.
+listen(Port, Module) ->
     case Module:listen(Port, gen_rpc_helper:default_tcp_opts(Module)) of
         {ok, Socket} ->
             ok = lager:info("function=init event=listener_started_successfully", []),
@@ -108,16 +109,16 @@ code_change(_OldVsn, State, _Extra) ->
 %%% ===================================================
 %%% Private functions
 %%% ===================================================
+get_transport_settings() ->
+    application:get_env(?APP, 'transport_module').
 
-get_transport_module() ->
-    {ok, Module} = application:get_env(?APP, 'transport_module'),
+get_transport_module(Settings) ->
+    {module, Module} = lists:keyfind(module, 1, Settings),
     {file, _} = code:is_loaded(Module),
     {ok, Module}.
 
-get_listen_port() ->
-    {ok, Module} = application:get_env(?APP, 'transport_module'),
-    {file, _} = code:is_loaded(Module),
-    {ok, ControlPort} = application:get_env(?APP, 'control_port'),
+get_listen_port(Settings) ->
+    {'control_port', ControlPort} = lists:keyfind('control_port', 1, Settings),
     {ok, ControlPort}. 
 
 make_process_name(Node) ->
