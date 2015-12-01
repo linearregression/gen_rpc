@@ -16,7 +16,7 @@
 -include("app.hrl").
 
 %%% Local state
--record(state, {trasport_node :: module(),
+-record(state, {transport :: module(),
         socket :: port(),
         acceptor_pid :: pid(),
         acceptor :: non_neg_integer()}).
@@ -58,7 +58,7 @@ init([]) ->
         {ok, Socket} ->
             ok = lager:info("function=init event=listener_started_successfully", []),
             {ok, _Ref} = prim_inet:async_accept(Socket, -1),
-            {ok, #state{trasport_node = Module,
+            {ok, #state{transport = Module,
                         socket = Socket}};
         {error, Reason} ->
             ok = lager:critical("function=init event=failed_to_start_listener reason=\"~p\"", [Reason]),
@@ -94,13 +94,14 @@ handle_cast(Msg, State) ->
 
 %% Catch-all for info - our protocol is strict so die!
 handle_info(Msg, State) ->
-    ok = lager:critical("function=handle_info event=uknown_message_received socket=\"~p\" message=\"~p\" action=stopping", [State#state.socket, Msg]),
+    ok = lager:critical("function=handle_info event=unknown_message_received socket=\"~p\" message=\"~p\" action=stopping", [State#state.socket, Msg]),
     {stop, {unknown_message, Msg}, State}.
 
 %% Terminate cleanly by closing the listening socket
-terminate(_Reason, #state{socket=Socket}) ->
+terminate(_Reason, #state{transport=Module,socket=Socket}) ->
     ok = lager:debug("function=terminate socket=\"~p\"", [Socket]),
-    _Pid = erlang:spawn(gen_rpc_server_sup, stop_child, [self()]),
+    % Politey signal client to close socket
+    catch Module:close(Socket),
     ok.
 
 code_change(_OldVsn, State, _Extra) ->
