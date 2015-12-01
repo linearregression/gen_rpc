@@ -57,7 +57,8 @@ init([]) ->
     case listen(Port, Module) of
         {ok, Socket} ->
             ok = lager:info("function=init event=listener_started_successfully", []),
-            {ok, _Ref} = prim_inet:async_accept(Socket, -1),
+%            {ok, _Ref} = prim_inet:async_accept(Socket, -1),
+            {ok, _Ref} = Module:accept(Socket, -1),
             {ok, #state{transport = Module,
                         socket = Socket}};
         {error, Reason} ->

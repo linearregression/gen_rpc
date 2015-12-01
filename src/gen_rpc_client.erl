@@ -179,7 +179,7 @@ init({Node}) ->
     %% the port that has been allocated for us
     ok = lager:info("function=init event=initializing_client server_node=\"~s\" connect_timeout=~B send_timeout=~B receive_timeout=~B inactivity_timeout=~p",
                     [Node, ConnTO, SendTO, RecvTO, TTL]),
-    case rpc:call(Node, gen_rpc_server_sup, start_child, [node()], ConnTO) of
+    case ensure_gen_rpc_server(Node, ConnTO) of
         {ok, Port} ->
             %% Fetching the IP ourselves, since the remote node
             %% does not have a straightforward way of returning
@@ -393,6 +393,10 @@ call_worker(Ref, Caller, Timeout) when is_tuple(Caller), is_reference(Ref) ->
             ok = lager:notice("function=call_worker event=call_timeout call_reference=\"~p\"", [Ref]),
             _Ign = gen_server:reply(Caller, {badrpc, timeout})
     end.
+
+%% Ensure peer gen_rpc_server is proper.
+ensure_gen_rpc_server(Node, ConnTO)->
+    rpc:call(Node, gen_rpc_server_sup, start_child, [node()], ConnTO).
 
 %% Merges user-define timeout values with state timeout values
 merge_timeout_values(SRecvTO, undefined, SSendTO, undefined) ->

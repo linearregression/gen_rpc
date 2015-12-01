@@ -14,7 +14,7 @@
 
 -behaviour(gen_rpc_transport).
 
--export([name/0, accept/2, close/1, controlling_process/2, connect/3, is_secure/0, listen/0, peername/1, send/2, setopts/2]).
+-export([name/0, accept/2, close/1, controlling_process/2, connect/3, is_secure/0, listen/0, peername/1, send/2, getopts/2, setopts/2]).
 
 -spec name() -> atom().
 name() -> tcp.
@@ -48,6 +48,10 @@ listen() ->
 -spec send(inet:socket(), iodata()) -> ok | {error, atom()}.
 send(Socket, Packet) ->
     gen_tcp:send(Socket, Packet).
+
+-spec getopts(inet:socket(), gen_tcp:option()) -> {ok, gen_tcp:option()} | {error, atom()}.
+getopts(Socket, Opts) ->
+    prim_inet:getopts(Socket, Opts).
 
 -spec setopts(inet:socket(), gen_tcp:option()) -> ok | {error, atom()}.
 setopts(Socket, Opts) ->
