@@ -15,6 +15,7 @@
 -callback close(inet:socket()) -> ok.
 -callback controlling_process(inet:socket(), pid()) -> ok | {error, closed | not_owner | atom()}.
 -callback listen() -> {ok, inet:socket()} | {error, atom()}.
+-callback listen(inet:port_number()) -> {ok, inet:socket()} | {error, atom()}.
 -callback accept(inet:socket(), timeout()) -> {ok, inet:socket()} | {error, closed | timeout | atom()}.
 -callback send(inet:socket(), iodata()) -> ok | {error, atom()}.
 -callback setopts(inet:socket(), gen_tcp:option()) -> ok | {error, atom()}.
