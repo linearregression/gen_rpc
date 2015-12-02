@@ -180,7 +180,7 @@ init({Node}) ->
     ok = lager:info("function=init event=initializing_client server_node=\"~s\" connect_timeout=~B send_timeout=~B receive_timeout=~B inactivity_timeout=~p",
                     [Node, ConnTO, SendTO, RecvTO, TTL]),
     %{ok, #state{socket=undefined,server_node=Node,send_timeout=SendTO,receive_timeout=RecvTO,inactivity_timeout=TTL}, TTL};
-    %self() ! {ensure_gen_rpc_server, [Node, ConnTO]},
+    %self() ! {connect, Node, ConnTO},
     case ensure_gen_rpc_server(Node, ConnTO) of
         {ok, Port} ->
             %% Fetching the IP ourselves, since the remote node
@@ -202,6 +202,12 @@ init({Node}) ->
         {badrpc, Reason} ->
             {stop, {badrpc, Reason}}
     end.
+%% Second phase of initilization
+handle_call({connect, Node, ConnTO}, Caller, #state{socket=Socket,server_node=Node} = State)->
+
+
+
+
 
 %% This is the actual CALL handler
 handle_call({{call,_M,_F,_A} = PacketTuple, URecvTO, USendTO}, Caller, #state{socket=Socket,server_node=Node} = State) ->
