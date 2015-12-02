@@ -179,6 +179,8 @@ init({Node}) ->
     %% the port that has been allocated for us
     ok = lager:info("function=init event=initializing_client server_node=\"~s\" connect_timeout=~B send_timeout=~B receive_timeout=~B inactivity_timeout=~p",
                     [Node, ConnTO, SendTO, RecvTO, TTL]),
+    %{ok, #state{socket=undefined,server_node=Node,send_timeout=SendTO,receive_timeout=RecvTO,inactivity_timeout=TTL}, TTL};
+    %self() ! {ensure_gen_rpc_server, [Node, ConnTO]},
     case ensure_gen_rpc_server(Node, ConnTO) of
         {ok, Port} ->
             %% Fetching the IP ourselves, since the remote node
@@ -347,19 +349,19 @@ do_cast(PacketTuple, USendTO, Socket, Node, State) ->
     %% Since cast can fail because of a timed out connection without gen_rpc knowing it,
     %% we have to make sure the remote node is reachable somehow before we send data. net_kernel:connect does that
     case net_kernel:connect(Node) of
-        true ->
-            case gen_tcp:send(Socket, Packet) of
-                {error, timeout} ->
-                    %% Terminate will handle closing the socket
-                    ok = lager:error("function=do_cast message=cast event=transmission_failed socket=\"~p\" reason=\"timeout\"", [Socket]),
-                    {error, {badtcp,send_timeout}};
-                {error, Reason} ->
-                    ok = lager:error("function=do_cast message=cast event=transmission_failed socket=\"~p\" reason=\"~p\"", [Socket, Reason]),
-                    {error, {badtcp,Reason}};
-                ok ->
-                    ok = lager:debug("function=do_cast message=cast event=transmission_succeeded socket=\"~p\"", [Socket]),
-                    ok
-            end;
+        true -> send('gen_tcp' Socket, Packet); 
+%            case gen_tcp:send(Socket, Packet) of
+%                {error, timeout} ->
+%                    %% Terminate will handle closing the socket
+%                    ok = lager:error("function=do_cast message=cast event=transmission_failed socket=\"~p\" reason=\"timeout\"", [Socket]),
+%                    {error, {badtcp,send_timeout}};
+%                {error, Reason} ->
+%                    ok = lager:error("function=do_cast message=cast event=transmission_failed socket=\"~p\" reason=\"~p\"", [Socket, Reason]),
+%                    {error, {badtcp,Reason}};
+%                ok ->
+%                    ok = lager:debug("function=do_cast message=cast event=transmission_succeeded socket=\"~p\"", [Socket]),
+%                    ok
+%            end;
         _Else ->
             ok = lager:error("function=do_cast message=cast event=node_down socket=\"~p\"", [Socket]),
             {error, {badrpc,nodedown}}
@@ -396,7 +398,27 @@ call_worker(Ref, Caller, Timeout) when is_tuple(Caller), is_reference(Ref) ->
 
 %% Ensure peer gen_rpc_server is proper.
 ensure_gen_rpc_server(Node, ConnTO)->
-    rpc:call(Node, gen_rpc_server_sup, start_child, [node()], ConnTO).
+    rpc:call(Node, gen_rpc_server_sup, start_child, [node()], ConnTO);
+ensure_gen_rpc_server(Node, ConnTO)->
+    case gen_rpc_transport:connect(Address, Port, ConnTimeout) of 
+        {ok, Socket} -> PacketBin = erlang:term_to_binary(gen_rpc_server_sup, start_child, [node()]),
+                        ok = send(Transport, Socket, Packet) 
+        {error, Reason} ->
+    end;
+
+send(Transport, Socket, Packet) ->
+    case Transport:send(Socket, Packet) of
+        {error, timeout} ->
+            %% Terminate will handle closing the socket
+            ok = lager:error("function=send message=\"~p\"_send event=transmission_failed socket=\"~p\" reason=\"timeout\"", [Transport, Socket]),
+            {error, {badtcp,send_timeout}};
+        {error, Reason} ->
+            ok = lager:error("function=send message=\"~p\"_send event=transmission_failed socket=\"~p\" reason=\"~p\"", [Transport, Socket, Reason]),
+            {error, {badtcp,Reason}};
+        ok ->
+            ok = lager:debug("function=send message=\"~p\"_send event=transmission_succeeded socket=\"~p\"", [Transport, Socket]),
+            ok
+    end.
 
 %% Merges user-define timeout values with state timeout values
 merge_timeout_values(SRecvTO, undefined, SSendTO, undefined) ->
