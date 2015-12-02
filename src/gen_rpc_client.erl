@@ -16,7 +16,9 @@
 -include("app.hrl").
 
 %%% Local state
--record(state, {socket :: port(),
+-record(state, {transport :: atom(),
+        port :: inet:port_number(),
+        socket :: inet:socket(),
         server_node :: atom(),
         send_timeout :: non_neg_integer(),
         receive_timeout :: non_neg_integer(),
@@ -170,15 +172,23 @@ init({Node}) ->
     ok = net_kernel:monitor_nodes(true, [nodedown_reason]),
     %% Extract application-specific settings
     Settings = application:get_all_env(?APP),
+    {transport, Transport} = lists:keyfind(transport, 1, Settings),
+    {port, Port} = lists:keyfind(port, 1, Settings),
     {connect_timeout, ConnTO} = lists:keyfind(connect_timeout, 1, Settings),
     {send_timeout, SendTO} = lists:keyfind(send_timeout, 1, Settings),
     {receive_timeout, RecvTO} = lists:keyfind(receive_timeout, 1, Settings),
     {client_inactivity_timeout, TTL} = lists:keyfind(client_inactivity_timeout, 1, Settings),
+    ok = lager:info("function=init event=initializing_client server_node=\"~s\" connect_timeout=~B send_timeout=~B receive_timeout=~B inactivity_timeout=~p",
+                    [Node, ConnTO, SendTO, RecvTO, TTL]),
+    self() ! {connect, Node, ConnTO}, %
+    {ok, #state{transport=Transport, port=Port, socket=undefined, server_node=Node,
+    send_timeout=SendTO,receive_timeout=RecvTO,inactivity_timeout=TTL}, TTL}.
+
+%% Second phase of init
+handle_call({connect, Node, ConnTO}, _Caller, #state{socket=Socket} = State) ->
     %% Perform an in-band RPC call to the remote node
     %% asking it to launch a listener for us and return us
     %% the port that has been allocated for us
-    ok = lager:info("function=init event=initializing_client server_node=\"~s\" connect_timeout=~B send_timeout=~B receive_timeout=~B inactivity_timeout=~p",
-                    [Node, ConnTO, SendTO, RecvTO, TTL]),
     case rpc:call(Node, gen_rpc_server_sup, start_child, [node()], ConnTO) of
         {ok, Port} ->
             %% Fetching the IP ourselves, since the remote node
@@ -191,15 +201,15 @@ init({Node}) ->
                 {ok, Socket} ->
                     ok = lager:debug("function=init event=connecting_to_server server_node=\"~s\" server_ip=\"~p:~B\" result=success",
                                      [Node, Address, Port]),
-                    {ok, #state{socket=Socket,server_node=Node,send_timeout=SendTO,receive_timeout=RecvTO,inactivity_timeout=TTL}, TTL};
+                    {noreply, State#state{socket=Socket}, State#state.inactivity_timeout};
                 {error, Reason} ->
                     ok = lager:error("function=init event=connecting_to_server server_node=\"~s\" server_ip=\"~s:~B\" result=failure reason=\"~p\"",
                                      [Node, Address, Port, Reason]),
-                    {stop, {badtcp,Reason}}
+                    {stop, {badtcp,Reason}, State}
             end;
         {badrpc, Reason} ->
-            {stop, {badrpc, Reason}}
-    end.
+            {stop, {badrpc, Reason}, State}
+    end;
 
 %% This is the actual CALL handler
 handle_call({{call,_M,_F,_A} = PacketTuple, URecvTO, USendTO}, Caller, #state{socket=Socket,server_node=Node} = State) ->

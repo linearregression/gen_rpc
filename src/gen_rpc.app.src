@@ -11,6 +11,10 @@
     {registered, [gen_rpc_dispatcher]},
     {applications, [kernel, stdlib, lager, crypto, asn1, public_key, ssl]},
     {env,[
+        %% transport 
+        {transport, 'gen_tcp'},
+        %% port for first connection establishment to peer server
+        {port, 8000},
         %% Client connect timeout
         {connect_timeout, 5000},
         %% Client and Server send timeout
