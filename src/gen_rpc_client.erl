@@ -184,33 +184,6 @@ init({Node}) ->
     {ok, #state{transport=Transport, port=Port, socket=undefined, server_node=Node,
     send_timeout=SendTO,receive_timeout=RecvTO,inactivity_timeout=TTL}, TTL}.
 
-%% Second phase of init
-handle_call({connect, Node, ConnTO}, _Caller, #state{socket=Socket} = State) ->
-    %% Perform an in-band RPC call to the remote node
-    %% asking it to launch a listener for us and return us
-    %% the port that has been allocated for us
-    case rpc:call(Node, gen_rpc_server_sup, start_child, [node()], ConnTO) of
-        {ok, Port} ->
-            %% Fetching the IP ourselves, since the remote node
-            %% does not have a straightforward way of returning
-            %% the proper remote IP
-            Address = get_remote_node_ip(Node),
-            ok = lager:debug("function=init event=remote_server_started_successfully server_node=\"~s\" server_ip=\"~p:~B\"",
-                             [Node, Address, Port]),
-            case gen_tcp:connect(Address, Port, gen_rpc_helper:default_tcp_opts(?DEFAULT_TCP_OPTS), ConnTO) of
-                {ok, Socket} ->
-                    ok = lager:debug("function=init event=connecting_to_server server_node=\"~s\" server_ip=\"~p:~B\" result=success",
-                                     [Node, Address, Port]),
-                    {noreply, State#state{socket=Socket}, State#state.inactivity_timeout};
-                {error, Reason} ->
-                    ok = lager:error("function=init event=connecting_to_server server_node=\"~s\" server_ip=\"~s:~B\" result=failure reason=\"~p\"",
-                                     [Node, Address, Port, Reason]),
-                    {stop, {badtcp,Reason}, State}
-            end;
-        {badrpc, Reason} ->
-            {stop, {badrpc, Reason}, State}
-    end;
-
 %% This is the actual CALL handler
 handle_call({{call,_M,_F,_A} = PacketTuple, URecvTO, USendTO}, Caller, #state{socket=Socket,server_node=Node} = State) ->
     {RecvTO, SendTO} = merge_timeout_values(State#state.receive_timeout, URecvTO, State#state.send_timeout, USendTO),
@@ -327,6 +300,33 @@ handle_info({NodeEvent, _Node, _InfoList}, State) when NodeEvent =:= nodeup; Nod
 handle_info(timeout, State) ->
     ok = lager:info("function=handle_info message=timeout event=client_inactivity_timeout socket=\"~p\" action=stopping", [State#state.socket]),
     {stop, normal, State};
+
+%% Second phase of init
+handle_info({connect, Node, ConnTO}, #state{socket=Socket} = State) ->
+    %% Perform an in-band RPC call to the remote node
+    %% asking it to launch a listener for us and return us
+    %% the port that has been allocated for us
+    case rpc:call(Node, gen_rpc_server_sup, start_child, [node()], ConnTO) of
+        {ok, Port} ->
+            %% Fetching the IP ourselves, since the remote node
+            %% does not have a straightforward way of returning
+            %% the proper remote IP
+            Address = get_remote_node_ip(Node),
+            ok = lager:debug("function=init event=remote_server_started_successfully server_node=\"~s\" server_ip=\"~p:~B\"",
+                             [Node, Address, Port]),
+            case gen_tcp:connect(Address, Port, gen_rpc_helper:default_tcp_opts(?DEFAULT_TCP_OPTS), ConnTO) of
+                {ok, Socket} ->
+                    ok = lager:debug("function=init event=connecting_to_server server_node=\"~s\" server_ip=\"~p:~B\" result=success",
+                                     [Node, Address, Port]),
+                    {noreply, State#state{socket=Socket}, State#state.inactivity_timeout};
+                {error, Reason} ->
+                    ok = lager:error("function=init event=connecting_to_server server_node=\"~s\" server_ip=\"~s:~B\" result=failure reason=\"~p\"",
+                                     [Node, Address, Port, Reason]),
+                    {stop, {badtcp,Reason}, State}
+            end;
+        {badrpc, Reason} ->
+            {stop, {badrpc, Reason}, State}
+    end;
 
 %% Catch-all for info - our protocol is strict so die!
 handle_info(Msg, State) ->
