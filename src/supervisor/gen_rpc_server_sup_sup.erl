@@ -1,0 +1,59 @@
+%%% -*-mode:erlang;coding:utf-8;tab-width:4;c-basic-offset:4;indent-tabs-mode:()-*-
+%%% ex: set ft=erlang fenc=utf-8 sts=4 ts=4 sw=4 et:
+%%%
+%%% Copyright 2015 Panagiotis Papadomitsos. All Rights Reserved.
+%%%
+
+-module(gen_rpc_server_sup_sup).
+-author("Panagiotis Papadomitsos <pj@ezgr.net>").
+
+%%% Behaviour
+-behaviour(supervisor).
+
+%%% Supervisor functions
+-export([start_link/0, start_child/1, stop_child/1]).
+
+%%% Supervisor callbacks
+-export([init/1]).
+
+%%% ===================================================
+%%% Supervisor functions
+%%% ===================================================
+start_link() ->
+    supervisor:start_link({local, ?MODULE}, ?MODULE, []).
+
+%% Launch a local receiver and return the port
+-spec start_child(Node::node()) -> {'ok', inet:port_number()} | {ok, _}.
+start_child(Node) when is_atom(Node) ->
+    ok = lager:debug("function=start_child event=starting_new_server client_node=\"~s\"", [Node]),
+    {ok, Pid} = case supervisor:start_child(?MODULE, [Node]) of
+        {error, {already_started, CPid}} ->
+            %% If we've already started the child, terminate it and start anew
+            ok = stop_child(CPid),
+            supervisor:start_child(?MODULE, [Node]);
+        {error, OtherError} ->
+            {error, OtherError};
+        {ok, TPid} ->
+            {ok, TPid}
+    end,
+    {ok, Port} = gen_rpc_server:get_port(Pid),
+    {ok, Port}.
+
+%% Terminate and unregister a child server
+-spec stop_child(Pid::pid()) -> 'ok'.
+stop_child(Pid) when is_pid(Pid) ->
+    ok = lager:debug("function=stop_child event=stopping_server server_pid=\"~p\"", [Pid]),
+    %% Terminate the acceptor child first and then
+    _ = supervisor:terminate_child(?MODULE, Pid),
+    _ = supervisor:delete_child(?MODULE, Pid),
+    ok.
+
+
+%%% ===================================================
+%%% Supervisor callbacks
+%%% ===================================================
+init([]) ->
+    {ok, {{one_for_one, 100, 1}, [
+        {gen_rpc_server_controller_sup, {gen_rpc_server_controller_sup,start_link,[]}, permanent, 5000, supervisor, [gen_rpc_server_controller_sup]},
+        {gen_rpc_server_sup, {gen_rpc_server_sup,start_link,[]}, permanent, 5000, supervisor, [gen_rpc_server_sup]}
+    ]}}.
