@@ -302,7 +302,7 @@ handle_info(timeout, State) ->
     {stop, normal, State};
 
 %% Second phase of init
-handle_info({connect, Node, ConnTO}, #state{socket=Socket} = State) ->
+handle_info({connect, Node, ConnTO}, State) ->
     %% Perform an in-band RPC call to the remote node
     %% asking it to launch a listener for us and return us
     %% the port that has been allocated for us
@@ -322,7 +322,7 @@ handle_info({connect, Node, ConnTO}, #state{socket=Socket} = State) ->
                 {error, Reason} ->
                     ok = lager:error("function=init event=connecting_to_server server_node=\"~s\" server_ip=\"~s:~B\" result=failure reason=\"~p\"",
                                      [Node, Address, Port, Reason]),
-                    {stop, {badtcp,Reason}, State}
+                    {stop, {badtcp, Reason}, State}
             end;
         {badrpc, Reason} ->
             {stop, {badrpc, Reason}, State}
