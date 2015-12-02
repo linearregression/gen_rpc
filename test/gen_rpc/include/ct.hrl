@@ -27,7 +27,7 @@
         {gen_rpc, send_timeout, 500},
         {lager, colored, true},
         {lager, handlers, [
-            {lager_console_backend, [info, {lager_default_formatter, ["[", date, " ", time, "] severity=", severity, " module=", {module, "gen_rpc"}, " pid=\"", pid, "\" ", message, "\n"]}]},
+            {lager_console_backend, [debug, {lager_default_formatter, ["[", date, " ", time, "] severity=", severity, " module=", {module, "gen_rpc"}, " pid=\"", pid, "\" ", message, "\n"]}]},
             {lager_common_test_backend, [error, {lager_default_formatter, ["[", date, " ", time, "] severity=", severity, " module=", {module, "gen_rpc"}, " pid=\"", pid, "\" ", message, "\n"]}]}
         ]}
     ]]

@@ -51,9 +51,9 @@ handle_call({start_client, Node}, _Caller, no_state) ->
     Reply = case whereis(Node) of
         undefined ->
             ok = lager:debug("function=handle_call message=start_client event=starting_client_server server_node=\"~s\"", [Node]),
-            gen_rpc_client_sup:start_child(Node);
+            catch gen_rpc_client_sup:start_child(Node);
         Pid ->
-            ok = lager:debug("function=handle_call message=start_client event=node_already_started server_node=\"~s\"", [Node]),
+            ok = lager:info("function=handle_call message=start_client event=node_already_started server_node=\"~s\"", [Node]),
             {ok, Pid}
     end,
     {reply, Reply, no_state};

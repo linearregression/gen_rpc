@@ -22,6 +22,7 @@
         call_mfa_exit/1,
         call_mfa_throw/1,
         call_with_receive_timeout/1,
+        call_inexistent_node/1,
         interleaved_call/1,
         cast/1,
         cast_anonymous_function/1,
@@ -102,7 +103,6 @@ end_per_testcase(remote_node_call, Config) ->
 end_per_testcase(_OtherTest, Config) ->
     Config.
 
-
 %%% ===================================================
 %%% Test cases
 %%% ===================================================
@@ -123,7 +123,6 @@ call_anonymous_function(_Config) ->
     ok = ct:pal("Testing [call_anonymous_function]"),
     {_,"\"call_anonymous_function\""} = gen_rpc:call(?NODE, erlang, apply,[fun(A) -> {self(), io_lib:print(A)} end,
                                                      ["call_anonymous_function"]]).
-
 call_anonymous_undef(_Config) ->
     ok = ct:pal("Testing [call_anonymous_undef]"),
     ok = ct:pal("Testing [call_anonymous_undef] assuming stackstack depth of 5"),
@@ -149,6 +148,10 @@ call_with_receive_timeout(_Config) ->
     ok = ct:pal("Testing [call_with_receive_timeout]"),
     {badrpc, timeout} = gen_rpc:call(?NODE, timer, sleep, [500], 1),
     ok = timer:sleep(500).
+
+call_inexistent_node(_Config) ->
+    ok = ct:pal("Testing [call_inexistent_node]"),
+    {badrpc, nodedown} = gen_rpc:call(?FAKE_NODE, os, timestamp, [], 1000).
 
 interleaved_call(_Config) ->
     ok = ct:pal("Testing [interleaved_call]"),

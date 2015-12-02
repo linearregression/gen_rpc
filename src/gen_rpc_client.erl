@@ -71,6 +71,7 @@ call(Node, M, F, A, RecvTO) when is_atom(Node), is_atom(M), is_atom(F), is_list(
 call(Node, M, F, A, RecvTO, SendTO) when is_atom(Node), is_atom(M), is_atom(F), is_list(A),
                                          RecvTO =:= undefined orelse is_integer(RecvTO) orelse RecvTO =:= infinity,
                                          SendTO =:= undefined orelse is_integer(SendTO) orelse SendTO =:= infinity ->
+    catch 
     case whereis(Node) of
         undefined ->
             ok = lager:info("function=call event=client_process_not_found server_node=\"~s\" action=spawning_client", [Node]),
@@ -81,10 +82,11 @@ call(Node, M, F, A, RecvTO, SendTO) when is_atom(Node), is_atom(M), is_atom(F), 
                     %% but it's good enough for now
                     gen_server:call(NewPid, {{call,M,F,A},RecvTO,SendTO}, infinity);
                 {error, Reason} ->
+                    ok = lager:error("function=call event=dispatcher_start_client_failed pid=\"~p\" reason=\"~s\"", [Node, Reason]),
                     Reason
             end;
-        Pid ->
-            ok = lager:debug("function=call event=client_process_found pid=\"~p\" server_node=\"~s\"", [Pid, Node]),
+        Pid ->   
+            ok = lager:error("function=call event=client_process_found pid=\"~p\" server_node=\"~s\"", [Pid, Node]),
             gen_server:call(Pid, {{call,M,F,A},RecvTO,SendTO}, infinity)
     end.
 
@@ -102,6 +104,7 @@ cast(Node, M, F, A, SendTO) when is_atom(Node), is_atom(M), is_atom(F), is_list(
                                  SendTO =:= undefined orelse is_integer(SendTO) orelse SendTO =:= infinity ->
     %% Naming our gen_server as the node we're calling as it is extremely efficent:
     %% We'll never deplete atoms because all connected node names are already atoms in this VM
+    catch
     case whereis(Node) of
         undefined ->
             ok = lager:info("function=cast event=client_process_not_found server_node=\"~s\" action=spawning_client", [Node]),
@@ -112,7 +115,8 @@ cast(Node, M, F, A, SendTO) when is_atom(Node), is_atom(M), is_atom(F), is_list(
                     %% but it's good enough for now
                     ok = gen_server:cast(NewPid, {{cast,M,F,A},SendTO}),
                     true;
-                {error, _Reason} ->
+                {error, Reason} ->
+                    ok = lager:error("function=cast event=dispatcher_start_client_failed pid=\"~p\" reason=\"~s\"", [Node, Reason]),
                     true
             end;
         Pid ->
@@ -147,21 +151,29 @@ safe_cast(Node, M, F, A, SendTO) when is_atom(Node), is_atom(M), is_atom(F), is_
                                  SendTO =:= undefined orelse is_integer(SendTO) orelse SendTO =:= infinity ->
     %% Naming our gen_server as the node we're calling as it is extremely efficent:
     %% We'll never deplete atoms because all connected node names are already atoms in this VM
-    case whereis(Node) of
-        undefined ->
-            ok = lager:info("function=safe_cast event=client_process_not_found server_node=\"~s\" action=spawning_client", [Node]),
-            case gen_rpc_dispatcher:start_client(Node) of
-                {ok, NewPid} ->
-                    %% We take care of CALL inside the gen_server
-                    %% This is not resilient enough if the caller's mailbox is full
-                    %% but it's good enough for now
-                    gen_server:call(NewPid, {{cast,M,F,A},SendTO}, infinity);
-                {error, Reason} ->
-                    Reason
-            end;
-        Pid ->
-            ok = lager:debug("function=safe_cast event=client_process_found pid=\"~p\" server_node=\"~s\"", [Pid, Node]),
-            gen_server:call(Pid, {{cast,M,F,A},SendTO}, infinity)
+    catch
+    try 
+        case whereis(Node) of
+            undefined ->
+                ok = lager:info("function=safe_cast event=client_process_not_found server_node=\"~s\" action=spawning_client", [Node]),
+                case gen_rpc_dispatcher:start_client(Node) of
+                    {ok, NewPid} ->
+                        %% We take care of CALL inside the gen_server
+                        %% This is not resilient enough if the caller's mailbox is full
+                        %% but it's good enough for now
+                        gen_server:call(NewPid, {{cast,M,F,A},SendTO}, infinity);
+                    {error, Reason} ->
+                    ok = lager:error("function=safe_cast event=dispatcher_start_client_failed pid=\"~p\" reason=\"~s\"", [Node, Reason]),
+                        Reason
+                end;
+            Pid ->
+                ok = lager:debug("function=safe_cast event=client_process_found pid=\"~p\" server_node=\"~s\"", [Pid, Node]),
+                gen_server:call(Pid, {{cast,M,F,A},SendTO}, infinity)
+        end
+    catch
+        throw:Term -> Term;
+        exit:Reason0 -> {badrpc, Reason0};
+        error:Reason1 -> {badrpc, Reason1}
     end.
 
 %%% ===================================================
@@ -325,6 +337,7 @@ handle_info({connect, Node, ConnTO}, State) ->
                     {stop, {badtcp, Reason}, State}
             end;
         {badrpc, Reason} ->
+            ok = lager:error("function=init event=connecting_to_server server_node=\"~s\" result=failure reason=\"~p\"", [Node, Reason]),
             {stop, {badrpc, Reason}, State}
     end;
 
