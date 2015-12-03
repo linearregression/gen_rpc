@@ -1,0 +1,123 @@
+
+[erlang-questions] Upgrading gen_tcp socket to ssl
+Ingela Anderton Andin <>
+Fri Dec 5 09:28:27 CET 2008
+
+    Previous message: [erlang-questions] Upgrading gen_tcp socket to ssl
+    Next message: [erlang-questions] Upgrading gen_tcp socket to ssl
+    Messages sorted by: [ date ] [ thread ] [ subject ] [ author ]
+
+Hi
+
+Thank you for the feedback :)
+
+> Ingela Anderton Andin wrote:
+>   
+>>> But when I try ssl:connect(Gen_tcp_socket,[{verify,0}]), I get
+>>> {eoptions,{cacertfile,[]}}.
+>>> The Gen_tcp_socket is a socket created using gen_tcp:connect/3.
+>>>
+>>> Since {verify,0}, why is a cacertfile required.
+>>>
+>>>     
+>>>       
+>> Verify options was one of the things that was not fully implemented.
+>>
+>> Ssl-3.10 will soon be out in R12B-5 and then the new ssl-implementation
+>> will be much more complete but still there are a few limitations left 
+>> before it can completely replace the old ssl. You are welcome to try it
+>> and we are of course interested in any feedback that you might have.
+>>   
+>>     
+>
+> I'm using ssl-3.10 and I still see the same problem:
+> "cacertfile" is required even if {verify,0} is explicitly specified as 
+> option .
+>
+> As example
+>
+>  ssl:connect("zimbra.erlangsystems.com", 443, [{verify,0},{ssl_imp,new}]).
+> {error,{eoptions,{cacertfile,[]}}}
+>
+>  ssl:connect("zimbra.erlangsystems.com", 443, [{verify,0}]).             
+> {ok,{sslsocket,5,<0.1664.0>}}
+>
+>
+>   
+Sorry that was our mistake we forgot to remove the restriction in the
+"option list handling" it will be removed for the next release.
+
+> Trying to upgrade a tcp socket I put as cacertfile the filename of a 
+> certificate I have on my machine and I've got the following error report
+>
+>  ssl:connect(#Port<0.3428>,[{certfile,"certs/mycert.pem"},
+>  {keyfile,"certs/mycert.key"},
+>  {cacertfile,"certs/vsign.pem"},
+>  {verify,0}, {ssl_imp, new}])
+>
+> =ERROR REPORT==== 4-Dec-2008::17:57:05 ===
+> SSL: hello: ./ssl_record.erl:291:Fatal error: record_overflow
+>
+>   
+Humm .. we have test-cases for upgrade that works fine we do something 
+along the lines of:
+
+Server process:
+{ok, ListenSocket} = gen_tcp:listen(9999, [binary,{reuseaddr,true}])
+
+{ok, AcceptSocket} = gen_tcp:accept(ListenSocket)
+
+Client process:
+{ok, Socket} = gen_tcp:connect("armed", 9999, [binary,{reuseaddr,true}])
+
+Server process:
+
+ssl:ssl_accept(AcceptSocket, [{ssl_imp,new},
+                               {reuseaddr,true},
+                               {cacertfile, "server/cacerts.pem"},
+                               {certfile, "server/cert.pem"},
+                               {keyfile, "server/key.pem"}])
+                           
+Client process:
+
+ssl:connect(Socket, [{cacertfile, "client/cacerts.pem"},
+                            {certfile, "client/cert.pem"},
+                            {keyfile, "client/key.pem"},
+                            {ssl_imp,new}])
+
+
+
+Is it possible for you to provide us with more information so we can 
+repeat your
+senario?
+
+I do not know what server end you use, but you have to agree with the 
+server end
+to make the upgrade prior to calling ssl:connect.
+
+> Btw, is it written anywhere in the doc that ssl needs public_key? I 
+> thought crypto was the only required application...
+>
+>   
+If no where else, it stated in the release notes. public_key is a 
+library application that
+will be used by more applications in the future and that is why we broke 
+the code out from
+ssl. (Crypto is no library application it has its own processes).  Both 
+public_key and ssl uses crypto.
+
+Regards Ingela Erlang/OTP - Ericsson
+
+
+
+
+
+    Previous message: [erlang-questions] Upgrading gen_tcp socket to ssl
+    Next message: [erlang-questions] Upgrading gen_tcp socket to ssl
+    Messages sorted by: [ date ] [ thread ] [ subject ] [ author ]
+
+More information about the erlang-questions mailing list
+
+
+
+you can upgrade a gen_tcp to ssl !!

@@ -188,6 +188,7 @@ pinfo_dead_process(_Config) ->
 pinfo_item(_Config) ->
     ok = ct:pal("Testing [pinfo_item]"),
     Pid = gen_rpc:call(?SLAVE, erlang, spawn, [fun() -> timer:sleep(100000) end]),
+    ok = ct:pal("Pid=\"~p\"", [Pid]),
     % If this process is alive when pinfo it, we should get non-empty list
     true = gen_rpc:call(?SLAVE, erlang, is_process_alive, [Pid]),
     [{status,waiting}] = gen_rpc:pinfo(Pid, [status]).

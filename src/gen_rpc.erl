@@ -28,31 +28,31 @@
 %% need for the overhead here
 -spec call(Node::node(), M::module(), F::atom()|function()) -> term() | {'badrpc', term()} | {'badtcp' | term()}.
 call(Node, M, F) ->
-    gen_rpc_client:call(Node, M, F).
+    normalise_reply(gen_rpc_client:call(Node, M, F)).
 
 -spec call(Node::node(), M::module(), F::atom()|function(), A::list()) -> term() | {'badrpc', term()} | {'badtcp' | term()}.
 call(Node, M, F, A) ->
-    gen_rpc_client:call(Node, M, F, A).
+    normalise_reply(gen_rpc_client:call(Node, M, F, A)).
 
 -spec call(Node::node(), M::module(), F::atom()|function(), A::list(), RecvTO::timeout()) -> term() | {'badrpc', term()} | {'badtcp' | term()}.
 call(Node, M, F, A, RecvTO) ->
-    gen_rpc_client:call(Node, M, F, A, RecvTO).
+    normalise_reply(gen_rpc_client:call(Node, M, F, A, RecvTO)).
 
 -spec call(Node::node(), M::module(), F::atom()|function(), A::list(), RecvTO::timeout(), SendTO::timeout()) -> term() | {'badrpc', term()} | {'badtcp' | term()}.
 call(Node, M, F, A, RecvTO, SendTO) ->
-    gen_rpc_client:call(Node, M, F, A, RecvTO, SendTO).
+    normalise_reply(gen_rpc_client:call(Node, M, F, A, RecvTO, SendTO)).
 
 -spec cast(Node::node(), M::module(), F::atom()|function()) -> 'true'.
 cast(Node, M, F) ->
-    gen_rpc_client:cast(Node, M, F).
+    normalise_reply(gen_rpc_client:cast(Node, M, F)).
 
 -spec cast(Node::node(), M::module(), F::atom()|function(), A::list()) -> 'true'.
 cast(Node, M, F, A) ->
-    gen_rpc_client:cast(Node, M, F, A).
+    normalise_reply(gen_rpc_client:cast(Node, M, F, A)).
 
 -spec cast(Node::node(), M::module(), F::atom()|function(), A::list(), SendTO::timeout()) -> 'true'.
 cast(Node, M, F, A, SendTO) ->
-    gen_rpc_client:cast(Node, M, F, A, SendTO).
+    normalise_reply(gen_rpc_client:cast(Node, M, F, A, SendTO)).
 
 %% @doc Location transparent version of the BIF process_info/1.
 %%      
@@ -68,12 +68,19 @@ cast(Node, M, F, A, SendTO) ->
 
 -spec safe_cast(Node::node(), M::module(), F::atom()|function()) -> 'true' | {'badrpc', term()} | {'badtcp' | term()}.
 safe_cast(Node, M, F) ->
-    catch gen_rpc_client:safe_cast(Node, M, F).
+    normalise_reply(gen_rpc_client:safe_cast(Node, M, F)).
 
 -spec safe_cast(Node::node(), M::module(), F::atom()|function(), A::list()) -> 'true' | {'badrpc', term()} | {'badtcp' | term()}.
 safe_cast(Node, M, F, A) ->
-    catch gen_rpc_client:safe_cast(Node, M, F, A).
+    normalise_reply(gen_rpc_client:safe_cast(Node, M, F, A)).
 
 -spec safe_cast(Node::node(), M::module(), F::atom()|function(), A::list(), SendTO::timeout()) -> 'true' | {'badrpc', term()} | {'badtcp' | term()}.
 safe_cast(Node, M, F, A, SendTO) ->
-    catch gen_rpc_client:safe_cast(Node, M, F, A, SendTO).
+    normalise_reply(gen_rpc_client:safe_cast(Node, M, F, A, SendTO)).
+
+normalise_reply(Reply) ->
+    case Reply of
+         {'EXIT',{Term, _}} -> Term;
+         {badrpc,{Term0, _}} -> Term0;
+         Else -> Else
+    end.

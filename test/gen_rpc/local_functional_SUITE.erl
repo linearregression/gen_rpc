@@ -193,6 +193,7 @@ pinfo_alive_process(_Config) ->
     ok = ct:pal("Testing [pinfo]"),
     Pid = gen_rpc:call(?NODE, erlang, spawn, [fun() -> timer:sleep(100000) end]),
     % If this process is alive when pinfo it, we should get non-empty list
+    ok = ct:pal("Pid=\"~p\"", [Pid]),
     true = erlang:is_process_alive(Pid),
     [] =/= gen_rpc:pinfo(Pid).
 

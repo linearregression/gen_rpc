@@ -1,0 +1,1781 @@
+[0;32m===> Verifying dependencies...
+[0m[0;32m===> Compiling gen_rpc
+[0m[0;32m===> Running Common Test suites...
+[0m
+Common Test starting (cwd is /opt/test/benchtest/clean/gen_rpc)
+
+
+
+CWD set to: "/opt/test/benchtest/clean/gen_rpc/log/ct/ct_run.nonode@nohost.2015-12-02_16.48.59"
+
+TEST INFO: 2 test(s), 52 case(s) in 2 suite(s)
+
+Cover compiling 12 modules - this may take some time... done
+
+Testing lib.gen_rpc.local_functional_SUITE: Starting test, 28 test cases
+[2015-12-02 16:49:00.681] severity=debug module=lager_handler_watcher pid="<0.458.0>" Lager installed handler lager_common_test_backend into lager_event
+[2015-12-02 16:49:00.693] severity=debug module=lager_handler_watcher pid="<0.460.0>" Lager installed handler error_logger_lager_h into error_logger
+[2015-12-02 16:49:00.713] severity=debug module=gen_rpc pid="<0.445.0>" Supervisor gr_param_sup started gr_param:start_link(gr_lager_default_tracer_params) at pid <0.462.0>
+[2015-12-02 16:49:00.713] severity=debug module=gen_rpc pid="<0.444.0>" Supervisor gr_counter_sup started gr_counter:start_link(gr_lager_default_tracer_counters) at pid <0.463.0>
+[2015-12-02 16:49:00.716] severity=debug module=gen_rpc pid="<0.446.0>" Supervisor gr_manager_sup started gr_manager:start_link(gr_lager_default_tracer_params_mgr, gr_lager_default_tracer_params, []) at pid <0.464.0>
+[2015-12-02 16:49:00.716] severity=debug module=gen_rpc pid="<0.446.0>" Supervisor gr_manager_sup started gr_manager:start_link(gr_lager_default_tracer_counters_mgr, gr_lager_default_tracer_counters, [{input,0},{filter,0},{output,0}]) at pid <0.465.0>
+[2015-12-02 16:49:00.749] severity=info module=gen_rpc pid="<0.6.0>" Application lager started on node 'gen_rpc_master@127.0.0.1'
+[2015-12-02 16:49:00.749] severity=debug module=gen_rpc pid="<0.470.0>" Supervisor gen_rpc_sup started gen_rpc_server_sup:start_link() at pid <0.471.0>
+[2015-12-02 16:49:00.749] severity=debug module=gen_rpc pid="<0.470.0>" Supervisor gen_rpc_sup started gen_rpc_acceptor_sup:start_link() at pid <0.472.0>
+[2015-12-02 16:49:00.749] severity=info module=gen_rpc_dispatcher pid="<0.473.0>" function=init
+[2015-12-02 16:49:00.749] severity=debug module=gen_rpc pid="<0.470.0>" Supervisor gen_rpc_sup started gen_rpc_dispatcher:start_link() at pid <0.473.0>
+[2015-12-02 16:49:00.749] severity=debug module=gen_rpc pid="<0.470.0>" Supervisor gen_rpc_sup started gen_rpc_client_sup:start_link() at pid <0.474.0>
+
+----------------------------------------------------
+2015-12-02 16:49:00.749
+Started [functional] suite with master node [gen_rpc_master@127.0.0.1]
+
+[2015-12-02 16:49:00.749] severity=info module=gen_rpc pid="<0.6.0>" Application gen_rpc started on node 'gen_rpc_master@127.0.0.1'
+
+----------------------------------------------------
+2015-12-02 16:49:00.774
+Testing [supervisor_black_box]
+
+
+----------------------------------------------------
+2015-12-02 16:49:00.801
+Testing [call]
+
+[2015-12-02 16:49:00.801] severity=info module=gen_rpc_client pid="<0.479.0>" function=call event=client_process_not_found server_node="gen_rpc_master@127.0.0.1" action=spawning_client
+[2015-12-02 16:49:00.802] severity=debug module=gen_rpc_dispatcher pid="<0.473.0>" function=handle_call message=start_client event=starting_client_server server_node="gen_rpc_master@127.0.0.1"
+[2015-12-02 16:49:00.802] severity=debug module=gen_rpc_client_sup pid="<0.473.0>" function=start_child event=starting_new_client server_node="gen_rpc_master@127.0.0.1"
+[2015-12-02 16:49:00.802] severity=info module=gen_rpc_client pid="<0.481.0>" function=init event=initializing_client server_node="gen_rpc_master@127.0.0.1" connect_timeout=500 send_timeout=500 receive_timeout=15000 inactivity_timeout=infinity
+[2015-12-02 16:49:00.802] severity=debug module=gen_rpc_server_sup pid="<0.483.0>" function=start_child event=starting_new_server client_node="gen_rpc_master@127.0.0.1"
+[2015-12-02 16:49:00.802] severity=info module=gen_rpc_server pid="<0.484.0>" function=init client_node="gen_rpc_master@127.0.0.1"
+[2015-12-02 16:49:00.803] severity=info module=gen_rpc_server pid="<0.484.0>" function=init event=listener_started_successfully client_node="gen_rpc_master@127.0.0.1"
+[2015-12-02 16:49:00.803] severity=debug module=gen_rpc_server pid="<0.484.0>" function=handle_call message=get_port socket="#Port<0.66821>" port=44442
+[2015-12-02 16:49:00.803] severity=debug module=gen_rpc_client pid="<0.481.0>" function=init event=remote_server_started_successfully server_node="gen_rpc_master@127.0.0.1" server_ip="{127,0,0,1}:44442"
+[2015-12-02 16:49:00.804] severity=info module=gen_rpc_server pid="<0.484.0>" function=handle_info event=client_connection_received client_ip="{127,0,0,1}" client_node="gen_rpc_master@127.0.0.1" socket="#Port<0.66821>" action=starting_acceptor
+[2015-12-02 16:49:00.804] severity=debug module=gen_rpc_acceptor_sup pid="<0.484.0>" function=start_child event=starting_new_acceptor client_ip="{127,0,0,1}" client_node="gen_rpc_master@127.0.0.1"
+[2015-12-02 16:49:00.804] severity=debug module=gen_rpc_client pid="<0.481.0>" function=init event=connecting_to_server server_node="gen_rpc_master@127.0.0.1" server_ip="{127,0,0,1}:44442" result=success
+[2015-12-02 16:49:00.804] severity=debug module=gen_rpc_client pid="<0.481.0>" function=handle_call message=call event=constructing_call_term socket="#Port<0.66822>" call_reference="#Ref<0.0.1.4095>"
+[2015-12-02 16:49:00.804] severity=debug module=gen_rpc_client pid="<0.481.0>" function=handle_call message=call event=transmission_succeeded socket="#Port<0.66822>" call_reference="#Ref<0.0.1.4095>"
+[2015-12-02 16:49:00.804] severity=info module=gen_rpc_acceptor pid="<0.486.0>" function=init client_node="gen_rpc_master@127.0.0.1" client_ip="{127,0,0,1}"
+[2015-12-02 16:49:00.804] severity=debug module=gen_rpc_acceptor pid="<0.486.0>" function=waiting_for_socket event=acquiring_socket_ownership socket="#Port<0.66823>" client_ip="{127,0,0,1}" connected_ip="{127,0,0,1}"
+[2015-12-02 16:49:00.804] severity=debug module=gen_rpc_acceptor pid="<0.486.0>" function=waiting_for_data event=call_received socket="#Port<0.66823>" node="gen_rpc_master@127.0.0.1" call_reference="#Ref<0.0.1.4095>" client_pid="<0.485.0>" worker_pid="<0.487.0>"
+[2015-12-02 16:49:00.805] severity=debug module=gen_rpc_acceptor pid="<0.487.0>" function=call_worker event=call_received call_reference="#Ref<0.0.1.4095>" module=os function=timestamp args="[]"
+[2015-12-02 16:49:00.805] severity=debug module=gen_rpc_acceptor pid="<0.486.0>" function=handle_info message=call_reply event=call_reply_received socket="#Port<0.66823>"
+[2015-12-02 16:49:00.805] severity=debug module=gen_rpc_acceptor pid="<0.486.0>" function=handle_info message=call_reply event=call_reply_sent socket="#Port<0.66823>"
+[2015-12-02 16:49:00.805] severity=debug module=gen_rpc_client pid="<0.481.0>" function=handle_info message=tcp event=reply_received call_reference="#Ref<0.0.1.4095>" worker_pid="<0.485.0>" action=sending_to_worker
+[2015-12-02 16:49:00.805] severity=debug module=gen_rpc_client pid="<0.485.0>" function=call_worker event=reply_received call_reference="#Ref<0.0.1.4095>" reply="{1449,103740,805082}"
+
+----------------------------------------------------
+2015-12-02 16:49:00.830
+Testing [call_anonymous_function]
+
+
+----------------------------------------------------
+2015-12-02 16:49:00.831
+[2015-12-02 16:49:00.831] severity=error module=gen_rpc_client pid="<0.489.0>" function=call event=client_process_found pid="<0.481.0>" server_node="gen_rpc_master@127.0.0.1"
+
+
+[2015-12-02 16:49:00.831] severity=error module=gen_rpc_client pid="<0.489.0>" function=call event=client_process_found pid="<0.481.0>" server_node="gen_rpc_master@127.0.0.1"
+[2015-12-02 16:49:00.831] severity=debug module=gen_rpc_client pid="<0.481.0>" function=handle_call message=call event=constructing_call_term socket="#Port<0.66822>" call_reference="#Ref<0.0.1.4254>"
+[2015-12-02 16:49:00.831] severity=debug module=gen_rpc_client pid="<0.481.0>" function=handle_call message=call event=transmission_succeeded socket="#Port<0.66822>" call_reference="#Ref<0.0.1.4254>"
+[2015-12-02 16:49:00.831] severity=debug module=gen_rpc_acceptor pid="<0.486.0>" function=waiting_for_data event=call_received socket="#Port<0.66823>" node="gen_rpc_master@127.0.0.1" call_reference="#Ref<0.0.1.4254>" client_pid="<0.491.0>" worker_pid="<0.492.0>"
+[2015-12-02 16:49:00.832] severity=debug module=gen_rpc_acceptor pid="<0.492.0>" function=call_worker event=call_received call_reference="#Ref<0.0.1.4254>" module=erlang function=apply args="[#Fun<local_functional_SUITE.1.106925895>,["call_anonymous_function"]]"
+[2015-12-02 16:49:00.832] severity=debug module=gen_rpc_acceptor pid="<0.486.0>" function=handle_info message=call_reply event=call_reply_received socket="#Port<0.66823>"
+[2015-12-02 16:49:00.832] severity=debug module=gen_rpc_acceptor pid="<0.486.0>" function=handle_info message=call_reply event=call_reply_sent socket="#Port<0.66823>"
+[2015-12-02 16:49:00.832] severity=debug module=gen_rpc_client pid="<0.481.0>" function=handle_info message=tcp event=reply_received call_reference="#Ref<0.0.1.4254>" worker_pid="<0.491.0>" action=sending_to_worker
+[2015-12-02 16:49:00.832] severity=debug module=gen_rpc_client pid="<0.491.0>" function=call_worker event=reply_received call_reference="#Ref<0.0.1.4254>" reply="{<0.492.0>,"\"call_anonymous_function\""}"
+
+----------------------------------------------------
+2015-12-02 16:49:00.870
+Testing [call_anonymous_undef]
+
+
+----------------------------------------------------
+2015-12-02 16:49:00.870
+Testing [call_anonymous_undef] assuming stackstack depth of 5
+
+
+----------------------------------------------------
+2015-12-02 16:49:00.871
+[2015-12-02 16:49:00.871] severity=error module=gen_rpc_client pid="<0.494.0>" function=call event=client_process_found pid="<0.481.0>" server_node="gen_rpc_master@127.0.0.1"
+
+
+[2015-12-02 16:49:00.871] severity=error module=gen_rpc_client pid="<0.494.0>" function=call event=client_process_found pid="<0.481.0>" server_node="gen_rpc_master@127.0.0.1"
+[2015-12-02 16:49:00.871] severity=debug module=gen_rpc_client pid="<0.481.0>" function=handle_call message=call event=constructing_call_term socket="#Port<0.66822>" call_reference="#Ref<0.0.1.4414>"
+[2015-12-02 16:49:00.872] severity=debug module=gen_rpc_acceptor pid="<0.486.0>" function=waiting_for_data event=call_received socket="#Port<0.66823>" node="gen_rpc_master@127.0.0.1" call_reference="#Ref<0.0.1.4414>" client_pid="<0.496.0>" worker_pid="<0.497.0>"
+[2015-12-02 16:49:00.872] severity=debug module=gen_rpc_acceptor pid="<0.497.0>" function=call_worker event=call_received call_reference="#Ref<0.0.1.4414>" module=erlang function=apply args="[#Fun<local_functional_SUITE.2.106925895>,[]]"
+[2015-12-02 16:49:00.872] severity=debug module=gen_rpc_acceptor pid="<0.486.0>" function=handle_info message=call_reply event=call_reply_received socket="#Port<0.66823>"
+[2015-12-02 16:49:00.872] severity=debug module=gen_rpc_acceptor pid="<0.486.0>" function=handle_info message=call_reply event=call_reply_sent socket="#Port<0.66823>"
+[2015-12-02 16:49:00.872] severity=debug module=gen_rpc_client pid="<0.481.0>" function=handle_call message=call event=transmission_succeeded socket="#Port<0.66822>" call_reference="#Ref<0.0.1.4414>"
+[2015-12-02 16:49:00.872] severity=debug module=gen_rpc_client pid="<0.481.0>" function=handle_info message=tcp event=reply_received call_reference="#Ref<0.0.1.4414>" worker_pid="<0.496.0>" action=sending_to_worker
+[2015-12-02 16:49:00.873] severity=debug module=gen_rpc_client pid="<0.496.0>" function=call_worker event=reply_received call_reference="#Ref<0.0.1.4414>" reply="{badrpc,{'EXIT',{undef,[{os,timestamp_undef,[],[]},{gen_rpc_acceptor,call_worker,6,[{file,"/opt/test/benchtest/clean/gen_rpc/_build/test/lib/gen_rpc/src/gen_rpc_acceptor.erl"},{line,199}]}]}}}"
+
+----------------------------------------------------
+2015-12-02 16:49:00.873
+Result [call_anonymous_undef]: signal=EXIT Reason={os,timestamp_undef}
+
+
+----------------------------------------------------
+2015-12-02 16:49:00.900
+Testing [call_mfa_undef]
+
+
+----------------------------------------------------
+2015-12-02 16:49:00.900
+[2015-12-02 16:49:00.900] severity=error module=gen_rpc_client pid="<0.499.0>" function=call event=client_process_found pid="<0.481.0>" server_node="gen_rpc_master@127.0.0.1"
+
+
+[2015-12-02 16:49:00.900] severity=error module=gen_rpc_client pid="<0.499.0>" function=call event=client_process_found pid="<0.481.0>" server_node="gen_rpc_master@127.0.0.1"
+[2015-12-02 16:49:00.901] severity=debug module=gen_rpc_client pid="<0.481.0>" function=handle_call message=call event=constructing_call_term socket="#Port<0.66822>" call_reference="#Ref<0.0.2.1405>"
+[2015-12-02 16:49:00.901] severity=debug module=gen_rpc_client pid="<0.481.0>" function=handle_call message=call event=transmission_succeeded socket="#Port<0.66822>" call_reference="#Ref<0.0.2.1405>"
+[2015-12-02 16:49:00.902] severity=debug module=gen_rpc_acceptor pid="<0.486.0>" function=waiting_for_data event=call_received socket="#Port<0.66823>" node="gen_rpc_master@127.0.0.1" call_reference="#Ref<0.0.2.1405>" client_pid="<0.501.0>" worker_pid="<0.502.0>"
+[2015-12-02 16:49:00.902] severity=debug module=gen_rpc_acceptor pid="<0.502.0>" function=call_worker event=call_received call_reference="#Ref<0.0.2.1405>" module=os function=timestamp_undef args="[]"
+[2015-12-02 16:49:00.903] severity=debug module=gen_rpc_acceptor pid="<0.486.0>" function=handle_info message=call_reply event=call_reply_received socket="#Port<0.66823>"
+[2015-12-02 16:49:00.903] severity=debug module=gen_rpc_acceptor pid="<0.486.0>" function=handle_info message=call_reply event=call_reply_sent socket="#Port<0.66823>"
+[2015-12-02 16:49:00.904] severity=debug module=gen_rpc_client pid="<0.481.0>" function=handle_info message=tcp event=reply_received call_reference="#Ref<0.0.2.1405>" worker_pid="<0.501.0>" action=sending_to_worker
+[2015-12-02 16:49:00.904] severity=debug module=gen_rpc_client pid="<0.501.0>" function=call_worker event=reply_received call_reference="#Ref<0.0.2.1405>" reply="{badrpc,{'EXIT',{undef,[{os,timestamp_undef,[],[]},{gen_rpc_acceptor,call_worker,6,[{file,"/opt/test/benchtest/clean/gen_rpc/_build/test/lib/gen_rpc/src/gen_rpc_acceptor.erl"},{line,199}]}]}}}"
+
+----------------------------------------------------
+2015-12-02 16:49:00.904
+Result [call_mfa_undef]: signal=EXIT Reason={os,timestamp_undef}
+
+
+----------------------------------------------------
+2015-12-02 16:49:00.930
+Testing [call_mfa_exit]
+
+
+----------------------------------------------------
+2015-12-02 16:49:00.931
+[2015-12-02 16:49:00.931] severity=error module=gen_rpc_client pid="<0.504.0>" function=call event=client_process_found pid="<0.481.0>" server_node="gen_rpc_master@127.0.0.1"
+
+
+[2015-12-02 16:49:00.931] severity=error module=gen_rpc_client pid="<0.504.0>" function=call event=client_process_found pid="<0.481.0>" server_node="gen_rpc_master@127.0.0.1"
+[2015-12-02 16:49:00.931] severity=debug module=gen_rpc_client pid="<0.481.0>" function=handle_call message=call event=constructing_call_term socket="#Port<0.66822>" call_reference="#Ref<0.0.2.1561>"
+[2015-12-02 16:49:00.931] severity=debug module=gen_rpc_client pid="<0.481.0>" function=handle_call message=call event=transmission_succeeded socket="#Port<0.66822>" call_reference="#Ref<0.0.2.1561>"
+[2015-12-02 16:49:00.931] severity=debug module=gen_rpc_acceptor pid="<0.486.0>" function=waiting_for_data event=call_received socket="#Port<0.66823>" node="gen_rpc_master@127.0.0.1" call_reference="#Ref<0.0.2.1561>" client_pid="<0.506.0>" worker_pid="<0.507.0>"
+[2015-12-02 16:49:00.931] severity=debug module=gen_rpc_acceptor pid="<0.507.0>" function=call_worker event=call_received call_reference="#Ref<0.0.2.1561>" module=erlang function=exit args="[die]"
+[2015-12-02 16:49:00.931] severity=debug module=gen_rpc_acceptor pid="<0.486.0>" function=handle_info message=call_reply event=call_reply_received socket="#Port<0.66823>"
+[2015-12-02 16:49:00.931] severity=debug module=gen_rpc_acceptor pid="<0.486.0>" function=handle_info message=call_reply event=call_reply_sent socket="#Port<0.66823>"
+[2015-12-02 16:49:00.932] severity=debug module=gen_rpc_client pid="<0.481.0>" function=handle_info message=tcp event=reply_received call_reference="#Ref<0.0.2.1561>" worker_pid="<0.506.0>" action=sending_to_worker
+[2015-12-02 16:49:00.932] severity=debug module=gen_rpc_client pid="<0.506.0>" function=call_worker event=reply_received call_reference="#Ref<0.0.2.1561>" reply="{badrpc,{'EXIT',die}}"
+
+----------------------------------------------------
+2015-12-02 16:49:00.932
+Result [call_mfa_undef]: signal=EXIT Reason={die}
+
+
+----------------------------------------------------
+2015-12-02 16:49:00.958
+Testing [call_mfa_throw]
+
+
+----------------------------------------------------
+2015-12-02 16:49:00.959
+[2015-12-02 16:49:00.958] severity=error module=gen_rpc_client pid="<0.509.0>" function=call event=client_process_found pid="<0.481.0>" server_node="gen_rpc_master@127.0.0.1"
+
+
+[2015-12-02 16:49:00.958] severity=error module=gen_rpc_client pid="<0.509.0>" function=call event=client_process_found pid="<0.481.0>" server_node="gen_rpc_master@127.0.0.1"
+[2015-12-02 16:49:00.958] severity=debug module=gen_rpc_client pid="<0.481.0>" function=handle_call message=call event=constructing_call_term socket="#Port<0.66822>" call_reference="#Ref<0.0.2.1723>"
+[2015-12-02 16:49:00.959] severity=debug module=gen_rpc_client pid="<0.481.0>" function=handle_call message=call event=transmission_succeeded socket="#Port<0.66822>" call_reference="#Ref<0.0.2.1723>"
+[2015-12-02 16:49:00.959] severity=debug module=gen_rpc_acceptor pid="<0.486.0>" function=waiting_for_data event=call_received socket="#Port<0.66823>" node="gen_rpc_master@127.0.0.1" call_reference="#Ref<0.0.2.1723>" client_pid="<0.511.0>" worker_pid="<0.512.0>"
+[2015-12-02 16:49:00.959] severity=debug module=gen_rpc_acceptor pid="<0.512.0>" function=call_worker event=call_received call_reference="#Ref<0.0.2.1723>" module=erlang function=throw args="[throwXdown]"
+[2015-12-02 16:49:00.959] severity=debug module=gen_rpc_acceptor pid="<0.486.0>" function=handle_info message=call_reply event=call_reply_received socket="#Port<0.66823>"
+[2015-12-02 16:49:00.959] severity=debug module=gen_rpc_acceptor pid="<0.486.0>" function=handle_info message=call_reply event=call_reply_sent socket="#Port<0.66823>"
+[2015-12-02 16:49:00.960] severity=debug module=gen_rpc_client pid="<0.481.0>" function=handle_info message=tcp event=reply_received call_reference="#Ref<0.0.2.1723>" worker_pid="<0.511.0>" action=sending_to_worker
+[2015-12-02 16:49:00.960] severity=debug module=gen_rpc_client pid="<0.511.0>" function=call_worker event=reply_received call_reference="#Ref<0.0.2.1723>" reply="throwXdown"
+
+----------------------------------------------------
+2015-12-02 16:49:00.960
+Result [call_mfa_undef]: signal=EXIT Reason={die}
+
+
+----------------------------------------------------
+2015-12-02 16:49:00.986
+Testing [call_with_receive_timeout]
+
+
+----------------------------------------------------
+2015-12-02 16:49:00.987
+[2015-12-02 16:49:00.987] severity=error module=gen_rpc_client pid="<0.514.0>" function=call event=client_process_found pid="<0.481.0>" server_node="gen_rpc_master@127.0.0.1"
+
+
+[2015-12-02 16:49:00.987] severity=error module=gen_rpc_client pid="<0.514.0>" function=call event=client_process_found pid="<0.481.0>" server_node="gen_rpc_master@127.0.0.1"
+[2015-12-02 16:49:00.987] severity=debug module=gen_rpc_client pid="<0.481.0>" function=handle_call message=call event=constructing_call_term socket="#Port<0.66822>" call_reference="#Ref<0.0.2.1885>"
+[2015-12-02 16:49:00.987] severity=debug module=gen_rpc_client pid="<0.481.0>" function=handle_call message=call event=transmission_succeeded socket="#Port<0.66822>" call_reference="#Ref<0.0.2.1885>"
+[2015-12-02 16:49:00.987] severity=debug module=gen_rpc_acceptor pid="<0.486.0>" function=waiting_for_data event=call_received socket="#Port<0.66823>" node="gen_rpc_master@127.0.0.1" call_reference="#Ref<0.0.2.1885>" client_pid="<0.516.0>" worker_pid="<0.517.0>"
+[2015-12-02 16:49:00.988] severity=debug module=gen_rpc_acceptor pid="<0.517.0>" function=call_worker event=call_received call_reference="#Ref<0.0.2.1885>" module=timer function=sleep args="[500]"
+[2015-12-02 16:49:00.989] severity=notice module=gen_rpc_client pid="<0.516.0>" function=call_worker event=call_timeout call_reference="#Ref<0.0.2.1885>"
+[2015-12-02 16:49:01.173] severity=debug module=lager_handler_watcher pid="<0.454.0>" Lager installed handler lager_backend_throttle into lager_event
+[2015-12-02 16:49:01.488] severity=debug module=gen_rpc_acceptor pid="<0.486.0>" function=handle_info message=call_reply event=call_reply_received socket="#Port<0.66823>"
+[2015-12-02 16:49:01.489] severity=debug module=gen_rpc_acceptor pid="<0.486.0>" function=handle_info message=call_reply event=call_reply_sent socket="#Port<0.66823>"
+[2015-12-02 16:49:01.489] severity=notice module=gen_rpc_client pid="<0.481.0>" function=handle_info message=tcp event=reply_received_with_dead_worker call_reference="#Ref<0.0.2.1885>" worker_pid="<0.516.0>"
+
+----------------------------------------------------
+2015-12-02 16:49:01.516
+Testing [call_inexistent_node]
+
+[2015-12-02 16:49:01.516] severity=info module=gen_rpc_client pid="<0.519.0>" function=call event=client_process_not_found server_node="fake_node@127.0.1.1" action=spawning_client
+[2015-12-02 16:49:01.516] severity=debug module=gen_rpc_dispatcher pid="<0.473.0>" function=handle_call message=start_client event=starting_client_server server_node="fake_node@127.0.1.1"
+[2015-12-02 16:49:01.516] severity=debug module=gen_rpc_client_sup pid="<0.473.0>" function=start_child event=starting_new_client server_node="fake_node@127.0.1.1"
+[2015-12-02 16:49:01.516] severity=info module=gen_rpc_client pid="<0.521.0>" function=init event=initializing_client server_node="fake_node@127.0.1.1" connect_timeout=500 send_timeout=500 receive_timeout=15000 inactivity_timeout=infinity
+[2015-12-02 16:49:01.517] severity=debug module=gen_rpc pid="<0.524.0>" Supervisor inet_gethost_native_sup started undefined at pid <0.525.0>
+[2015-12-02 16:49:01.517] severity=debug module=gen_rpc pid="<0.26.0>" Supervisor kernel_safe_sup started inet_gethost_native:start_link() at pid <0.524.0>
+
+----------------------------------------------------
+2015-12-02 16:49:01.553
+[2015-12-02 16:49:01.553] severity=error module=gen_rpc_client pid="<0.521.0>" function=init event=connecting_to_server server_node="fake_node@127.0.1.1" result=failure reason="nodedown"
+
+
+[2015-12-02 16:49:01.553] severity=error module=gen_rpc_client pid="<0.521.0>" function=init event=connecting_to_server server_node="fake_node@127.0.1.1" result=failure reason="nodedown"
+[2015-12-02 16:49:01.553] severity=debug module=gen_rpc_client pid="<0.521.0>" function=terminate socket="undefined"
+[2015-12-02 16:49:01.553] severity=debug module=gen_rpc_client_sup pid="<0.527.0>" function=stop_child event=stopping_client client_pid="<0.521.0>"
+
+----------------------------------------------------
+2015-12-02 16:49:01.554
+[2015-12-02 16:49:01.553] severity=error module=gen_rpc pid="<0.521.0>" gen_server 'fake_node@127.0.1.1' terminated with reason: {badrpc,nodedown}
+
+
+[2015-12-02 16:49:01.553] severity=error module=gen_rpc pid="<0.521.0>" gen_server 'fake_node@127.0.1.1' terminated with reason: {badrpc,nodedown}
+
+----------------------------------------------------
+2015-12-02 16:49:01.561
+[2015-12-02 16:49:01.560] severity=error module=gen_rpc pid="<0.521.0>" CRASH REPORT Process 'fake_node@127.0.1.1' with 0 neighbours exited with reason: {badrpc,nodedown} in gen_server:terminate/7 line 826
+
+
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+local_functional_SUITE:call_inexistent_node failed on line 154
+Reason: {badmatch,{'EXIT',{{badrpc,nodedown},{gen_server,call,[<0.52...}
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+[2015-12-02 16:49:01.560] severity=error module=gen_rpc pid="<0.521.0>" CRASH REPORT Process 'fake_node@127.0.1.1' with 0 neighbours exited with reason: {badrpc,nodedown} in gen_server:terminate/7 line 826
+
+----------------------------------------------------
+2015-12-02 16:49:01.561
+[2015-12-02 16:49:01.561] severity=error module=gen_rpc pid="<0.474.0>" Supervisor gen_rpc_client_sup had child undefined started with gen_rpc_client:start_link() at <0.521.0> exit with reason {badrpc,nodedown} in context shutdown_error
+
+
+[2015-12-02 16:49:01.561] severity=error module=gen_rpc pid="<0.474.0>" Supervisor gen_rpc_client_sup had child undefined started with gen_rpc_client:start_link() at <0.521.0> exit with reason {badrpc,nodedown} in context shutdown_error
+Testing lib.gen_rpc.local_functional_SUITE: *** FAILED test case 9 of 28 ***
+
+----------------------------------------------------
+2015-12-02 16:49:01.601
+Testing [interleaved_call]
+
+
+----------------------------------------------------
+2015-12-02 16:49:01.601
+[2015-12-02 16:49:01.601] severity=error module=gen_rpc_client pid="<0.531.0>" function=call event=client_process_found pid="<0.481.0>" server_node="gen_rpc_master@127.0.0.1"
+
+
+[2015-12-02 16:49:01.601] severity=error module=gen_rpc_client pid="<0.531.0>" function=call event=client_process_found pid="<0.481.0>" server_node="gen_rpc_master@127.0.0.1"
+
+----------------------------------------------------
+2015-12-02 16:49:01.602
+[2015-12-02 16:49:01.601] severity=error module=gen_rpc_client pid="<0.532.0>" function=call event=client_process_found pid="<0.481.0>" server_node="gen_rpc_master@127.0.0.1"
+
+
+[2015-12-02 16:49:01.601] severity=error module=gen_rpc_client pid="<0.532.0>" function=call event=client_process_found pid="<0.481.0>" server_node="gen_rpc_master@127.0.0.1"
+
+----------------------------------------------------
+2015-12-02 16:49:01.602
+[2015-12-02 16:49:01.601] severity=error module=gen_rpc_client pid="<0.533.0>" function=call event=client_process_found pid="<0.481.0>" server_node="gen_rpc_master@127.0.0.1"
+
+
+[2015-12-02 16:49:01.601] severity=error module=gen_rpc_client pid="<0.533.0>" function=call event=client_process_found pid="<0.481.0>" server_node="gen_rpc_master@127.0.0.1"
+[2015-12-02 16:49:01.601] severity=debug module=gen_rpc_client pid="<0.481.0>" function=handle_call message=call event=constructing_call_term socket="#Port<0.66822>" call_reference="#Ref<0.0.2.2035>"
+[2015-12-02 16:49:01.602] severity=debug module=gen_rpc_client pid="<0.481.0>" function=handle_call message=call event=transmission_succeeded socket="#Port<0.66822>" call_reference="#Ref<0.0.2.2035>"
+[2015-12-02 16:49:01.602] severity=debug module=gen_rpc_client pid="<0.481.0>" function=handle_call message=call event=constructing_call_term socket="#Port<0.66822>" call_reference="#Ref<0.0.2.2037>"
+[2015-12-02 16:49:01.602] severity=debug module=gen_rpc_client pid="<0.481.0>" function=handle_call message=call event=transmission_succeeded socket="#Port<0.66822>" call_reference="#Ref<0.0.2.2037>"
+[2015-12-02 16:49:01.602] severity=debug module=gen_rpc_client pid="<0.481.0>" function=handle_call message=call event=constructing_call_term socket="#Port<0.66822>" call_reference="#Ref<0.0.2.2039>"
+[2015-12-02 16:49:01.602] severity=debug module=gen_rpc_client pid="<0.481.0>" function=handle_call message=call event=transmission_succeeded socket="#Port<0.66822>" call_reference="#Ref<0.0.2.2039>"
+[2015-12-02 16:49:01.602] severity=debug module=gen_rpc_acceptor pid="<0.486.0>" function=waiting_for_data event=call_received socket="#Port<0.66823>" node="gen_rpc_master@127.0.0.1" call_reference="#Ref<0.0.2.2035>" client_pid="<0.534.0>" worker_pid="<0.537.0>"
+[2015-12-02 16:49:01.602] severity=debug module=gen_rpc_acceptor pid="<0.486.0>" function=waiting_for_data event=call_received socket="#Port<0.66823>" node="gen_rpc_master@127.0.0.1" call_reference="#Ref<0.0.2.2037>" client_pid="<0.535.0>" worker_pid="<0.538.0>"
+[2015-12-02 16:49:01.603] severity=debug module=gen_rpc_acceptor pid="<0.486.0>" function=waiting_for_data event=call_received socket="#Port<0.66823>" node="gen_rpc_master@127.0.0.1" call_reference="#Ref<0.0.2.2039>" client_pid="<0.536.0>" worker_pid="<0.539.0>"
+[2015-12-02 16:49:01.603] severity=debug module=gen_rpc_acceptor pid="<0.537.0>" function=call_worker event=call_received call_reference="#Ref<0.0.2.2035>" module=local_functional_SUITE function=interleaved_call_executor args="[1]"
+[2015-12-02 16:49:01.603] severity=debug module=gen_rpc_acceptor pid="<0.538.0>" function=call_worker event=call_received call_reference="#Ref<0.0.2.2037>" module=local_functional_SUITE function=interleaved_call_executor args="[2]"
+[2015-12-02 16:49:01.603] severity=debug module=gen_rpc_acceptor pid="<0.539.0>" function=call_worker event=call_received call_reference="#Ref<0.0.2.2039>" module=local_functional_SUITE function=interleaved_call_executor args="[3]"
+[2015-12-02 16:49:01.603] severity=debug module=gen_rpc_acceptor pid="<0.486.0>" function=handle_info message=call_reply event=call_reply_received socket="#Port<0.66823>"
+[2015-12-02 16:49:01.603] severity=debug module=gen_rpc_acceptor pid="<0.486.0>" function=handle_info message=call_reply event=call_reply_sent socket="#Port<0.66823>"
+[2015-12-02 16:49:01.603] severity=debug module=gen_rpc_client pid="<0.481.0>" function=handle_info message=tcp event=reply_received call_reference="#Ref<0.0.2.2039>" worker_pid="<0.536.0>" action=sending_to_worker
+[2015-12-02 16:49:01.603] severity=debug module=gen_rpc_client pid="<0.536.0>" function=call_worker event=reply_received call_reference="#Ref<0.0.2.2039>" reply="3"
+
+----------------------------------------------------
+2015-12-02 16:49:01.603
+Received proper reply from Worker 3
+
+[2015-12-02 16:49:01.613] severity=notice module=gen_rpc_client pid="<0.535.0>" function=call_worker event=call_timeout call_reference="#Ref<0.0.2.2037>"
+
+----------------------------------------------------
+2015-12-02 16:49:01.613
+Received proper reply from Worker 2
+
+[2015-12-02 16:49:02.605] severity=debug module=gen_rpc_acceptor pid="<0.486.0>" function=handle_info message=call_reply event=call_reply_received socket="#Port<0.66823>"
+[2015-12-02 16:49:02.605] severity=debug module=gen_rpc_acceptor pid="<0.486.0>" function=handle_info message=call_reply event=call_reply_sent socket="#Port<0.66823>"
+[2015-12-02 16:49:02.606] severity=notice module=gen_rpc_client pid="<0.481.0>" function=handle_info message=tcp event=reply_received_with_dead_worker call_reference="#Ref<0.0.2.2037>" worker_pid="<0.535.0>"
+[2015-12-02 16:49:03.604] severity=debug module=gen_rpc_acceptor pid="<0.486.0>" function=handle_info message=call_reply event=call_reply_received socket="#Port<0.66823>"
+[2015-12-02 16:49:03.604] severity=debug module=gen_rpc_acceptor pid="<0.486.0>" function=handle_info message=call_reply event=call_reply_sent socket="#Port<0.66823>"
+[2015-12-02 16:49:03.604] severity=debug module=gen_rpc_client pid="<0.481.0>" function=handle_info message=tcp event=reply_received call_reference="#Ref<0.0.2.2035>" worker_pid="<0.534.0>" action=sending_to_worker
+[2015-12-02 16:49:03.604] severity=debug module=gen_rpc_client pid="<0.534.0>" function=call_worker event=reply_received call_reference="#Ref<0.0.2.2035>" reply="1"
+
+----------------------------------------------------
+2015-12-02 16:49:03.604
+Received proper reply from Worker 1
+
+
+----------------------------------------------------
+2015-12-02 16:49:03.646
+Testing [cast]
+
+[2015-12-02 16:49:03.647] severity=debug module=gen_rpc_client pid="<0.541.0>" function=cast event=client_process_found pid="<0.481.0>" server_node="gen_rpc_master@127.0.0.1"
+[2015-12-02 16:49:03.647] severity=debug module=gen_rpc_client pid="<0.481.0>" function=do_cast message=cast event=constructing_cast_term socket="#Port<0.66822>"
+[2015-12-02 16:49:03.647] severity=debug module=gen_rpc_client pid="<0.481.0>" function=do_cast message=cast event=transmission_succeeded socket="#Port<0.66822>"
+[2015-12-02 16:49:03.649] severity=debug module=gen_rpc_acceptor pid="<0.486.0>" function=waiting_for_data event=cast_received socket="#Port<0.66823>" node="gen_rpc_master@127.0.0.1" module=erlang function=timestamp args="[]"
+
+----------------------------------------------------
+2015-12-02 16:49:03.677
+Testing [cast_anonymous_function]
+
+[2015-12-02 16:49:03.677] severity=debug module=gen_rpc_client pid="<0.545.0>" function=cast event=client_process_found pid="<0.481.0>" server_node="gen_rpc_master@127.0.0.1"
+[2015-12-02 16:49:03.677] severity=debug module=gen_rpc_client pid="<0.481.0>" function=do_cast message=cast event=constructing_cast_term socket="#Port<0.66822>"
+[2015-12-02 16:49:03.677] severity=debug module=gen_rpc_client pid="<0.481.0>" function=do_cast message=cast event=transmission_succeeded socket="#Port<0.66822>"
+[2015-12-02 16:49:03.678] severity=debug module=gen_rpc_acceptor pid="<0.486.0>" function=waiting_for_data event=cast_received socket="#Port<0.66823>" node="gen_rpc_master@127.0.0.1" module=erlang function=apply args="[#Fun<local_functional_SUITE.3.106925895>,[]]"
+
+----------------------------------------------------
+2015-12-02 16:49:03.705
+Testing [cast_mfa_undef]
+
+[2015-12-02 16:49:03.705] severity=debug module=gen_rpc_client pid="<0.549.0>" function=cast event=client_process_found pid="<0.481.0>" server_node="gen_rpc_master@127.0.0.1"
+[2015-12-02 16:49:03.705] severity=debug module=gen_rpc_client pid="<0.481.0>" function=do_cast message=cast event=constructing_cast_term socket="#Port<0.66822>"
+[2015-12-02 16:49:03.705] severity=debug module=gen_rpc_client pid="<0.481.0>" function=do_cast message=cast event=transmission_succeeded socket="#Port<0.66822>"
+[2015-12-02 16:49:03.706] severity=debug module=gen_rpc_acceptor pid="<0.486.0>" function=waiting_for_data event=cast_received socket="#Port<0.66823>" node="gen_rpc_master@127.0.0.1" module=os function=timestamp_undef args="[]"
+
+----------------------------------------------------
+2015-12-02 16:49:03.706
+[2015-12-02 16:49:03.706] severity=error module=gen_rpc pid="emulator" Error in process <0.551.0> on node 'gen_rpc_master@127.0.0.1' with exit value:
+{undef,[{os,timestamp_undef,[],[]}]}
+
+
+[2015-12-02 16:49:03.706] severity=error module=gen_rpc pid="emulator" Error in process <0.551.0> on node 'gen_rpc_master@127.0.0.1' with exit value:
+{undef,[{os,timestamp_undef,[],[]}]}
+
+----------------------------------------------------
+2015-12-02 16:49:03.732
+Testing [cast_mfa_exit]
+
+[2015-12-02 16:49:03.732] severity=debug module=gen_rpc_client pid="<0.553.0>" function=cast event=client_process_found pid="<0.481.0>" server_node="gen_rpc_master@127.0.0.1"
+[2015-12-02 16:49:03.733] severity=debug module=gen_rpc_client pid="<0.481.0>" function=do_cast message=cast event=constructing_cast_term socket="#Port<0.66822>"
+[2015-12-02 16:49:03.733] severity=debug module=gen_rpc_client pid="<0.481.0>" function=do_cast message=cast event=transmission_succeeded socket="#Port<0.66822>"
+[2015-12-02 16:49:03.734] severity=debug module=gen_rpc_acceptor pid="<0.486.0>" function=waiting_for_data event=cast_received socket="#Port<0.66823>" node="gen_rpc_master@127.0.0.1" module=erlang function=apply args="[#Fun<local_functional_SUITE.4.106925895>,[]]"
+
+----------------------------------------------------
+2015-12-02 16:49:03.758
+Testing [cast_mfa_throw]
+
+[2015-12-02 16:49:03.758] severity=debug module=gen_rpc_client pid="<0.557.0>" function=cast event=client_process_found pid="<0.481.0>" server_node="gen_rpc_master@127.0.0.1"
+[2015-12-02 16:49:03.758] severity=debug module=gen_rpc_client pid="<0.481.0>" function=do_cast message=cast event=constructing_cast_term socket="#Port<0.66822>"
+[2015-12-02 16:49:03.758] severity=debug module=gen_rpc_client pid="<0.481.0>" function=do_cast message=cast event=transmission_succeeded socket="#Port<0.66822>"
+[2015-12-02 16:49:03.758] severity=debug module=gen_rpc_acceptor pid="<0.486.0>" function=waiting_for_data event=cast_received socket="#Port<0.66823>" node="gen_rpc_master@127.0.0.1" module=erlang function=throw args="[throwme]"
+
+----------------------------------------------------
+2015-12-02 16:49:03.759
+[2015-12-02 16:49:03.759] severity=error module=gen_rpc pid="emulator" Error in process <0.559.0> on node 'gen_rpc_master@127.0.0.1' with exit value:
+{{nocatch,throwme},[{erlang,throw,1,[]}]}
+
+
+[2015-12-02 16:49:03.759] severity=error module=gen_rpc pid="emulator" Error in process <0.559.0> on node 'gen_rpc_master@127.0.0.1' with exit value:
+{{nocatch,throwme},[{erlang,throw,1,[]}]}
+
+----------------------------------------------------
+2015-12-02 16:49:03.789
+Testing [cast_inexistent_node]
+
+[2015-12-02 16:49:03.789] severity=info module=gen_rpc_client pid="<0.561.0>" function=cast event=client_process_not_found server_node="fake_node@127.0.1.1" action=spawning_client
+[2015-12-02 16:49:03.790] severity=debug module=gen_rpc_dispatcher pid="<0.473.0>" function=handle_call message=start_client event=starting_client_server server_node="fake_node@127.0.1.1"
+[2015-12-02 16:49:03.790] severity=debug module=gen_rpc_client_sup pid="<0.473.0>" function=start_child event=starting_new_client server_node="fake_node@127.0.1.1"
+[2015-12-02 16:49:03.790] severity=info module=gen_rpc_client pid="<0.563.0>" function=init event=initializing_client server_node="fake_node@127.0.1.1" connect_timeout=500 send_timeout=500 receive_timeout=15000 inactivity_timeout=infinity
+
+----------------------------------------------------
+2015-12-02 16:49:03.791
+[2015-12-02 16:49:03.791] severity=error module=gen_rpc_client pid="<0.563.0>" function=init event=connecting_to_server server_node="fake_node@127.0.1.1" result=failure reason="nodedown"
+
+
+[2015-12-02 16:49:03.791] severity=error module=gen_rpc_client pid="<0.563.0>" function=init event=connecting_to_server server_node="fake_node@127.0.1.1" result=failure reason="nodedown"
+[2015-12-02 16:49:03.791] severity=debug module=gen_rpc_client pid="<0.563.0>" function=terminate socket="undefined"
+[2015-12-02 16:49:03.791] severity=debug module=gen_rpc_client_sup pid="<0.567.0>" function=stop_child event=stopping_client client_pid="<0.563.0>"
+
+----------------------------------------------------
+2015-12-02 16:49:03.792
+[2015-12-02 16:49:03.791] severity=error module=gen_rpc pid="<0.563.0>" gen_server 'fake_node@127.0.1.1' terminated with reason: {badrpc,nodedown}
+
+
+[2015-12-02 16:49:03.791] severity=error module=gen_rpc pid="<0.563.0>" gen_server 'fake_node@127.0.1.1' terminated with reason: {badrpc,nodedown}
+
+----------------------------------------------------
+2015-12-02 16:49:03.792
+[2015-12-02 16:49:03.791] severity=error module=gen_rpc pid="<0.563.0>" CRASH REPORT Process 'fake_node@127.0.1.1' with 0 neighbours exited with reason: {badrpc,nodedown} in gen_server:terminate/7 line 826
+
+
+[2015-12-02 16:49:03.791] severity=error module=gen_rpc pid="<0.563.0>" CRASH REPORT Process 'fake_node@127.0.1.1' with 0 neighbours exited with reason: {badrpc,nodedown} in gen_server:terminate/7 line 826
+
+----------------------------------------------------
+2015-12-02 16:49:03.792
+[2015-12-02 16:49:03.792] severity=error module=gen_rpc pid="<0.474.0>" Supervisor gen_rpc_client_sup had child undefined started with {gen_rpc_client,start_link,undefined} at <0.563.0> exit with reason {badrpc,nodedown} in context child_terminated
+
+
+[2015-12-02 16:49:03.792] severity=error module=gen_rpc pid="<0.474.0>" Supervisor gen_rpc_client_sup had child undefined started with {gen_rpc_client,start_link,undefined} at <0.563.0> exit with reason {badrpc,nodedown} in context child_terminated
+
+----------------------------------------------------
+2015-12-02 16:49:03.818
+Testing [pinfo]
+
+
+----------------------------------------------------
+2015-12-02 16:49:03.818
+[2015-12-02 16:49:03.818] severity=error module=gen_rpc_client pid="<0.569.0>" function=call event=client_process_found pid="<0.481.0>" server_node="gen_rpc_master@127.0.0.1"
+
+
+[2015-12-02 16:49:03.818] severity=error module=gen_rpc_client pid="<0.569.0>" function=call event=client_process_found pid="<0.481.0>" server_node="gen_rpc_master@127.0.0.1"
+[2015-12-02 16:49:03.818] severity=debug module=gen_rpc_client pid="<0.481.0>" function=handle_call message=call event=constructing_call_term socket="#Port<0.66822>" call_reference="#Ref<0.0.2.2631>"
+[2015-12-02 16:49:03.818] severity=debug module=gen_rpc_client pid="<0.481.0>" function=handle_call message=call event=transmission_succeeded socket="#Port<0.66822>" call_reference="#Ref<0.0.2.2631>"
+[2015-12-02 16:49:03.819] severity=debug module=gen_rpc_acceptor pid="<0.486.0>" function=waiting_for_data event=call_received socket="#Port<0.66823>" node="gen_rpc_master@127.0.0.1" call_reference="#Ref<0.0.2.2631>" client_pid="<0.571.0>" worker_pid="<0.572.0>"
+[2015-12-02 16:49:03.819] severity=debug module=gen_rpc_acceptor pid="<0.572.0>" function=call_worker event=call_received call_reference="#Ref<0.0.2.2631>" module=erlang function=spawn args="[#Fun<local_functional_SUITE.5.106925895>]"
+[2015-12-02 16:49:03.820] severity=debug module=gen_rpc_acceptor pid="<0.486.0>" function=handle_info message=call_reply event=call_reply_received socket="#Port<0.66823>"
+[2015-12-02 16:49:03.820] severity=debug module=gen_rpc_acceptor pid="<0.486.0>" function=handle_info message=call_reply event=call_reply_sent socket="#Port<0.66823>"
+[2015-12-02 16:49:03.820] severity=debug module=gen_rpc_client pid="<0.481.0>" function=handle_info message=tcp event=reply_received call_reference="#Ref<0.0.2.2631>" worker_pid="<0.571.0>" action=sending_to_worker
+[2015-12-02 16:49:03.820] severity=debug module=gen_rpc_client pid="<0.571.0>" function=call_worker event=reply_received call_reference="#Ref<0.0.2.2631>" reply="<0.573.0>"
+
+----------------------------------------------------
+2015-12-02 16:49:03.820
+Pid="<0.573.0>"
+
+
+----------------------------------------------------
+2015-12-02 16:49:03.821
+[2015-12-02 16:49:03.820] severity=error module=gen_rpc_client pid="<0.569.0>" function=call event=client_process_found pid="<0.481.0>" server_node="gen_rpc_master@127.0.0.1"
+
+
+[2015-12-02 16:49:03.820] severity=error module=gen_rpc_client pid="<0.569.0>" function=call event=client_process_found pid="<0.481.0>" server_node="gen_rpc_master@127.0.0.1"
+[2015-12-02 16:49:03.820] severity=debug module=gen_rpc_client pid="<0.481.0>" function=handle_call message=call event=constructing_call_term socket="#Port<0.66822>" call_reference="#Ref<0.0.2.2642>"
+[2015-12-02 16:49:03.821] severity=debug module=gen_rpc_client pid="<0.481.0>" function=handle_call message=call event=transmission_succeeded socket="#Port<0.66822>" call_reference="#Ref<0.0.2.2642>"
+[2015-12-02 16:49:03.821] severity=debug module=gen_rpc_acceptor pid="<0.486.0>" function=waiting_for_data event=call_received socket="#Port<0.66823>" node="gen_rpc_master@127.0.0.1" call_reference="#Ref<0.0.2.2642>" client_pid="<0.574.0>" worker_pid="<0.575.0>"
+[2015-12-02 16:49:03.821] severity=debug module=gen_rpc_acceptor pid="<0.575.0>" function=call_worker event=call_received call_reference="#Ref<0.0.2.2642>" module=erlang function=process_info args="[<0.573.0>]"
+[2015-12-02 16:49:03.821] severity=debug module=gen_rpc_acceptor pid="<0.486.0>" function=handle_info message=call_reply event=call_reply_received socket="#Port<0.66823>"
+[2015-12-02 16:49:03.821] severity=debug module=gen_rpc_acceptor pid="<0.486.0>" function=handle_info message=call_reply event=call_reply_sent socket="#Port<0.66823>"
+[2015-12-02 16:49:03.821] severity=debug module=gen_rpc_client pid="<0.481.0>" function=handle_info message=tcp event=reply_received call_reference="#Ref<0.0.2.2642>" worker_pid="<0.574.0>" action=sending_to_worker
+[2015-12-02 16:49:03.822] severity=debug module=gen_rpc_client pid="<0.574.0>" function=call_worker event=reply_received call_reference="#Ref<0.0.2.2642>" reply="[{current_function,{timer,sleep,1}},{initial_call,{erlang,apply,2}},{status,waiting},{message_queue_len,0},{messages,[]},{links,[]},{dictionary,[]},{trap_exit,false},{error_handler,error_handler},{priority,normal},{group_leader,<0.468.0>},{total_heap_size,233},{heap_size,233},{stack_size,2},{reductions,3},{garbage_collection,[{min_bin_vheap_size,46422},{min_heap_size,233},{fullsweep_after,65535},{minor_gcs,0}]},{suspending,[]}]"
+
+----------------------------------------------------
+2015-12-02 16:49:03.847
+Testing [pinfo]
+
+
+----------------------------------------------------
+2015-12-02 16:49:03.848
+[2015-12-02 16:49:03.847] severity=error module=gen_rpc_client pid="<0.577.0>" function=call event=client_process_found pid="<0.481.0>" server_node="gen_rpc_master@127.0.0.1"
+
+
+[2015-12-02 16:49:03.847] severity=error module=gen_rpc_client pid="<0.577.0>" function=call event=client_process_found pid="<0.481.0>" server_node="gen_rpc_master@127.0.0.1"
+[2015-12-02 16:49:03.847] severity=debug module=gen_rpc_client pid="<0.481.0>" function=handle_call message=call event=constructing_call_term socket="#Port<0.66822>" call_reference="#Ref<0.0.2.2800>"
+[2015-12-02 16:49:03.847] severity=debug module=gen_rpc_client pid="<0.481.0>" function=handle_call message=call event=transmission_succeeded socket="#Port<0.66822>" call_reference="#Ref<0.0.2.2800>"
+[2015-12-02 16:49:03.849] severity=debug module=gen_rpc_acceptor pid="<0.486.0>" function=waiting_for_data event=call_received socket="#Port<0.66823>" node="gen_rpc_master@127.0.0.1" call_reference="#Ref<0.0.2.2800>" client_pid="<0.579.0>" worker_pid="<0.580.0>"
+[2015-12-02 16:49:03.849] severity=debug module=gen_rpc_acceptor pid="<0.580.0>" function=call_worker event=call_received call_reference="#Ref<0.0.2.2800>" module=erlang function=spawn args="[#Fun<local_functional_SUITE.6.106925895>]"
+[2015-12-02 16:49:03.850] severity=debug module=gen_rpc_acceptor pid="<0.486.0>" function=handle_info message=call_reply event=call_reply_received socket="#Port<0.66823>"
+[2015-12-02 16:49:03.851] severity=debug module=gen_rpc_acceptor pid="<0.486.0>" function=handle_info message=call_reply event=call_reply_sent socket="#Port<0.66823>"
+[2015-12-02 16:49:03.851] severity=debug module=gen_rpc_client pid="<0.481.0>" function=handle_info message=tcp event=reply_received call_reference="#Ref<0.0.2.2800>" worker_pid="<0.579.0>" action=sending_to_worker
+[2015-12-02 16:49:03.851] severity=debug module=gen_rpc_client pid="<0.579.0>" function=call_worker event=reply_received call_reference="#Ref<0.0.2.2800>" reply="<0.581.0>"
+
+----------------------------------------------------
+2015-12-02 16:49:03.852
+[2015-12-02 16:49:03.851] severity=error module=gen_rpc_client pid="<0.577.0>" function=call event=client_process_found pid="<0.481.0>" server_node="gen_rpc_master@127.0.0.1"
+
+
+[2015-12-02 16:49:03.851] severity=error module=gen_rpc_client pid="<0.577.0>" function=call event=client_process_found pid="<0.481.0>" server_node="gen_rpc_master@127.0.0.1"
+[2015-12-02 16:49:03.852] severity=debug module=gen_rpc_client pid="<0.481.0>" function=handle_call message=call event=constructing_call_term socket="#Port<0.66822>" call_reference="#Ref<0.0.2.2808>"
+[2015-12-02 16:49:03.852] severity=debug module=gen_rpc_client pid="<0.481.0>" function=handle_call message=call event=transmission_succeeded socket="#Port<0.66822>" call_reference="#Ref<0.0.2.2808>"
+[2015-12-02 16:49:03.852] severity=debug module=gen_rpc_acceptor pid="<0.486.0>" function=waiting_for_data event=call_received socket="#Port<0.66823>" node="gen_rpc_master@127.0.0.1" call_reference="#Ref<0.0.2.2808>" client_pid="<0.582.0>" worker_pid="<0.583.0>"
+[2015-12-02 16:49:03.852] severity=debug module=gen_rpc_acceptor pid="<0.583.0>" function=call_worker event=call_received call_reference="#Ref<0.0.2.2808>" module=erlang function=is_process_alive args="[<0.581.0>]"
+[2015-12-02 16:49:03.852] severity=debug module=gen_rpc_acceptor pid="<0.486.0>" function=handle_info message=call_reply event=call_reply_received socket="#Port<0.66823>"
+[2015-12-02 16:49:03.852] severity=debug module=gen_rpc_acceptor pid="<0.486.0>" function=handle_info message=call_reply event=call_reply_sent socket="#Port<0.66823>"
+[2015-12-02 16:49:03.853] severity=debug module=gen_rpc_client pid="<0.481.0>" function=handle_info message=tcp event=reply_received call_reference="#Ref<0.0.2.2808>" worker_pid="<0.582.0>" action=sending_to_worker
+[2015-12-02 16:49:03.853] severity=debug module=gen_rpc_client pid="<0.582.0>" function=call_worker event=reply_received call_reference="#Ref<0.0.2.2808>" reply="false"
+
+----------------------------------------------------
+2015-12-02 16:49:03.853
+[2015-12-02 16:49:03.853] severity=error module=gen_rpc_client pid="<0.577.0>" function=call event=client_process_found pid="<0.481.0>" server_node="gen_rpc_master@127.0.0.1"
+
+
+[2015-12-02 16:49:03.853] severity=error module=gen_rpc_client pid="<0.577.0>" function=call event=client_process_found pid="<0.481.0>" server_node="gen_rpc_master@127.0.0.1"
+[2015-12-02 16:49:03.853] severity=debug module=gen_rpc_client pid="<0.481.0>" function=handle_call message=call event=constructing_call_term socket="#Port<0.66822>" call_reference="#Ref<0.0.2.2825>"
+[2015-12-02 16:49:03.853] severity=debug module=gen_rpc_client pid="<0.481.0>" function=handle_call message=call event=transmission_succeeded socket="#Port<0.66822>" call_reference="#Ref<0.0.2.2825>"
+[2015-12-02 16:49:03.854] severity=debug module=gen_rpc_acceptor pid="<0.486.0>" function=waiting_for_data event=call_received socket="#Port<0.66823>" node="gen_rpc_master@127.0.0.1" call_reference="#Ref<0.0.2.2825>" client_pid="<0.584.0>" worker_pid="<0.585.0>"
+[2015-12-02 16:49:03.854] severity=debug module=gen_rpc_acceptor pid="<0.585.0>" function=call_worker event=call_received call_reference="#Ref<0.0.2.2825>" module=erlang function=process_info args="[<0.581.0>]"
+[2015-12-02 16:49:03.854] severity=debug module=gen_rpc_acceptor pid="<0.486.0>" function=handle_info message=call_reply event=call_reply_received socket="#Port<0.66823>"
+[2015-12-02 16:49:03.855] severity=debug module=gen_rpc_acceptor pid="<0.486.0>" function=handle_info message=call_reply event=call_reply_sent socket="#Port<0.66823>"
+[2015-12-02 16:49:03.856] severity=debug module=gen_rpc_client pid="<0.481.0>" function=handle_info message=tcp event=reply_received call_reference="#Ref<0.0.2.2825>" worker_pid="<0.584.0>" action=sending_to_worker
+[2015-12-02 16:49:03.856] severity=debug module=gen_rpc_client pid="<0.584.0>" function=call_worker event=reply_received call_reference="#Ref<0.0.2.2825>" reply="undefined"
+
+----------------------------------------------------
+2015-12-02 16:49:03.886
+Testing [pinfo_item]
+
+
+----------------------------------------------------
+2015-12-02 16:49:03.886
+[2015-12-02 16:49:03.886] severity=error module=gen_rpc_client pid="<0.587.0>" function=call event=client_process_found pid="<0.481.0>" server_node="gen_rpc_master@127.0.0.1"
+
+
+[2015-12-02 16:49:03.886] severity=error module=gen_rpc_client pid="<0.587.0>" function=call event=client_process_found pid="<0.481.0>" server_node="gen_rpc_master@127.0.0.1"
+[2015-12-02 16:49:03.887] severity=debug module=gen_rpc_client pid="<0.481.0>" function=handle_call message=call event=constructing_call_term socket="#Port<0.66822>" call_reference="#Ref<0.0.1.5314>"
+[2015-12-02 16:49:03.887] severity=debug module=gen_rpc_client pid="<0.481.0>" function=handle_call message=call event=transmission_succeeded socket="#Port<0.66822>" call_reference="#Ref<0.0.1.5314>"
+[2015-12-02 16:49:03.887] severity=debug module=gen_rpc_acceptor pid="<0.486.0>" function=waiting_for_data event=call_received socket="#Port<0.66823>" node="gen_rpc_master@127.0.0.1" call_reference="#Ref<0.0.1.5314>" client_pid="<0.589.0>" worker_pid="<0.590.0>"
+[2015-12-02 16:49:03.888] severity=debug module=gen_rpc_acceptor pid="<0.590.0>" function=call_worker event=call_received call_reference="#Ref<0.0.1.5314>" module=erlang function=spawn args="[#Fun<local_functional_SUITE.7.106925895>]"
+[2015-12-02 16:49:03.888] severity=debug module=gen_rpc_acceptor pid="<0.486.0>" function=handle_info message=call_reply event=call_reply_received socket="#Port<0.66823>"
+[2015-12-02 16:49:03.888] severity=debug module=gen_rpc_acceptor pid="<0.486.0>" function=handle_info message=call_reply event=call_reply_sent socket="#Port<0.66823>"
+[2015-12-02 16:49:03.888] severity=debug module=gen_rpc_client pid="<0.481.0>" function=handle_info message=tcp event=reply_received call_reference="#Ref<0.0.1.5314>" worker_pid="<0.589.0>" action=sending_to_worker
+[2015-12-02 16:49:03.888] severity=debug module=gen_rpc_client pid="<0.589.0>" function=call_worker event=reply_received call_reference="#Ref<0.0.1.5314>" reply="<0.591.0>"
+
+----------------------------------------------------
+2015-12-02 16:49:03.888
+[2015-12-02 16:49:03.888] severity=error module=gen_rpc_client pid="<0.587.0>" function=call event=client_process_found pid="<0.481.0>" server_node="gen_rpc_master@127.0.0.1"
+
+
+[2015-12-02 16:49:03.888] severity=error module=gen_rpc_client pid="<0.587.0>" function=call event=client_process_found pid="<0.481.0>" server_node="gen_rpc_master@127.0.0.1"
+[2015-12-02 16:49:03.888] severity=debug module=gen_rpc_client pid="<0.481.0>" function=handle_call message=call event=constructing_call_term socket="#Port<0.66822>" call_reference="#Ref<0.0.2.2854>"
+[2015-12-02 16:49:03.888] severity=debug module=gen_rpc_client pid="<0.481.0>" function=handle_call message=call event=transmission_succeeded socket="#Port<0.66822>" call_reference="#Ref<0.0.2.2854>"
+[2015-12-02 16:49:03.889] severity=debug module=gen_rpc_acceptor pid="<0.486.0>" function=waiting_for_data event=call_received socket="#Port<0.66823>" node="gen_rpc_master@127.0.0.1" call_reference="#Ref<0.0.2.2854>" client_pid="<0.592.0>" worker_pid="<0.593.0>"
+[2015-12-02 16:49:03.889] severity=debug module=gen_rpc_acceptor pid="<0.593.0>" function=call_worker event=call_received call_reference="#Ref<0.0.2.2854>" module=erlang function=is_process_alive args="[<0.591.0>]"
+[2015-12-02 16:49:03.890] severity=debug module=gen_rpc_acceptor pid="<0.486.0>" function=handle_info message=call_reply event=call_reply_received socket="#Port<0.66823>"
+[2015-12-02 16:49:03.890] severity=debug module=gen_rpc_acceptor pid="<0.486.0>" function=handle_info message=call_reply event=call_reply_sent socket="#Port<0.66823>"
+[2015-12-02 16:49:03.892] severity=debug module=gen_rpc_client pid="<0.481.0>" function=handle_info message=tcp event=reply_received call_reference="#Ref<0.0.2.2854>" worker_pid="<0.592.0>" action=sending_to_worker
+[2015-12-02 16:49:03.892] severity=debug module=gen_rpc_client pid="<0.592.0>" function=call_worker event=reply_received call_reference="#Ref<0.0.2.2854>" reply="true"
+
+----------------------------------------------------
+2015-12-02 16:49:03.892
+[2015-12-02 16:49:03.892] severity=error module=gen_rpc_client pid="<0.587.0>" function=call event=client_process_found pid="<0.481.0>" server_node="gen_rpc_master@127.0.0.1"
+
+
+[2015-12-02 16:49:03.892] severity=error module=gen_rpc_client pid="<0.587.0>" function=call event=client_process_found pid="<0.481.0>" server_node="gen_rpc_master@127.0.0.1"
+[2015-12-02 16:49:03.892] severity=debug module=gen_rpc_client pid="<0.481.0>" function=handle_call message=call event=constructing_call_term socket="#Port<0.66822>" call_reference="#Ref<0.0.2.2866>"
+[2015-12-02 16:49:03.892] severity=debug module=gen_rpc_client pid="<0.481.0>" function=handle_call message=call event=transmission_succeeded socket="#Port<0.66822>" call_reference="#Ref<0.0.2.2866>"
+[2015-12-02 16:49:03.893] severity=debug module=gen_rpc_acceptor pid="<0.486.0>" function=waiting_for_data event=call_received socket="#Port<0.66823>" node="gen_rpc_master@127.0.0.1" call_reference="#Ref<0.0.2.2866>" client_pid="<0.594.0>" worker_pid="<0.595.0>"
+[2015-12-02 16:49:03.893] severity=debug module=gen_rpc_acceptor pid="<0.595.0>" function=call_worker event=call_received call_reference="#Ref<0.0.2.2866>" module=erlang function=process_info args="[<0.591.0>,[status]]"
+[2015-12-02 16:49:03.893] severity=debug module=gen_rpc_acceptor pid="<0.486.0>" function=handle_info message=call_reply event=call_reply_received socket="#Port<0.66823>"
+[2015-12-02 16:49:03.893] severity=debug module=gen_rpc_acceptor pid="<0.486.0>" function=handle_info message=call_reply event=call_reply_sent socket="#Port<0.66823>"
+[2015-12-02 16:49:03.893] severity=debug module=gen_rpc_client pid="<0.481.0>" function=handle_info message=tcp event=reply_received call_reference="#Ref<0.0.2.2866>" worker_pid="<0.594.0>" action=sending_to_worker
+[2015-12-02 16:49:03.893] severity=debug module=gen_rpc_client pid="<0.594.0>" function=call_worker event=reply_received call_reference="#Ref<0.0.2.2866>" reply="[{status,waiting}]"
+
+----------------------------------------------------
+2015-12-02 16:49:03.918
+Testing [safe_cast]
+
+[2015-12-02 16:49:03.918] severity=debug module=gen_rpc_client pid="<0.597.0>" function=safe_cast event=client_process_found pid="<0.481.0>" server_node="gen_rpc_master@127.0.0.1"
+[2015-12-02 16:49:03.919] severity=debug module=gen_rpc_client pid="<0.481.0>" function=do_cast message=cast event=constructing_cast_term socket="#Port<0.66822>"
+[2015-12-02 16:49:03.919] severity=debug module=gen_rpc_client pid="<0.481.0>" function=do_cast message=cast event=transmission_succeeded socket="#Port<0.66822>"
+[2015-12-02 16:49:03.920] severity=debug module=gen_rpc_acceptor pid="<0.486.0>" function=waiting_for_data event=cast_received socket="#Port<0.66823>" node="gen_rpc_master@127.0.0.1" module=erlang function=timestamp args="[]"
+
+----------------------------------------------------
+2015-12-02 16:49:03.945
+Testing [safe_cast_anonymous_function]
+
+[2015-12-02 16:49:03.945] severity=debug module=gen_rpc_client pid="<0.601.0>" function=safe_cast event=client_process_found pid="<0.481.0>" server_node="gen_rpc_master@127.0.0.1"
+[2015-12-02 16:49:03.945] severity=debug module=gen_rpc_client pid="<0.481.0>" function=do_cast message=cast event=constructing_cast_term socket="#Port<0.66822>"
+[2015-12-02 16:49:03.945] severity=debug module=gen_rpc_client pid="<0.481.0>" function=do_cast message=cast event=transmission_succeeded socket="#Port<0.66822>"
+[2015-12-02 16:49:03.946] severity=debug module=gen_rpc_acceptor pid="<0.486.0>" function=waiting_for_data event=cast_received socket="#Port<0.66823>" node="gen_rpc_master@127.0.0.1" module=erlang function=apply args="[#Fun<local_functional_SUITE.8.106925895>,[]]"
+
+----------------------------------------------------
+2015-12-02 16:49:03.972
+Testing [safe_cast_mfa_undef]
+
+[2015-12-02 16:49:03.972] severity=debug module=gen_rpc_client pid="<0.605.0>" function=safe_cast event=client_process_found pid="<0.481.0>" server_node="gen_rpc_master@127.0.0.1"
+[2015-12-02 16:49:03.972] severity=debug module=gen_rpc_client pid="<0.481.0>" function=do_cast message=cast event=constructing_cast_term socket="#Port<0.66822>"
+[2015-12-02 16:49:03.972] severity=debug module=gen_rpc_client pid="<0.481.0>" function=do_cast message=cast event=transmission_succeeded socket="#Port<0.66822>"
+[2015-12-02 16:49:03.972] severity=debug module=gen_rpc_acceptor pid="<0.486.0>" function=waiting_for_data event=cast_received socket="#Port<0.66823>" node="gen_rpc_master@127.0.0.1" module=os function=timestamp_undef args="[]"
+
+----------------------------------------------------
+2015-12-02 16:49:03.973
+[2015-12-02 16:49:03.973] severity=error module=gen_rpc pid="emulator" Error in process <0.607.0> on node 'gen_rpc_master@127.0.0.1' with exit value:
+{undef,[{os,timestamp_undef,[],[]}]}
+
+
+[2015-12-02 16:49:03.973] severity=error module=gen_rpc pid="emulator" Error in process <0.607.0> on node 'gen_rpc_master@127.0.0.1' with exit value:
+{undef,[{os,timestamp_undef,[],[]}]}
+
+----------------------------------------------------
+2015-12-02 16:49:03.998
+Testing [safe_cast_mfa_exit]
+
+[2015-12-02 16:49:03.998] severity=debug module=gen_rpc_client pid="<0.609.0>" function=safe_cast event=client_process_found pid="<0.481.0>" server_node="gen_rpc_master@127.0.0.1"
+[2015-12-02 16:49:03.998] severity=debug module=gen_rpc_client pid="<0.481.0>" function=do_cast message=cast event=constructing_cast_term socket="#Port<0.66822>"
+[2015-12-02 16:49:03.999] severity=debug module=gen_rpc_client pid="<0.481.0>" function=do_cast message=cast event=transmission_succeeded socket="#Port<0.66822>"
+[2015-12-02 16:49:03.999] severity=debug module=gen_rpc_acceptor pid="<0.486.0>" function=waiting_for_data event=cast_received socket="#Port<0.66823>" node="gen_rpc_master@127.0.0.1" module=erlang function=apply args="[#Fun<local_functional_SUITE.9.106925895>,[]]"
+
+----------------------------------------------------
+2015-12-02 16:49:04.026
+Testing [safe_cast_mfa_throw]
+
+[2015-12-02 16:49:04.026] severity=debug module=gen_rpc_client pid="<0.613.0>" function=safe_cast event=client_process_found pid="<0.481.0>" server_node="gen_rpc_master@127.0.0.1"
+[2015-12-02 16:49:04.026] severity=debug module=gen_rpc_client pid="<0.481.0>" function=do_cast message=cast event=constructing_cast_term socket="#Port<0.66822>"
+[2015-12-02 16:49:04.027] severity=debug module=gen_rpc_acceptor pid="<0.486.0>" function=waiting_for_data event=cast_received socket="#Port<0.66823>" node="gen_rpc_master@127.0.0.1" module=erlang function=throw args="[throwme]"
+
+----------------------------------------------------
+2015-12-02 16:49:04.027
+[2015-12-02 16:49:04.027] severity=error module=gen_rpc pid="emulator" Error in process <0.615.0> on node 'gen_rpc_master@127.0.0.1' with exit value:
+{{nocatch,throwme},[{erlang,throw,1,[]}]}
+
+
+[2015-12-02 16:49:04.027] severity=error module=gen_rpc pid="emulator" Error in process <0.615.0> on node 'gen_rpc_master@127.0.0.1' with exit value:
+{{nocatch,throwme},[{erlang,throw,1,[]}]}
+[2015-12-02 16:49:04.028] severity=debug module=gen_rpc_client pid="<0.481.0>" function=do_cast message=cast event=transmission_succeeded socket="#Port<0.66822>"
+
+----------------------------------------------------
+2015-12-02 16:49:04.054
+Testing [safe_cast_inexistent_node]
+
+[2015-12-02 16:49:04.054] severity=info module=gen_rpc_client pid="<0.617.0>" function=safe_cast event=client_process_not_found server_node="fake_node@127.0.1.1" action=spawning_client
+[2015-12-02 16:49:04.054] severity=debug module=gen_rpc_dispatcher pid="<0.473.0>" function=handle_call message=start_client event=starting_client_server server_node="fake_node@127.0.1.1"
+[2015-12-02 16:49:04.054] severity=debug module=gen_rpc_client_sup pid="<0.473.0>" function=start_child event=starting_new_client server_node="fake_node@127.0.1.1"
+[2015-12-02 16:49:04.054] severity=info module=gen_rpc_client pid="<0.619.0>" function=init event=initializing_client server_node="fake_node@127.0.1.1" connect_timeout=500 send_timeout=500 receive_timeout=15000 inactivity_timeout=infinity
+
+----------------------------------------------------
+2015-12-02 16:49:04.056
+[2015-12-02 16:49:04.056] severity=error module=gen_rpc_client pid="<0.619.0>" function=init event=connecting_to_server server_node="fake_node@127.0.1.1" result=failure reason="nodedown"
+
+
+[2015-12-02 16:49:04.056] severity=error module=gen_rpc_client pid="<0.619.0>" function=init event=connecting_to_server server_node="fake_node@127.0.1.1" result=failure reason="nodedown"
+[2015-12-02 16:49:04.056] severity=debug module=gen_rpc_client pid="<0.619.0>" function=terminate socket="undefined"
+[2015-12-02 16:49:04.056] severity=debug module=gen_rpc_client_sup pid="<0.623.0>" function=stop_child event=stopping_client client_pid="<0.619.0>"
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+local_functional_SUITE:safe_cast_inexistent_node failed on line 236
+Reason: {badmatch,{badrpc,{{badrpc,nodedown},{gen_server,call,[<0.61...}
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+
+----------------------------------------------------
+2015-12-02 16:49:04.057
+[2015-12-02 16:49:04.056] severity=error module=gen_rpc pid="<0.619.0>" gen_server 'fake_node@127.0.1.1' terminated with reason: {badrpc,nodedown}
+
+
+[2015-12-02 16:49:04.056] severity=error module=gen_rpc pid="<0.619.0>" gen_server 'fake_node@127.0.1.1' terminated with reason: {badrpc,nodedown}
+
+----------------------------------------------------
+2015-12-02 16:49:04.058
+[2015-12-02 16:49:04.056] severity=error module=gen_rpc pid="<0.619.0>" CRASH REPORT Process 'fake_node@127.0.1.1' with 0 neighbours exited with reason: {badrpc,nodedown} in gen_server:terminate/7 line 826
+
+
+[2015-12-02 16:49:04.056] severity=error module=gen_rpc pid="<0.619.0>" CRASH REPORT Process 'fake_node@127.0.1.1' with 0 neighbours exited with reason: {badrpc,nodedown} in gen_server:terminate/7 line 826
+
+----------------------------------------------------
+2015-12-02 16:49:04.058
+[2015-12-02 16:49:04.057] severity=error module=gen_rpc pid="<0.474.0>" Supervisor gen_rpc_client_sup had child undefined started with {gen_rpc_client,start_link,undefined} at <0.619.0> exit with reason {badrpc,nodedown} in context child_terminated
+
+
+[2015-12-02 16:49:04.057] severity=error module=gen_rpc pid="<0.474.0>" Supervisor gen_rpc_client_sup had child undefined started with {gen_rpc_client,start_link,undefined} at <0.619.0> exit with reason {badrpc,nodedown} in context child_terminated
+Testing lib.gen_rpc.local_functional_SUITE: *** FAILED test case 25 of 28 ***
+[2015-12-02 16:49:04.090] severity=debug module=gen_rpc_client pid="<0.481.0>" function=terminate socket="#Port<0.66822>"
+[2015-12-02 16:49:04.090] severity=debug module=gen_rpc_client_sup pid="<0.627.0>" function=stop_child event=stopping_client client_pid="<0.481.0>"
+[2015-12-02 16:49:04.090] severity=debug module=gen_rpc_dispatcher pid="<0.473.0>" function=terminate reason="shutdown"
+[2015-12-02 16:49:04.091] severity=notice module=gen_rpc_acceptor pid="<0.486.0>" function=handle_info message=tcp_closed event=tcp_socket_closed socket="#Port<0.66823>" client_node="gen_rpc_master@127.0.0.1" action=stopping
+[2015-12-02 16:49:04.091] severity=debug module=gen_rpc_acceptor pid="<0.486.0>" function=terminate socket="#Port<0.66823>"
+[2015-12-02 16:49:04.091] severity=notice module=gen_rpc_server pid="<0.484.0>" function=handle_info message=acceptor_exit socket="#Port<0.66821>" acceptor_pid="<0.486.0>" reason="normal" action=stopping
+[2015-12-02 16:49:04.091] severity=debug module=gen_rpc_server pid="<0.484.0>" function=terminate socket="#Port<0.66821>"
+[2015-12-02 16:49:04.091] severity=debug module=gen_rpc_acceptor_sup pid="<0.628.0>" function=stop_child event=stopping_acceptor acceptor_pid="<0.486.0>"
+[2015-12-02 16:49:04.091] severity=debug module=gen_rpc_server_sup pid="<0.629.0>" function=stop_child event=stopping_server server_pid="<0.484.0>"
+[2015-12-02 16:49:04.093] severity=info module=gen_rpc pid="<0.6.0>" Application gen_rpc exited with reason: stopped
+[2015-12-02 16:49:04.095] severity=debug module=gen_rpc pid="<0.633.0>" Supervisor gen_rpc_sup started gen_rpc_server_sup:start_link() at pid <0.634.0>
+[2015-12-02 16:49:04.095] severity=debug module=gen_rpc pid="<0.633.0>" Supervisor gen_rpc_sup started gen_rpc_acceptor_sup:start_link() at pid <0.635.0>
+[2015-12-02 16:49:04.095] severity=info module=gen_rpc_dispatcher pid="<0.636.0>" function=init
+[2015-12-02 16:49:04.095] severity=debug module=gen_rpc pid="<0.633.0>" Supervisor gen_rpc_sup started gen_rpc_dispatcher:start_link() at pid <0.636.0>
+[2015-12-02 16:49:04.095] severity=debug module=gen_rpc pid="<0.633.0>" Supervisor gen_rpc_sup started gen_rpc_client_sup:start_link() at pid <0.637.0>
+[2015-12-02 16:49:04.095] severity=info module=gen_rpc pid="<0.6.0>" Application gen_rpc started on node 'gen_rpc_master@127.0.0.1'
+
+----------------------------------------------------
+2015-12-02 16:49:04.095
+Testing [client_inactivity_timeout]
+
+[2015-12-02 16:49:04.095] severity=info module=gen_rpc_client pid="<0.625.0>" function=call event=client_process_not_found server_node="gen_rpc_master@127.0.0.1" action=spawning_client
+[2015-12-02 16:49:04.096] severity=debug module=gen_rpc_dispatcher pid="<0.636.0>" function=handle_call message=start_client event=starting_client_server server_node="gen_rpc_master@127.0.0.1"
+[2015-12-02 16:49:04.096] severity=debug module=gen_rpc_client_sup pid="<0.636.0>" function=start_child event=starting_new_client server_node="gen_rpc_master@127.0.0.1"
+[2015-12-02 16:49:04.096] severity=info module=gen_rpc_client pid="<0.638.0>" function=init event=initializing_client server_node="gen_rpc_master@127.0.0.1" connect_timeout=500 send_timeout=500 receive_timeout=15000 inactivity_timeout=500
+[2015-12-02 16:49:04.096] severity=debug module=gen_rpc_server_sup pid="<0.640.0>" function=start_child event=starting_new_server client_node="gen_rpc_master@127.0.0.1"
+[2015-12-02 16:49:04.096] severity=info module=gen_rpc_server pid="<0.641.0>" function=init client_node="gen_rpc_master@127.0.0.1"
+[2015-12-02 16:49:04.096] severity=info module=gen_rpc_server pid="<0.641.0>" function=init event=listener_started_successfully client_node="gen_rpc_master@127.0.0.1"
+[2015-12-02 16:49:04.096] severity=debug module=gen_rpc_server pid="<0.641.0>" function=handle_call message=get_port socket="#Port<0.67618>" port=60883
+[2015-12-02 16:49:04.096] severity=debug module=gen_rpc_client pid="<0.638.0>" function=init event=remote_server_started_successfully server_node="gen_rpc_master@127.0.0.1" server_ip="{127,0,0,1}:60883"
+[2015-12-02 16:49:04.097] severity=info module=gen_rpc_server pid="<0.641.0>" function=handle_info event=client_connection_received client_ip="{127,0,0,1}" client_node="gen_rpc_master@127.0.0.1" socket="#Port<0.67618>" action=starting_acceptor
+[2015-12-02 16:49:04.097] severity=debug module=gen_rpc_acceptor_sup pid="<0.641.0>" function=start_child event=starting_new_acceptor client_ip="{127,0,0,1}" client_node="gen_rpc_master@127.0.0.1"
+[2015-12-02 16:49:04.097] severity=debug module=gen_rpc_client pid="<0.638.0>" function=init event=connecting_to_server server_node="gen_rpc_master@127.0.0.1" server_ip="{127,0,0,1}:60883" result=success
+[2015-12-02 16:49:04.097] severity=debug module=gen_rpc_client pid="<0.638.0>" function=handle_call message=call event=constructing_call_term socket="#Port<0.67619>" call_reference="#Ref<0.0.2.3650>"
+[2015-12-02 16:49:04.097] severity=debug module=gen_rpc_client pid="<0.638.0>" function=handle_call message=call event=transmission_succeeded socket="#Port<0.67619>" call_reference="#Ref<0.0.2.3650>"
+[2015-12-02 16:49:04.097] severity=info module=gen_rpc_acceptor pid="<0.643.0>" function=init client_node="gen_rpc_master@127.0.0.1" client_ip="{127,0,0,1}"
+[2015-12-02 16:49:04.098] severity=debug module=gen_rpc_acceptor pid="<0.643.0>" function=waiting_for_socket event=acquiring_socket_ownership socket="#Port<0.67620>" client_ip="{127,0,0,1}" connected_ip="{127,0,0,1}"
+[2015-12-02 16:49:04.098] severity=debug module=gen_rpc_acceptor pid="<0.643.0>" function=waiting_for_data event=call_received socket="#Port<0.67620>" node="gen_rpc_master@127.0.0.1" call_reference="#Ref<0.0.2.3650>" client_pid="<0.642.0>" worker_pid="<0.644.0>"
+[2015-12-02 16:49:04.098] severity=debug module=gen_rpc_acceptor pid="<0.644.0>" function=call_worker event=call_received call_reference="#Ref<0.0.2.3650>" module=os function=timestamp args="[]"
+[2015-12-02 16:49:04.098] severity=debug module=gen_rpc_acceptor pid="<0.643.0>" function=handle_info message=call_reply event=call_reply_received socket="#Port<0.67620>"
+[2015-12-02 16:49:04.098] severity=debug module=gen_rpc_acceptor pid="<0.643.0>" function=handle_info message=call_reply event=call_reply_sent socket="#Port<0.67620>"
+[2015-12-02 16:49:04.098] severity=debug module=gen_rpc_client pid="<0.638.0>" function=handle_info message=tcp event=reply_received call_reference="#Ref<0.0.2.3650>" worker_pid="<0.642.0>" action=sending_to_worker
+[2015-12-02 16:49:04.098] severity=debug module=gen_rpc_client pid="<0.642.0>" function=call_worker event=reply_received call_reference="#Ref<0.0.2.3650>" reply="{1449,103744,98400}"
+[2015-12-02 16:49:04.599] severity=info module=gen_rpc_client pid="<0.638.0>" function=handle_info message=timeout event=client_inactivity_timeout socket="#Port<0.67619>" action=stopping
+[2015-12-02 16:49:04.600] severity=debug module=gen_rpc_client pid="<0.638.0>" function=terminate socket="#Port<0.67619>"
+[2015-12-02 16:49:04.640] severity=debug module=gen_rpc_client_sup pid="<0.645.0>" function=stop_child event=stopping_client client_pid="<0.638.0>"
+[2015-12-02 16:49:04.641] severity=notice module=gen_rpc_acceptor pid="<0.643.0>" function=handle_info message=tcp_closed event=tcp_socket_closed socket="#Port<0.67620>" client_node="gen_rpc_master@127.0.0.1" action=stopping
+[2015-12-02 16:49:04.641] severity=debug module=gen_rpc_acceptor pid="<0.643.0>" function=terminate socket="#Port<0.67620>"
+[2015-12-02 16:49:04.641] severity=notice module=gen_rpc_server pid="<0.641.0>" function=handle_info message=acceptor_exit socket="#Port<0.67618>" acceptor_pid="<0.643.0>" reason="normal" action=stopping
+[2015-12-02 16:49:04.641] severity=debug module=gen_rpc_server pid="<0.641.0>" function=terminate socket="#Port<0.67618>"
+[2015-12-02 16:49:04.642] severity=debug module=gen_rpc_acceptor_sup pid="<0.646.0>" function=stop_child event=stopping_acceptor acceptor_pid="<0.643.0>"
+[2015-12-02 16:49:04.642] severity=debug module=gen_rpc_server_sup pid="<0.647.0>" function=stop_child event=stopping_server server_pid="<0.641.0>"
+[2015-12-02 16:49:04.701] severity=debug module=gen_rpc_dispatcher pid="<0.636.0>" function=terminate reason="shutdown"
+[2015-12-02 16:49:04.702] severity=info module=gen_rpc pid="<0.6.0>" Application gen_rpc exited with reason: stopped
+[2015-12-02 16:49:04.703] severity=debug module=gen_rpc pid="<0.651.0>" Supervisor gen_rpc_sup started gen_rpc_server_sup:start_link() at pid <0.652.0>
+[2015-12-02 16:49:04.703] severity=debug module=gen_rpc pid="<0.651.0>" Supervisor gen_rpc_sup started gen_rpc_acceptor_sup:start_link() at pid <0.653.0>
+[2015-12-02 16:49:04.703] severity=info module=gen_rpc_dispatcher pid="<0.654.0>" function=init
+[2015-12-02 16:49:04.703] severity=debug module=gen_rpc pid="<0.651.0>" Supervisor gen_rpc_sup started gen_rpc_dispatcher:start_link() at pid <0.654.0>
+[2015-12-02 16:49:04.703] severity=debug module=gen_rpc pid="<0.651.0>" Supervisor gen_rpc_sup started gen_rpc_client_sup:start_link() at pid <0.655.0>
+[2015-12-02 16:49:04.703] severity=info module=gen_rpc pid="<0.6.0>" Application gen_rpc started on node 'gen_rpc_master@127.0.0.1'
+[2015-12-02 16:49:04.732] severity=debug module=gen_rpc_dispatcher pid="<0.654.0>" function=terminate reason="shutdown"
+[2015-12-02 16:49:04.732] severity=info module=gen_rpc pid="<0.6.0>" Application gen_rpc exited with reason: stopped
+[2015-12-02 16:49:04.733] severity=debug module=gen_rpc pid="<0.662.0>" Supervisor gen_rpc_sup started gen_rpc_server_sup:start_link() at pid <0.663.0>
+[2015-12-02 16:49:04.734] severity=debug module=gen_rpc pid="<0.662.0>" Supervisor gen_rpc_sup started gen_rpc_acceptor_sup:start_link() at pid <0.664.0>
+[2015-12-02 16:49:04.734] severity=info module=gen_rpc_dispatcher pid="<0.665.0>" function=init
+[2015-12-02 16:49:04.734] severity=debug module=gen_rpc pid="<0.662.0>" Supervisor gen_rpc_sup started gen_rpc_dispatcher:start_link() at pid <0.665.0>
+[2015-12-02 16:49:04.734] severity=debug module=gen_rpc pid="<0.662.0>" Supervisor gen_rpc_sup started gen_rpc_client_sup:start_link() at pid <0.666.0>
+[2015-12-02 16:49:04.734] severity=info module=gen_rpc pid="<0.6.0>" Application gen_rpc started on node 'gen_rpc_master@127.0.0.1'
+
+----------------------------------------------------
+2015-12-02 16:49:04.734
+Testing [server_inactivity_timeout]
+
+[2015-12-02 16:49:04.734] severity=info module=gen_rpc_client pid="<0.657.0>" function=call event=client_process_not_found server_node="gen_rpc_master@127.0.0.1" action=spawning_client
+[2015-12-02 16:49:04.734] severity=debug module=gen_rpc_dispatcher pid="<0.665.0>" function=handle_call message=start_client event=starting_client_server server_node="gen_rpc_master@127.0.0.1"
+[2015-12-02 16:49:04.734] severity=debug module=gen_rpc_client_sup pid="<0.665.0>" function=start_child event=starting_new_client server_node="gen_rpc_master@127.0.0.1"
+[2015-12-02 16:49:04.734] severity=info module=gen_rpc_client pid="<0.667.0>" function=init event=initializing_client server_node="gen_rpc_master@127.0.0.1" connect_timeout=500 send_timeout=500 receive_timeout=15000 inactivity_timeout=infinity
+[2015-12-02 16:49:04.735] severity=debug module=gen_rpc_server_sup pid="<0.669.0>" function=start_child event=starting_new_server client_node="gen_rpc_master@127.0.0.1"
+[2015-12-02 16:49:04.735] severity=info module=gen_rpc_server pid="<0.670.0>" function=init client_node="gen_rpc_master@127.0.0.1"
+[2015-12-02 16:49:04.735] severity=info module=gen_rpc_server pid="<0.670.0>" function=init event=listener_started_successfully client_node="gen_rpc_master@127.0.0.1"
+[2015-12-02 16:49:04.735] severity=debug module=gen_rpc_server pid="<0.670.0>" function=handle_call message=get_port socket="#Port<0.67698>" port=37450
+[2015-12-02 16:49:04.735] severity=debug module=gen_rpc_client pid="<0.667.0>" function=init event=remote_server_started_successfully server_node="gen_rpc_master@127.0.0.1" server_ip="{127,0,0,1}:37450"
+[2015-12-02 16:49:04.736] severity=info module=gen_rpc_server pid="<0.670.0>" function=handle_info event=client_connection_received client_ip="{127,0,0,1}" client_node="gen_rpc_master@127.0.0.1" socket="#Port<0.67698>" action=starting_acceptor
+[2015-12-02 16:49:04.736] severity=debug module=gen_rpc_acceptor_sup pid="<0.670.0>" function=start_child event=starting_new_acceptor client_ip="{127,0,0,1}" client_node="gen_rpc_master@127.0.0.1"
+[2015-12-02 16:49:04.736] severity=info module=gen_rpc_acceptor pid="<0.671.0>" function=init client_node="gen_rpc_master@127.0.0.1" client_ip="{127,0,0,1}"
+[2015-12-02 16:49:04.736] severity=debug module=gen_rpc_client pid="<0.667.0>" function=init event=connecting_to_server server_node="gen_rpc_master@127.0.0.1" server_ip="{127,0,0,1}:37450" result=success
+[2015-12-02 16:49:04.736] severity=debug module=gen_rpc_client pid="<0.667.0>" function=handle_call message=call event=constructing_call_term socket="#Port<0.67699>" call_reference="#Ref<0.0.1.5781>"
+[2015-12-02 16:49:04.736] severity=debug module=gen_rpc_acceptor pid="<0.671.0>" function=waiting_for_socket event=acquiring_socket_ownership socket="#Port<0.67700>" client_ip="{127,0,0,1}" connected_ip="{127,0,0,1}"
+[2015-12-02 16:49:04.736] severity=debug module=gen_rpc_client pid="<0.667.0>" function=handle_call message=call event=transmission_succeeded socket="#Port<0.67699>" call_reference="#Ref<0.0.1.5781>"
+[2015-12-02 16:49:04.736] severity=debug module=gen_rpc_acceptor pid="<0.671.0>" function=waiting_for_data event=call_received socket="#Port<0.67700>" node="gen_rpc_master@127.0.0.1" call_reference="#Ref<0.0.1.5781>" client_pid="<0.672.0>" worker_pid="<0.673.0>"
+[2015-12-02 16:49:04.737] severity=debug module=gen_rpc_acceptor pid="<0.673.0>" function=call_worker event=call_received call_reference="#Ref<0.0.1.5781>" module=os function=timestamp args="[]"
+[2015-12-02 16:49:04.737] severity=debug module=gen_rpc_acceptor pid="<0.671.0>" function=handle_info message=call_reply event=call_reply_received socket="#Port<0.67700>"
+[2015-12-02 16:49:04.737] severity=debug module=gen_rpc_acceptor pid="<0.671.0>" function=handle_info message=call_reply event=call_reply_sent socket="#Port<0.67700>"
+[2015-12-02 16:49:04.737] severity=debug module=gen_rpc_client pid="<0.667.0>" function=handle_info message=tcp event=reply_received call_reference="#Ref<0.0.1.5781>" worker_pid="<0.672.0>" action=sending_to_worker
+[2015-12-02 16:49:04.737] severity=debug module=gen_rpc_client pid="<0.672.0>" function=call_worker event=reply_received call_reference="#Ref<0.0.1.5781>" reply="{1449,103744,737019}"
+[2015-12-02 16:49:05.238] severity=info module=gen_rpc_acceptor pid="<0.671.0>" function=handle_info message=timeout event=server_inactivity_timeout socket="#Port<0.67700>" action=stopping
+[2015-12-02 16:49:05.238] severity=debug module=gen_rpc_acceptor pid="<0.671.0>" function=terminate socket="#Port<0.67700>"
+[2015-12-02 16:49:05.275] severity=notice module=gen_rpc_server pid="<0.670.0>" function=handle_info message=acceptor_exit socket="#Port<0.67698>" acceptor_pid="<0.671.0>" reason="normal" action=stopping
+[2015-12-02 16:49:05.275] severity=debug module=gen_rpc_server pid="<0.670.0>" function=terminate socket="#Port<0.67698>"
+[2015-12-02 16:49:05.275] severity=debug module=gen_rpc_acceptor_sup pid="<0.674.0>" function=stop_child event=stopping_acceptor acceptor_pid="<0.671.0>"
+[2015-12-02 16:49:05.276] severity=debug module=gen_rpc_acceptor_sup pid="<0.675.0>" function=stop_child event=stopping_acceptor acceptor_pid="<0.671.0>"
+[2015-12-02 16:49:05.276] severity=debug module=gen_rpc_server_sup pid="<0.676.0>" function=stop_child event=stopping_server server_pid="<0.670.0>"
+[2015-12-02 16:49:05.276] severity=warning module=gen_rpc_client pid="<0.667.0>" function=handle_info message=tcp_closed event=tcp_socket_closed socket="#Port<0.67699>" action=stopping
+[2015-12-02 16:49:05.276] severity=debug module=gen_rpc_client pid="<0.667.0>" function=terminate socket="#Port<0.67699>"
+[2015-12-02 16:49:05.276] severity=debug module=gen_rpc_client_sup pid="<0.677.0>" function=stop_child event=stopping_client client_pid="<0.667.0>"
+[2015-12-02 16:49:05.339] severity=debug module=gen_rpc_dispatcher pid="<0.665.0>" function=terminate reason="shutdown"
+[2015-12-02 16:49:05.342] severity=info module=gen_rpc pid="<0.6.0>" Application gen_rpc exited with reason: stopped
+[2015-12-02 16:49:05.351] severity=debug module=gen_rpc pid="<0.681.0>" Supervisor gen_rpc_sup started gen_rpc_server_sup:start_link() at pid <0.682.0>
+[2015-12-02 16:49:05.351] severity=debug module=gen_rpc pid="<0.681.0>" Supervisor gen_rpc_sup started gen_rpc_acceptor_sup:start_link() at pid <0.683.0>
+[2015-12-02 16:49:05.351] severity=info module=gen_rpc_dispatcher pid="<0.684.0>" function=init
+[2015-12-02 16:49:05.352] severity=debug module=gen_rpc pid="<0.681.0>" Supervisor gen_rpc_sup started gen_rpc_dispatcher:start_link() at pid <0.684.0>
+[2015-12-02 16:49:05.352] severity=debug module=gen_rpc pid="<0.681.0>" Supervisor gen_rpc_sup started gen_rpc_client_sup:start_link() at pid <0.685.0>
+[2015-12-02 16:49:05.352] severity=info module=gen_rpc pid="<0.6.0>" Application gen_rpc started on node 'gen_rpc_master@127.0.0.1'
+16:49:06.448 [info] Application lager started on node 'gen_rpc_slave@127.0.0.1'
+16:49:06.448 [info] Application crypto started on node 'gen_rpc_slave@127.0.0.1'
+16:49:06.470 [info] Application asn1 started on node 'gen_rpc_slave@127.0.0.1'
+16:49:06.488 [info] Application public_key started on node 'gen_rpc_slave@127.0.0.1'
+16:49:06.505 [info] Application ssl started on node 'gen_rpc_slave@127.0.0.1'
+16:49:06.531 [info] function=init
+
+----------------------------------------------------
+2015-12-02 16:49:06.540
+Testing [remote_node_call]
+
+[2015-12-02 16:49:06.540] severity=info module=gen_rpc_client pid="<0.687.0>" function=call event=client_process_not_found server_node="gen_rpc_slave@127.0.0.1" action=spawning_client
+[2015-12-02 16:49:06.540] severity=debug module=gen_rpc_dispatcher pid="<0.684.0>" function=handle_call message=start_client event=starting_client_server server_node="gen_rpc_slave@127.0.0.1"
+[2015-12-02 16:49:06.540] severity=debug module=gen_rpc_client_sup pid="<0.684.0>" function=start_child event=starting_new_client server_node="gen_rpc_slave@127.0.0.1"
+[2015-12-02 16:49:06.541] severity=info module=gen_rpc_client pid="<0.699.0>" function=init event=initializing_client server_node="gen_rpc_slave@127.0.0.1" connect_timeout=500 send_timeout=500 receive_timeout=15000 inactivity_timeout=infinity
+16:49:06.539 [info] Application gen_rpc started on node 'gen_rpc_slave@127.0.0.1'
+16:49:06.562 [info] function=init client_node="gen_rpc_master@127.0.0.1"
+16:49:06.567 [info] function=init event=listener_started_successfully client_node="gen_rpc_master@127.0.0.1"
+[2015-12-02 16:49:06.568] severity=debug module=gen_rpc_client pid="<0.699.0>" function=get_remote_node_ip node="gen_rpc_slave@127.0.0.1" ip_address="{127,0,0,1}"
+[2015-12-02 16:49:06.568] severity=debug module=gen_rpc_client pid="<0.699.0>" function=init event=remote_server_started_successfully server_node="gen_rpc_slave@127.0.0.1" server_ip="{127,0,0,1}:58008"
+[2015-12-02 16:49:06.568] severity=debug module=gen_rpc_client pid="<0.699.0>" function=init event=connecting_to_server server_node="gen_rpc_slave@127.0.0.1" server_ip="{127,0,0,1}:58008" result=success
+[2015-12-02 16:49:06.569] severity=debug module=gen_rpc_client pid="<0.699.0>" function=handle_call message=call event=constructing_call_term socket="#Port<0.68228>" call_reference="#Ref<0.0.1.5881>"
+[2015-12-02 16:49:06.569] severity=debug module=gen_rpc_client pid="<0.699.0>" function=handle_call message=call event=transmission_succeeded socket="#Port<0.68228>" call_reference="#Ref<0.0.1.5881>"
+16:49:06.569 [info] function=handle_info event=client_connection_received client_ip="{127,0,0,1}" client_node="gen_rpc_master@127.0.0.1" socket="#Port<0.5192>" action=starting_acceptor
+16:49:06.584 [info] function=init client_node="gen_rpc_master@127.0.0.1" client_ip="{127,0,0,1}"
+[2015-12-02 16:49:06.585] severity=debug module=gen_rpc_client pid="<0.699.0>" function=handle_info message=tcp event=reply_received call_reference="#Ref<0.0.1.5881>" worker_pid="<0.701.0>" action=sending_to_worker
+[2015-12-02 16:49:06.585] severity=debug module=gen_rpc_client pid="<0.701.0>" function=call_worker event=reply_received call_reference="#Ref<0.0.1.5881>" reply="{1449,103746,584888}"
+[2015-12-02 16:49:06.593] severity=warning module=gen_rpc_client pid="<0.699.0>" function=handle_info message=nodedown event=node_down socket="#Port<0.68228>" node=gen_rpc_slave@127.0.0.1 reason="connection_closed" action=stopping
+[2015-12-02 16:49:06.594] severity=debug module=gen_rpc_client pid="<0.699.0>" function=terminate socket="#Port<0.68228>"
+[2015-12-02 16:49:06.594] severity=debug module=gen_rpc_client_sup pid="<0.702.0>" function=stop_child event=stopping_client client_pid="<0.699.0>"
+Testing lib.gen_rpc.local_functional_SUITE: TEST COMPLETE, 26 ok, 2 failed of 28 test cases
+
+Testing lib.gen_rpc.remote_functional_SUITE: Starting test, 24 test cases
+
+----------------------------------------------------
+2015-12-02 16:49:07.897
+Started [functional] suite with master node [gen_rpc_master@127.0.0.1]
+
+16:49:08.944 [info] Application lager started on node 'gen_rpc_slave@127.0.0.1'
+16:49:08.944 [info] Application crypto started on node 'gen_rpc_slave@127.0.0.1'
+16:49:08.964 [info] Application asn1 started on node 'gen_rpc_slave@127.0.0.1'
+16:49:08.980 [info] Application public_key started on node 'gen_rpc_slave@127.0.0.1'
+16:49:09.002 [info] Application ssl started on node 'gen_rpc_slave@127.0.0.1'
+16:49:09.026 [info] function=init
+
+----------------------------------------------------
+2015-12-02 16:49:09.035
+Testing [supervisor_black_box]
+
+16:49:09.034 [info] Application gen_rpc started on node 'gen_rpc_slave@127.0.0.1'
+16:49:10.022 [info] Application lager started on node 'gen_rpc_slave@127.0.0.1'
+16:49:10.022 [info] Application crypto started on node 'gen_rpc_slave@127.0.0.1'
+16:49:10.035 [info] Application asn1 started on node 'gen_rpc_slave@127.0.0.1'
+16:49:10.050 [info] Application public_key started on node 'gen_rpc_slave@127.0.0.1'
+16:49:10.082 [info] Application ssl started on node 'gen_rpc_slave@127.0.0.1'
+16:49:10.137 [info] function=init
+16:49:10.147 [info] Application gen_rpc started on node 'gen_rpc_slave@127.0.0.1'
+
+----------------------------------------------------
+2015-12-02 16:49:10.147
+Testing [call]
+
+[2015-12-02 16:49:10.149] severity=info module=gen_rpc_client pid="<0.733.0>" function=call event=client_process_not_found server_node="gen_rpc_slave@127.0.0.1" action=spawning_client
+[2015-12-02 16:49:10.149] severity=debug module=gen_rpc_dispatcher pid="<0.684.0>" function=handle_call message=start_client event=starting_client_server server_node="gen_rpc_slave@127.0.0.1"
+[2015-12-02 16:49:10.149] severity=debug module=gen_rpc_client_sup pid="<0.684.0>" function=start_child event=starting_new_client server_node="gen_rpc_slave@127.0.0.1"
+[2015-12-02 16:49:10.149] severity=info module=gen_rpc_client pid="<0.745.0>" function=init event=initializing_client server_node="gen_rpc_slave@127.0.0.1" connect_timeout=500 send_timeout=500 receive_timeout=15000 inactivity_timeout=infinity
+16:49:10.158 [info] function=init client_node="gen_rpc_master@127.0.0.1"
+16:49:10.163 [info] function=init event=listener_started_successfully client_node="gen_rpc_master@127.0.0.1"
+[2015-12-02 16:49:10.164] severity=debug module=gen_rpc_client pid="<0.745.0>" function=get_remote_node_ip node="gen_rpc_slave@127.0.0.1" ip_address="{127,0,0,1}"
+[2015-12-02 16:49:10.164] severity=debug module=gen_rpc_client pid="<0.745.0>" function=init event=remote_server_started_successfully server_node="gen_rpc_slave@127.0.0.1" server_ip="{127,0,0,1}:55792"
+[2015-12-02 16:49:10.164] severity=debug module=gen_rpc_client pid="<0.745.0>" function=init event=connecting_to_server server_node="gen_rpc_slave@127.0.0.1" server_ip="{127,0,0,1}:55792" result=success
+[2015-12-02 16:49:10.164] severity=debug module=gen_rpc_client pid="<0.745.0>" function=handle_call message=call event=constructing_call_term socket="#Port<0.68272>" call_reference="#Ref<0.0.1.6321>"
+[2015-12-02 16:49:10.165] severity=debug module=gen_rpc_client pid="<0.745.0>" function=handle_call message=call event=transmission_succeeded socket="#Port<0.68272>" call_reference="#Ref<0.0.1.6321>"
+16:49:10.165 [info] function=handle_info event=client_connection_received client_ip="{127,0,0,1}" client_node="gen_rpc_master@127.0.0.1" socket="#Port<0.5192>" action=starting_acceptor
+16:49:10.179 [info] function=init client_node="gen_rpc_master@127.0.0.1" client_ip="{127,0,0,1}"
+[2015-12-02 16:49:10.180] severity=debug module=gen_rpc_client pid="<0.745.0>" function=handle_info message=tcp event=reply_received call_reference="#Ref<0.0.1.6321>" worker_pid="<0.747.0>" action=sending_to_worker
+[2015-12-02 16:49:10.180] severity=debug module=gen_rpc_client pid="<0.747.0>" function=call_worker event=reply_received call_reference="#Ref<0.0.1.6321>" reply="{1449,103750,179590}"
+[2015-12-02 16:49:10.186] severity=warning module=gen_rpc_client pid="<0.745.0>" function=handle_info message=nodedown event=node_down socket="#Port<0.68272>" node=gen_rpc_slave@127.0.0.1 reason="connection_closed" action=stopping
+[2015-12-02 16:49:10.186] severity=debug module=gen_rpc_client pid="<0.745.0>" function=terminate socket="#Port<0.68272>"
+[2015-12-02 16:49:10.187] severity=debug module=gen_rpc_client_sup pid="<0.748.0>" function=stop_child event=stopping_client client_pid="<0.745.0>"
+16:49:11.347 [info] Application lager started on node 'gen_rpc_slave@127.0.0.1'
+16:49:11.347 [info] Application crypto started on node 'gen_rpc_slave@127.0.0.1'
+16:49:11.363 [info] Application asn1 started on node 'gen_rpc_slave@127.0.0.1'
+16:49:11.376 [info] Application public_key started on node 'gen_rpc_slave@127.0.0.1'
+16:49:11.410 [info] Application ssl started on node 'gen_rpc_slave@127.0.0.1'
+16:49:11.450 [info] function=init
+16:49:11.459 [info] Application gen_rpc started on node 'gen_rpc_slave@127.0.0.1'
+
+----------------------------------------------------
+2015-12-02 16:49:11.460
+Testing [call_mfa_undef]
+
+[2015-12-02 16:49:11.460] severity=info module=gen_rpc_client pid="<0.750.0>" function=call event=client_process_not_found server_node="gen_rpc_slave@127.0.0.1" action=spawning_client
+[2015-12-02 16:49:11.460] severity=debug module=gen_rpc_dispatcher pid="<0.684.0>" function=handle_call message=start_client event=starting_client_server server_node="gen_rpc_slave@127.0.0.1"
+[2015-12-02 16:49:11.461] severity=debug module=gen_rpc_client_sup pid="<0.684.0>" function=start_child event=starting_new_client server_node="gen_rpc_slave@127.0.0.1"
+[2015-12-02 16:49:11.461] severity=info module=gen_rpc_client pid="<0.762.0>" function=init event=initializing_client server_node="gen_rpc_slave@127.0.0.1" connect_timeout=500 send_timeout=500 receive_timeout=15000 inactivity_timeout=infinity
+16:49:11.475 [info] function=init client_node="gen_rpc_master@127.0.0.1"
+16:49:11.481 [info] function=init event=listener_started_successfully client_node="gen_rpc_master@127.0.0.1"
+[2015-12-02 16:49:11.481] severity=debug module=gen_rpc_client pid="<0.762.0>" function=get_remote_node_ip node="gen_rpc_slave@127.0.0.1" ip_address="{127,0,0,1}"
+[2015-12-02 16:49:11.481] severity=debug module=gen_rpc_client pid="<0.762.0>" function=init event=remote_server_started_successfully server_node="gen_rpc_slave@127.0.0.1" server_ip="{127,0,0,1}:50225"
+16:49:11.482 [info] function=handle_info event=client_connection_received client_ip="{127,0,0,1}" client_node="gen_rpc_master@127.0.0.1" socket="#Port<0.5192>" action=starting_acceptor
+[2015-12-02 16:49:11.482] severity=debug module=gen_rpc_client pid="<0.762.0>" function=init event=connecting_to_server server_node="gen_rpc_slave@127.0.0.1" server_ip="{127,0,0,1}:50225" result=success
+[2015-12-02 16:49:11.482] severity=debug module=gen_rpc_client pid="<0.762.0>" function=handle_call message=call event=constructing_call_term socket="#Port<0.68280>" call_reference="#Ref<0.0.1.6493>"
+[2015-12-02 16:49:11.482] severity=debug module=gen_rpc_client pid="<0.762.0>" function=handle_call message=call event=transmission_succeeded socket="#Port<0.68280>" call_reference="#Ref<0.0.1.6493>"
+16:49:11.495 [info] function=init client_node="gen_rpc_master@127.0.0.1" client_ip="{127,0,0,1}"
+[2015-12-02 16:49:11.496] severity=debug module=gen_rpc_client pid="<0.762.0>" function=handle_info message=tcp event=reply_received call_reference="#Ref<0.0.1.6493>" worker_pid="<0.764.0>" action=sending_to_worker
+[2015-12-02 16:49:11.496] severity=debug module=gen_rpc_client pid="<0.764.0>" function=call_worker event=reply_received call_reference="#Ref<0.0.1.6493>" reply="{badrpc,{'EXIT',{undef,[{os,timestamp_undef,[],[]},{gen_rpc_acceptor,call_worker,6,[{file,"/opt/test/benchtest/clean/gen_rpc/_build/test/lib/gen_rpc/src/gen_rpc_acceptor.erl"},{line,199}]}]}}}"
+
+----------------------------------------------------
+2015-12-02 16:49:11.496
+Result [call_mfa_undef]: signal=EXIT Reason={os,timestamp_undef}
+
+[2015-12-02 16:49:11.504] severity=warning module=gen_rpc_client pid="<0.762.0>" function=handle_info message=nodedown event=node_down socket="#Port<0.68280>" node=gen_rpc_slave@127.0.0.1 reason="connection_closed" action=stopping
+[2015-12-02 16:49:11.504] severity=debug module=gen_rpc_client pid="<0.762.0>" function=terminate socket="#Port<0.68280>"
+[2015-12-02 16:49:11.504] severity=debug module=gen_rpc_client_sup pid="<0.765.0>" function=stop_child event=stopping_client client_pid="<0.762.0>"
+16:49:12.644 [info] Application lager started on node 'gen_rpc_slave@127.0.0.1'
+16:49:12.645 [info] Application crypto started on node 'gen_rpc_slave@127.0.0.1'
+16:49:12.663 [info] Application asn1 started on node 'gen_rpc_slave@127.0.0.1'
+16:49:12.671 [info] Application public_key started on node 'gen_rpc_slave@127.0.0.1'
+16:49:12.692 [info] Application ssl started on node 'gen_rpc_slave@127.0.0.1'
+16:49:12.752 [info] function=init
+
+----------------------------------------------------
+2015-12-02 16:49:12.761
+Testing [call_mfa_exit]
+
+[2015-12-02 16:49:12.761] severity=info module=gen_rpc_client pid="<0.767.0>" function=call event=client_process_not_found server_node="gen_rpc_slave@127.0.0.1" action=spawning_client
+[2015-12-02 16:49:12.762] severity=debug module=gen_rpc_dispatcher pid="<0.684.0>" function=handle_call message=start_client event=starting_client_server server_node="gen_rpc_slave@127.0.0.1"
+[2015-12-02 16:49:12.762] severity=debug module=gen_rpc_client_sup pid="<0.684.0>" function=start_child event=starting_new_client server_node="gen_rpc_slave@127.0.0.1"
+[2015-12-02 16:49:12.762] severity=info module=gen_rpc_client pid="<0.779.0>" function=init event=initializing_client server_node="gen_rpc_slave@127.0.0.1" connect_timeout=500 send_timeout=500 receive_timeout=15000 inactivity_timeout=infinity
+16:49:12.761 [info] Application gen_rpc started on node 'gen_rpc_slave@127.0.0.1'
+16:49:12.769 [info] function=init client_node="gen_rpc_master@127.0.0.1"
+16:49:12.775 [info] function=init event=listener_started_successfully client_node="gen_rpc_master@127.0.0.1"
+[2015-12-02 16:49:12.775] severity=debug module=gen_rpc_client pid="<0.779.0>" function=get_remote_node_ip node="gen_rpc_slave@127.0.0.1" ip_address="{127,0,0,1}"
+[2015-12-02 16:49:12.775] severity=debug module=gen_rpc_client pid="<0.779.0>" function=init event=remote_server_started_successfully server_node="gen_rpc_slave@127.0.0.1" server_ip="{127,0,0,1}:45419"
+16:49:12.778 [info] function=handle_info event=client_connection_received client_ip="{127,0,0,1}" client_node="gen_rpc_master@127.0.0.1" socket="#Port<0.5192>" action=starting_acceptor
+[2015-12-02 16:49:12.779] severity=debug module=gen_rpc_client pid="<0.779.0>" function=init event=connecting_to_server server_node="gen_rpc_slave@127.0.0.1" server_ip="{127,0,0,1}:45419" result=success
+[2015-12-02 16:49:12.779] severity=debug module=gen_rpc_client pid="<0.779.0>" function=handle_call message=call event=constructing_call_term socket="#Port<0.68288>" call_reference="#Ref<0.0.1.6512>"
+[2015-12-02 16:49:12.779] severity=debug module=gen_rpc_client pid="<0.779.0>" function=handle_call message=call event=transmission_succeeded socket="#Port<0.68288>" call_reference="#Ref<0.0.1.6512>"
+16:49:12.792 [info] function=init client_node="gen_rpc_master@127.0.0.1" client_ip="{127,0,0,1}"
+[2015-12-02 16:49:12.792] severity=debug module=gen_rpc_client pid="<0.779.0>" function=handle_info message=tcp event=reply_received call_reference="#Ref<0.0.1.6512>" worker_pid="<0.781.0>" action=sending_to_worker
+[2015-12-02 16:49:12.792] severity=debug module=gen_rpc_client pid="<0.781.0>" function=call_worker event=reply_received call_reference="#Ref<0.0.1.6512>" reply="{badrpc,{'EXIT',die}}"
+
+----------------------------------------------------
+2015-12-02 16:49:12.792
+Result [call_mfa_undef]: signal=EXIT Reason={die}
+
+[2015-12-02 16:49:12.798] severity=warning module=gen_rpc_client pid="<0.779.0>" function=handle_info message=nodedown event=node_down socket="#Port<0.68288>" node=gen_rpc_slave@127.0.0.1 reason="connection_closed" action=stopping
+[2015-12-02 16:49:12.798] severity=debug module=gen_rpc_client pid="<0.779.0>" function=terminate socket="#Port<0.68288>"
+[2015-12-02 16:49:12.798] severity=debug module=gen_rpc_client_sup pid="<0.782.0>" function=stop_child event=stopping_client client_pid="<0.779.0>"
+16:49:13.974 [info] Application lager started on node 'gen_rpc_slave@127.0.0.1'
+16:49:13.974 [info] Application crypto started on node 'gen_rpc_slave@127.0.0.1'
+16:49:13.992 [info] Application asn1 started on node 'gen_rpc_slave@127.0.0.1'
+16:49:14.000 [info] Application public_key started on node 'gen_rpc_slave@127.0.0.1'
+16:49:14.041 [info] Application ssl started on node 'gen_rpc_slave@127.0.0.1'
+16:49:14.079 [info] function=init
+
+----------------------------------------------------
+2015-12-02 16:49:14.086
+Testing [call_mfa_throw]
+
+[2015-12-02 16:49:14.086] severity=info module=gen_rpc_client pid="<0.784.0>" function=call event=client_process_not_found server_node="gen_rpc_slave@127.0.0.1" action=spawning_client
+[2015-12-02 16:49:14.086] severity=debug module=gen_rpc_dispatcher pid="<0.684.0>" function=handle_call message=start_client event=starting_client_server server_node="gen_rpc_slave@127.0.0.1"
+[2015-12-02 16:49:14.086] severity=debug module=gen_rpc_client_sup pid="<0.684.0>" function=start_child event=starting_new_client server_node="gen_rpc_slave@127.0.0.1"
+[2015-12-02 16:49:14.086] severity=info module=gen_rpc_client pid="<0.796.0>" function=init event=initializing_client server_node="gen_rpc_slave@127.0.0.1" connect_timeout=500 send_timeout=500 receive_timeout=15000 inactivity_timeout=infinity
+16:49:14.085 [info] Application gen_rpc started on node 'gen_rpc_slave@127.0.0.1'
+16:49:14.100 [info] function=init client_node="gen_rpc_master@127.0.0.1"
+16:49:14.119 [info] function=init event=listener_started_successfully client_node="gen_rpc_master@127.0.0.1"
+[2015-12-02 16:49:14.119] severity=debug module=gen_rpc_client pid="<0.796.0>" function=get_remote_node_ip node="gen_rpc_slave@127.0.0.1" ip_address="{127,0,0,1}"
+[2015-12-02 16:49:14.119] severity=debug module=gen_rpc_client pid="<0.796.0>" function=init event=remote_server_started_successfully server_node="gen_rpc_slave@127.0.0.1" server_ip="{127,0,0,1}:51037"
+16:49:14.120 [info] function=handle_info event=client_connection_received client_ip="{127,0,0,1}" client_node="gen_rpc_master@127.0.0.1" socket="#Port<0.5192>" action=starting_acceptor
+[2015-12-02 16:49:14.121] severity=debug module=gen_rpc_client pid="<0.796.0>" function=init event=connecting_to_server server_node="gen_rpc_slave@127.0.0.1" server_ip="{127,0,0,1}:51037" result=success
+[2015-12-02 16:49:14.121] severity=debug module=gen_rpc_client pid="<0.796.0>" function=handle_call message=call event=constructing_call_term socket="#Port<0.68296>" call_reference="#Ref<0.0.1.6705>"
+[2015-12-02 16:49:14.121] severity=debug module=gen_rpc_client pid="<0.796.0>" function=handle_call message=call event=transmission_succeeded socket="#Port<0.68296>" call_reference="#Ref<0.0.1.6705>"
+16:49:14.135 [info] function=init client_node="gen_rpc_master@127.0.0.1" client_ip="{127,0,0,1}"
+[2015-12-02 16:49:14.136] severity=debug module=gen_rpc_client pid="<0.796.0>" function=handle_info message=tcp event=reply_received call_reference="#Ref<0.0.1.6705>" worker_pid="<0.798.0>" action=sending_to_worker
+[2015-12-02 16:49:14.136] severity=debug module=gen_rpc_client pid="<0.798.0>" function=call_worker event=reply_received call_reference="#Ref<0.0.1.6705>" reply="throwXdown"
+
+----------------------------------------------------
+2015-12-02 16:49:14.136
+Result [call_mfa_undef]: signal=EXIT Reason={die}
+
+[2015-12-02 16:49:14.141] severity=warning module=gen_rpc_client pid="<0.796.0>" function=handle_info message=nodedown event=node_down socket="#Port<0.68296>" node=gen_rpc_slave@127.0.0.1 reason="connection_closed" action=stopping
+[2015-12-02 16:49:14.141] severity=debug module=gen_rpc_client pid="<0.796.0>" function=terminate socket="#Port<0.68296>"
+[2015-12-02 16:49:14.142] severity=debug module=gen_rpc_client_sup pid="<0.799.0>" function=stop_child event=stopping_client client_pid="<0.796.0>"
+16:49:15.377 [info] Application lager started on node 'gen_rpc_slave@127.0.0.1'
+16:49:15.392 [info] Application crypto started on node 'gen_rpc_slave@127.0.0.1'
+16:49:15.409 [info] Application asn1 started on node 'gen_rpc_slave@127.0.0.1'
+16:49:15.413 [info] Application public_key started on node 'gen_rpc_slave@127.0.0.1'
+16:49:15.435 [info] Application ssl started on node 'gen_rpc_slave@127.0.0.1'
+16:49:15.477 [info] function=init
+
+----------------------------------------------------
+2015-12-02 16:49:15.484
+Testing [call_with_receive_timeout]
+
+[2015-12-02 16:49:15.485] severity=info module=gen_rpc_client pid="<0.801.0>" function=call event=client_process_not_found server_node="gen_rpc_slave@127.0.0.1" action=spawning_client
+[2015-12-02 16:49:15.485] severity=debug module=gen_rpc_dispatcher pid="<0.684.0>" function=handle_call message=start_client event=starting_client_server server_node="gen_rpc_slave@127.0.0.1"
+[2015-12-02 16:49:15.485] severity=debug module=gen_rpc_client_sup pid="<0.684.0>" function=start_child event=starting_new_client server_node="gen_rpc_slave@127.0.0.1"
+[2015-12-02 16:49:15.486] severity=info module=gen_rpc_client pid="<0.813.0>" function=init event=initializing_client server_node="gen_rpc_slave@127.0.0.1" connect_timeout=500 send_timeout=500 receive_timeout=15000 inactivity_timeout=infinity
+16:49:15.484 [info] Application gen_rpc started on node 'gen_rpc_slave@127.0.0.1'
+16:49:15.499 [info] function=init client_node="gen_rpc_master@127.0.0.1"
+16:49:15.505 [info] function=init event=listener_started_successfully client_node="gen_rpc_master@127.0.0.1"
+[2015-12-02 16:49:15.506] severity=debug module=gen_rpc_client pid="<0.813.0>" function=get_remote_node_ip node="gen_rpc_slave@127.0.0.1" ip_address="{127,0,0,1}"
+[2015-12-02 16:49:15.506] severity=debug module=gen_rpc_client pid="<0.813.0>" function=init event=remote_server_started_successfully server_node="gen_rpc_slave@127.0.0.1" server_ip="{127,0,0,1}:58887"
+16:49:15.506 [info] function=handle_info event=client_connection_received client_ip="{127,0,0,1}" client_node="gen_rpc_master@127.0.0.1" socket="#Port<0.5192>" action=starting_acceptor
+[2015-12-02 16:49:15.507] severity=debug module=gen_rpc_client pid="<0.813.0>" function=init event=connecting_to_server server_node="gen_rpc_slave@127.0.0.1" server_ip="{127,0,0,1}:58887" result=success
+[2015-12-02 16:49:15.507] severity=debug module=gen_rpc_client pid="<0.813.0>" function=handle_call message=call event=constructing_call_term socket="#Port<0.68304>" call_reference="#Ref<0.0.1.6881>"
+[2015-12-02 16:49:15.507] severity=debug module=gen_rpc_client pid="<0.813.0>" function=handle_call message=call event=transmission_succeeded socket="#Port<0.68304>" call_reference="#Ref<0.0.1.6881>"
+[2015-12-02 16:49:15.508] severity=notice module=gen_rpc_client pid="<0.815.0>" function=call_worker event=call_timeout call_reference="#Ref<0.0.1.6881>"
+16:49:15.522 [info] function=init client_node="gen_rpc_master@127.0.0.1" client_ip="{127,0,0,1}"
+[2015-12-02 16:49:16.011] severity=warning module=gen_rpc_client pid="<0.813.0>" function=handle_info message=nodedown event=node_down socket="#Port<0.68304>" node=gen_rpc_slave@127.0.0.1 reason="connection_closed" action=stopping
+[2015-12-02 16:49:16.011] severity=debug module=gen_rpc_client pid="<0.813.0>" function=terminate socket="#Port<0.68304>"
+[2015-12-02 16:49:16.011] severity=debug module=gen_rpc_client_sup pid="<0.816.0>" function=stop_child event=stopping_client client_pid="<0.813.0>"
+16:49:17.143 [info] Application lager started on node 'gen_rpc_slave@127.0.0.1'
+16:49:17.143 [info] Application crypto started on node 'gen_rpc_slave@127.0.0.1'
+16:49:17.174 [info] Application asn1 started on node 'gen_rpc_slave@127.0.0.1'
+16:49:17.182 [info] Application public_key started on node 'gen_rpc_slave@127.0.0.1'
+16:49:17.205 [info] Application ssl started on node 'gen_rpc_slave@127.0.0.1'
+16:49:17.241 [info] function=init
+
+----------------------------------------------------
+2015-12-02 16:49:17.248
+Testing [interleaved_call]
+
+[2015-12-02 16:49:17.249] severity=info module=gen_rpc_client pid="<0.830.0>" function=call event=client_process_not_found server_node="gen_rpc_slave@127.0.0.1" action=spawning_client
+[2015-12-02 16:49:17.249] severity=info module=gen_rpc_client pid="<0.831.0>" function=call event=client_process_not_found server_node="gen_rpc_slave@127.0.0.1" action=spawning_client
+[2015-12-02 16:49:17.249] severity=info module=gen_rpc_client pid="<0.832.0>" function=call event=client_process_not_found server_node="gen_rpc_slave@127.0.0.1" action=spawning_client
+[2015-12-02 16:49:17.249] severity=debug module=gen_rpc_dispatcher pid="<0.684.0>" function=handle_call message=start_client event=starting_client_server server_node="gen_rpc_slave@127.0.0.1"
+[2015-12-02 16:49:17.249] severity=debug module=gen_rpc_client_sup pid="<0.684.0>" function=start_child event=starting_new_client server_node="gen_rpc_slave@127.0.0.1"
+[2015-12-02 16:49:17.250] severity=info module=gen_rpc_client pid="<0.833.0>" function=init event=initializing_client server_node="gen_rpc_slave@127.0.0.1" connect_timeout=500 send_timeout=500 receive_timeout=15000 inactivity_timeout=infinity
+[2015-12-02 16:49:17.250] severity=info module=gen_rpc_dispatcher pid="<0.684.0>" function=handle_call message=start_client event=node_already_started server_node="gen_rpc_slave@127.0.0.1"
+[2015-12-02 16:49:17.250] severity=info module=gen_rpc_dispatcher pid="<0.684.0>" function=handle_call message=start_client event=node_already_started server_node="gen_rpc_slave@127.0.0.1"
+16:49:17.248 [info] Application gen_rpc started on node 'gen_rpc_slave@127.0.0.1'
+16:49:17.260 [info] function=init client_node="gen_rpc_master@127.0.0.1"
+16:49:17.273 [info] function=init event=listener_started_successfully client_node="gen_rpc_master@127.0.0.1"
+[2015-12-02 16:49:17.274] severity=debug module=gen_rpc_client pid="<0.833.0>" function=get_remote_node_ip node="gen_rpc_slave@127.0.0.1" ip_address="{127,0,0,1}"
+[2015-12-02 16:49:17.274] severity=debug module=gen_rpc_client pid="<0.833.0>" function=init event=remote_server_started_successfully server_node="gen_rpc_slave@127.0.0.1" server_ip="{127,0,0,1}:52045"
+[2015-12-02 16:49:17.274] severity=debug module=gen_rpc_client pid="<0.833.0>" function=init event=connecting_to_server server_node="gen_rpc_slave@127.0.0.1" server_ip="{127,0,0,1}:52045" result=success
+[2015-12-02 16:49:17.274] severity=debug module=gen_rpc_client pid="<0.833.0>" function=handle_call message=call event=constructing_call_term socket="#Port<0.68312>" call_reference="#Ref<0.0.2.4955>"
+[2015-12-02 16:49:17.274] severity=debug module=gen_rpc_client pid="<0.833.0>" function=handle_call message=call event=transmission_succeeded socket="#Port<0.68312>" call_reference="#Ref<0.0.2.4955>"
+[2015-12-02 16:49:17.274] severity=debug module=gen_rpc_client pid="<0.833.0>" function=handle_call message=call event=constructing_call_term socket="#Port<0.68312>" call_reference="#Ref<0.0.2.4957>"
+[2015-12-02 16:49:17.274] severity=debug module=gen_rpc_client pid="<0.833.0>" function=handle_call message=call event=transmission_succeeded socket="#Port<0.68312>" call_reference="#Ref<0.0.2.4957>"
+[2015-12-02 16:49:17.274] severity=debug module=gen_rpc_client pid="<0.833.0>" function=handle_call message=call event=constructing_call_term socket="#Port<0.68312>" call_reference="#Ref<0.0.2.4959>"
+[2015-12-02 16:49:17.275] severity=debug module=gen_rpc_client pid="<0.833.0>" function=handle_call message=call event=transmission_succeeded socket="#Port<0.68312>" call_reference="#Ref<0.0.2.4959>"
+16:49:17.275 [info] function=handle_info event=client_connection_received client_ip="{127,0,0,1}" client_node="gen_rpc_master@127.0.0.1" socket="#Port<0.5192>" action=starting_acceptor
+[2015-12-02 16:49:17.285] severity=notice module=gen_rpc_client pid="<0.836.0>" function=call_worker event=call_timeout call_reference="#Ref<0.0.2.4957>"
+
+----------------------------------------------------
+2015-12-02 16:49:17.285
+Received proper reply from Worker 2
+
+16:49:17.296 [info] function=init client_node="gen_rpc_master@127.0.0.1" client_ip="{127,0,0,1}"
+[2015-12-02 16:49:17.304] severity=debug module=gen_rpc_client pid="<0.833.0>" function=handle_info message=tcp event=reply_received call_reference="#Ref<0.0.2.4959>" worker_pid="<0.837.0>" action=sending_to_worker
+[2015-12-02 16:49:17.304] severity=debug module=gen_rpc_client pid="<0.837.0>" function=call_worker event=reply_received call_reference="#Ref<0.0.2.4959>" reply="3"
+
+----------------------------------------------------
+2015-12-02 16:49:17.304
+Received proper reply from Worker 3
+
+[2015-12-02 16:49:18.305] severity=notice module=gen_rpc_client pid="<0.833.0>" function=handle_info message=tcp event=reply_received_with_dead_worker call_reference="#Ref<0.0.2.4957>" worker_pid="<0.836.0>"
+[2015-12-02 16:49:19.305] severity=debug module=gen_rpc_client pid="<0.833.0>" function=handle_info message=tcp event=reply_received call_reference="#Ref<0.0.2.4955>" worker_pid="<0.835.0>" action=sending_to_worker
+[2015-12-02 16:49:19.305] severity=debug module=gen_rpc_client pid="<0.835.0>" function=call_worker event=reply_received call_reference="#Ref<0.0.2.4955>" reply="1"
+
+----------------------------------------------------
+2015-12-02 16:49:19.305
+Received proper reply from Worker 1
+
+[2015-12-02 16:49:19.307] severity=warning module=gen_rpc_client pid="<0.833.0>" function=handle_info message=nodedown event=node_down socket="#Port<0.68312>" node=gen_rpc_slave@127.0.0.1 reason="connection_closed" action=stopping
+[2015-12-02 16:49:19.307] severity=debug module=gen_rpc_client pid="<0.833.0>" function=terminate socket="#Port<0.68312>"
+[2015-12-02 16:49:19.307] severity=debug module=gen_rpc_client_sup pid="<0.838.0>" function=stop_child event=stopping_client client_pid="<0.833.0>"
+16:49:20.411 [info] Application lager started on node 'gen_rpc_slave@127.0.0.1'
+16:49:20.411 [info] Application crypto started on node 'gen_rpc_slave@127.0.0.1'
+16:49:20.429 [info] Application asn1 started on node 'gen_rpc_slave@127.0.0.1'
+16:49:20.441 [info] Application public_key started on node 'gen_rpc_slave@127.0.0.1'
+16:49:20.459 [info] Application ssl started on node 'gen_rpc_slave@127.0.0.1'
+16:49:20.511 [info] function=init
+
+----------------------------------------------------
+2015-12-02 16:49:20.517
+Testing [cast]
+
+[2015-12-02 16:49:20.517] severity=info module=gen_rpc_client pid="<0.840.0>" function=cast event=client_process_not_found server_node="gen_rpc_slave@127.0.0.1" action=spawning_client
+[2015-12-02 16:49:20.517] severity=debug module=gen_rpc_dispatcher pid="<0.684.0>" function=handle_call message=start_client event=starting_client_server server_node="gen_rpc_slave@127.0.0.1"
+[2015-12-02 16:49:20.518] severity=debug module=gen_rpc_client_sup pid="<0.684.0>" function=start_child event=starting_new_client server_node="gen_rpc_slave@127.0.0.1"
+[2015-12-02 16:49:20.518] severity=info module=gen_rpc_client pid="<0.852.0>" function=init event=initializing_client server_node="gen_rpc_slave@127.0.0.1" connect_timeout=500 send_timeout=500 receive_timeout=15000 inactivity_timeout=infinity
+16:49:20.517 [info] Application gen_rpc started on node 'gen_rpc_slave@127.0.0.1'
+
+----------------------------------------------------
+2015-12-02 16:49:20.522
+[2015-12-02 16:49:20.522] severity=error module=gen_rpc_client pid="<0.852.0>" function=init event=connecting_to_server server_node="gen_rpc_slave@127.0.0.1" result=failure reason="nodedown"
+
+
+[2015-12-02 16:49:20.522] severity=error module=gen_rpc_client pid="<0.852.0>" function=init event=connecting_to_server server_node="gen_rpc_slave@127.0.0.1" result=failure reason="nodedown"
+[2015-12-02 16:49:20.522] severity=debug module=gen_rpc_client pid="<0.852.0>" function=terminate socket="undefined"
+[2015-12-02 16:49:20.522] severity=debug module=gen_rpc_client_sup pid="<0.854.0>" function=stop_child event=stopping_client client_pid="<0.852.0>"
+
+----------------------------------------------------
+2015-12-02 16:49:20.523
+[2015-12-02 16:49:20.523] severity=error module=gen_rpc pid="<0.852.0>" gen_server 'gen_rpc_slave@127.0.0.1' terminated with reason: {badrpc,nodedown}
+
+
+[2015-12-02 16:49:20.523] severity=error module=gen_rpc pid="<0.852.0>" gen_server 'gen_rpc_slave@127.0.0.1' terminated with reason: {badrpc,nodedown}
+
+----------------------------------------------------
+2015-12-02 16:49:20.523
+[2015-12-02 16:49:20.523] severity=error module=gen_rpc pid="<0.852.0>" CRASH REPORT Process 'gen_rpc_slave@127.0.0.1' with 0 neighbours exited with reason: {badrpc,nodedown} in gen_server:terminate/7 line 826
+
+
+[2015-12-02 16:49:20.523] severity=error module=gen_rpc pid="<0.852.0>" CRASH REPORT Process 'gen_rpc_slave@127.0.0.1' with 0 neighbours exited with reason: {badrpc,nodedown} in gen_server:terminate/7 line 826
+
+----------------------------------------------------
+2015-12-02 16:49:20.524
+[2015-12-02 16:49:20.523] severity=error module=gen_rpc pid="<0.685.0>" Supervisor gen_rpc_client_sup had child undefined started with {gen_rpc_client,start_link,undefined} at <0.852.0> exit with reason {badrpc,nodedown} in context child_terminated
+
+
+[2015-12-02 16:49:20.523] severity=error module=gen_rpc pid="<0.685.0>" Supervisor gen_rpc_client_sup had child undefined started with {gen_rpc_client,start_link,undefined} at <0.852.0> exit with reason {badrpc,nodedown} in context child_terminated
+16:49:21.747 [info] Application lager started on node 'gen_rpc_slave@127.0.0.1'
+16:49:21.747 [info] Application crypto started on node 'gen_rpc_slave@127.0.0.1'
+16:49:21.764 [info] Application asn1 started on node 'gen_rpc_slave@127.0.0.1'
+16:49:21.777 [info] Application public_key started on node 'gen_rpc_slave@127.0.0.1'
+16:49:21.817 [info] Application ssl started on node 'gen_rpc_slave@127.0.0.1'
+16:49:21.850 [info] function=init
+16:49:21.857 [info] Application gen_rpc started on node 'gen_rpc_slave@127.0.0.1'
+
+----------------------------------------------------
+2015-12-02 16:49:21.858
+Testing [cast_anonymous_function]
+
+[2015-12-02 16:49:21.858] severity=info module=gen_rpc_client pid="<0.856.0>" function=cast event=client_process_not_found server_node="gen_rpc_slave@127.0.0.1" action=spawning_client
+[2015-12-02 16:49:21.858] severity=debug module=gen_rpc_dispatcher pid="<0.684.0>" function=handle_call message=start_client event=starting_client_server server_node="gen_rpc_slave@127.0.0.1"
+[2015-12-02 16:49:21.858] severity=debug module=gen_rpc_client_sup pid="<0.684.0>" function=start_child event=starting_new_client server_node="gen_rpc_slave@127.0.0.1"
+[2015-12-02 16:49:21.859] severity=info module=gen_rpc_client pid="<0.868.0>" function=init event=initializing_client server_node="gen_rpc_slave@127.0.0.1" connect_timeout=500 send_timeout=500 receive_timeout=15000 inactivity_timeout=infinity
+
+----------------------------------------------------
+2015-12-02 16:49:21.869
+[2015-12-02 16:49:21.868] severity=error module=gen_rpc_client pid="<0.868.0>" function=init event=connecting_to_server server_node="gen_rpc_slave@127.0.0.1" result=failure reason="nodedown"
+
+
+[2015-12-02 16:49:21.868] severity=error module=gen_rpc_client pid="<0.868.0>" function=init event=connecting_to_server server_node="gen_rpc_slave@127.0.0.1" result=failure reason="nodedown"
+[2015-12-02 16:49:21.868] severity=debug module=gen_rpc_client pid="<0.868.0>" function=terminate socket="undefined"
+[2015-12-02 16:49:21.868] severity=debug module=gen_rpc_client_sup pid="<0.870.0>" function=stop_child event=stopping_client client_pid="<0.868.0>"
+
+----------------------------------------------------
+2015-12-02 16:49:21.870
+[2015-12-02 16:49:21.869] severity=error module=gen_rpc pid="<0.868.0>" gen_server 'gen_rpc_slave@127.0.0.1' terminated with reason: {badrpc,nodedown}
+
+
+[2015-12-02 16:49:21.869] severity=error module=gen_rpc pid="<0.868.0>" gen_server 'gen_rpc_slave@127.0.0.1' terminated with reason: {badrpc,nodedown}
+
+----------------------------------------------------
+2015-12-02 16:49:21.870
+[2015-12-02 16:49:21.869] severity=error module=gen_rpc pid="<0.868.0>" CRASH REPORT Process 'gen_rpc_slave@127.0.0.1' with 0 neighbours exited with reason: {badrpc,nodedown} in gen_server:terminate/7 line 826
+
+
+[2015-12-02 16:49:21.869] severity=error module=gen_rpc pid="<0.868.0>" CRASH REPORT Process 'gen_rpc_slave@127.0.0.1' with 0 neighbours exited with reason: {badrpc,nodedown} in gen_server:terminate/7 line 826
+
+----------------------------------------------------
+2015-12-02 16:49:21.870
+[2015-12-02 16:49:21.869] severity=error module=gen_rpc pid="<0.685.0>" Supervisor gen_rpc_client_sup had child undefined started with {gen_rpc_client,start_link,undefined} at <0.868.0> exit with reason {badrpc,nodedown} in context child_terminated
+
+
+[2015-12-02 16:49:21.869] severity=error module=gen_rpc pid="<0.685.0>" Supervisor gen_rpc_client_sup had child undefined started with {gen_rpc_client,start_link,undefined} at <0.868.0> exit with reason {badrpc,nodedown} in context child_terminated
+16:49:23.055 [info] Application lager started on node 'gen_rpc_slave@127.0.0.1'
+16:49:23.073 [info] Application crypto started on node 'gen_rpc_slave@127.0.0.1'
+16:49:23.099 [info] Application asn1 started on node 'gen_rpc_slave@127.0.0.1'
+16:49:23.107 [info] Application public_key started on node 'gen_rpc_slave@127.0.0.1'
+16:49:23.133 [info] Application ssl started on node 'gen_rpc_slave@127.0.0.1'
+16:49:23.158 [info] function=init
+
+----------------------------------------------------
+2015-12-02 16:49:23.165
+Testing [cast_mfa_undef]
+
+[2015-12-02 16:49:23.165] severity=info module=gen_rpc_client pid="<0.872.0>" function=cast event=client_process_not_found server_node="gen_rpc_slave@127.0.0.1" action=spawning_client
+[2015-12-02 16:49:23.165] severity=debug module=gen_rpc_dispatcher pid="<0.684.0>" function=handle_call message=start_client event=starting_client_server server_node="gen_rpc_slave@127.0.0.1"
+[2015-12-02 16:49:23.165] severity=debug module=gen_rpc_client_sup pid="<0.684.0>" function=start_child event=starting_new_client server_node="gen_rpc_slave@127.0.0.1"
+[2015-12-02 16:49:23.166] severity=info module=gen_rpc_client pid="<0.884.0>" function=init event=initializing_client server_node="gen_rpc_slave@127.0.0.1" connect_timeout=500 send_timeout=500 receive_timeout=15000 inactivity_timeout=infinity
+16:49:23.164 [info] Application gen_rpc started on node 'gen_rpc_slave@127.0.0.1'
+
+----------------------------------------------------
+2015-12-02 16:49:23.170
+[2015-12-02 16:49:23.170] severity=error module=gen_rpc_client pid="<0.884.0>" function=init event=connecting_to_server server_node="gen_rpc_slave@127.0.0.1" result=failure reason="nodedown"
+
+
+[2015-12-02 16:49:23.170] severity=error module=gen_rpc_client pid="<0.884.0>" function=init event=connecting_to_server server_node="gen_rpc_slave@127.0.0.1" result=failure reason="nodedown"
+[2015-12-02 16:49:23.170] severity=debug module=gen_rpc_client pid="<0.884.0>" function=terminate socket="undefined"
+[2015-12-02 16:49:23.170] severity=debug module=gen_rpc_client_sup pid="<0.886.0>" function=stop_child event=stopping_client client_pid="<0.884.0>"
+
+----------------------------------------------------
+2015-12-02 16:49:23.171
+[2015-12-02 16:49:23.170] severity=error module=gen_rpc pid="<0.884.0>" gen_server 'gen_rpc_slave@127.0.0.1' terminated with reason: {badrpc,nodedown}
+
+
+[2015-12-02 16:49:23.170] severity=error module=gen_rpc pid="<0.884.0>" gen_server 'gen_rpc_slave@127.0.0.1' terminated with reason: {badrpc,nodedown}
+
+----------------------------------------------------
+2015-12-02 16:49:23.171
+[2015-12-02 16:49:23.170] severity=error module=gen_rpc pid="<0.884.0>" CRASH REPORT Process 'gen_rpc_slave@127.0.0.1' with 0 neighbours exited with reason: {badrpc,nodedown} in gen_server:terminate/7 line 826
+
+
+[2015-12-02 16:49:23.170] severity=error module=gen_rpc pid="<0.884.0>" CRASH REPORT Process 'gen_rpc_slave@127.0.0.1' with 0 neighbours exited with reason: {badrpc,nodedown} in gen_server:terminate/7 line 826
+
+----------------------------------------------------
+2015-12-02 16:49:23.171
+[2015-12-02 16:49:23.171] severity=error module=gen_rpc pid="<0.685.0>" Supervisor gen_rpc_client_sup had child undefined started with {gen_rpc_client,start_link,undefined} at <0.884.0> exit with reason {badrpc,nodedown} in context child_terminated
+
+
+[2015-12-02 16:49:23.171] severity=error module=gen_rpc pid="<0.685.0>" Supervisor gen_rpc_client_sup had child undefined started with {gen_rpc_client,start_link,undefined} at <0.884.0> exit with reason {badrpc,nodedown} in context child_terminated
+16:49:24.249 [info] Application lager started on node 'gen_rpc_slave@127.0.0.1'
+16:49:24.249 [info] Application crypto started on node 'gen_rpc_slave@127.0.0.1'
+16:49:24.265 [info] Application asn1 started on node 'gen_rpc_slave@127.0.0.1'
+16:49:24.274 [info] Application public_key started on node 'gen_rpc_slave@127.0.0.1'
+16:49:24.328 [info] Application ssl started on node 'gen_rpc_slave@127.0.0.1'
+16:49:24.351 [info] function=init
+
+----------------------------------------------------
+2015-12-02 16:49:24.357
+Testing [cast_mfa_exit]
+
+[2015-12-02 16:49:24.357] severity=info module=gen_rpc_client pid="<0.888.0>" function=cast event=client_process_not_found server_node="gen_rpc_slave@127.0.0.1" action=spawning_client
+[2015-12-02 16:49:24.357] severity=debug module=gen_rpc_dispatcher pid="<0.684.0>" function=handle_call message=start_client event=starting_client_server server_node="gen_rpc_slave@127.0.0.1"
+[2015-12-02 16:49:24.357] severity=debug module=gen_rpc_client_sup pid="<0.684.0>" function=start_child event=starting_new_client server_node="gen_rpc_slave@127.0.0.1"
+[2015-12-02 16:49:24.358] severity=info module=gen_rpc_client pid="<0.900.0>" function=init event=initializing_client server_node="gen_rpc_slave@127.0.0.1" connect_timeout=500 send_timeout=500 receive_timeout=15000 inactivity_timeout=infinity
+16:49:24.356 [info] Application gen_rpc started on node 'gen_rpc_slave@127.0.0.1'
+
+----------------------------------------------------
+2015-12-02 16:49:24.361
+[2015-12-02 16:49:24.361] severity=error module=gen_rpc_client pid="<0.900.0>" function=init event=connecting_to_server server_node="gen_rpc_slave@127.0.0.1" result=failure reason="nodedown"
+
+
+[2015-12-02 16:49:24.361] severity=error module=gen_rpc_client pid="<0.900.0>" function=init event=connecting_to_server server_node="gen_rpc_slave@127.0.0.1" result=failure reason="nodedown"
+[2015-12-02 16:49:24.361] severity=debug module=gen_rpc_client pid="<0.900.0>" function=terminate socket="undefined"
+[2015-12-02 16:49:24.361] severity=debug module=gen_rpc_client_sup pid="<0.902.0>" function=stop_child event=stopping_client client_pid="<0.900.0>"
+
+----------------------------------------------------
+2015-12-02 16:49:24.362
+[2015-12-02 16:49:24.361] severity=error module=gen_rpc pid="<0.900.0>" gen_server 'gen_rpc_slave@127.0.0.1' terminated with reason: {badrpc,nodedown}
+
+
+[2015-12-02 16:49:24.361] severity=error module=gen_rpc pid="<0.900.0>" gen_server 'gen_rpc_slave@127.0.0.1' terminated with reason: {badrpc,nodedown}
+
+----------------------------------------------------
+2015-12-02 16:49:24.363
+[2015-12-02 16:49:24.362] severity=error module=gen_rpc pid="<0.900.0>" CRASH REPORT Process 'gen_rpc_slave@127.0.0.1' with 0 neighbours exited with reason: {badrpc,nodedown} in gen_server:terminate/7 line 826
+
+
+[2015-12-02 16:49:24.362] severity=error module=gen_rpc pid="<0.900.0>" CRASH REPORT Process 'gen_rpc_slave@127.0.0.1' with 0 neighbours exited with reason: {badrpc,nodedown} in gen_server:terminate/7 line 826
+
+----------------------------------------------------
+2015-12-02 16:49:24.363
+[2015-12-02 16:49:24.362] severity=error module=gen_rpc pid="<0.685.0>" Supervisor gen_rpc_client_sup had child undefined started with {gen_rpc_client,start_link,undefined} at <0.900.0> exit with reason {badrpc,nodedown} in context child_terminated
+
+
+[2015-12-02 16:49:24.362] severity=error module=gen_rpc pid="<0.685.0>" Supervisor gen_rpc_client_sup had child undefined started with {gen_rpc_client,start_link,undefined} at <0.900.0> exit with reason {badrpc,nodedown} in context child_terminated
+16:49:25.481 [info] Application lager started on node 'gen_rpc_slave@127.0.0.1'
+16:49:25.481 [info] Application crypto started on node 'gen_rpc_slave@127.0.0.1'
+16:49:25.498 [info] Application asn1 started on node 'gen_rpc_slave@127.0.0.1'
+16:49:25.531 [info] Application public_key started on node 'gen_rpc_slave@127.0.0.1'
+16:49:25.549 [info] Application ssl started on node 'gen_rpc_slave@127.0.0.1'
+16:49:25.583 [info] function=init
+
+----------------------------------------------------
+2015-12-02 16:49:25.590
+Testing [cast_mfa_throw]
+
+[2015-12-02 16:49:25.590] severity=info module=gen_rpc_client pid="<0.904.0>" function=cast event=client_process_not_found server_node="gen_rpc_slave@127.0.0.1" action=spawning_client
+[2015-12-02 16:49:25.591] severity=debug module=gen_rpc_dispatcher pid="<0.684.0>" function=handle_call message=start_client event=starting_client_server server_node="gen_rpc_slave@127.0.0.1"
+[2015-12-02 16:49:25.591] severity=debug module=gen_rpc_client_sup pid="<0.684.0>" function=start_child event=starting_new_client server_node="gen_rpc_slave@127.0.0.1"
+[2015-12-02 16:49:25.591] severity=info module=gen_rpc_client pid="<0.916.0>" function=init event=initializing_client server_node="gen_rpc_slave@127.0.0.1" connect_timeout=500 send_timeout=500 receive_timeout=15000 inactivity_timeout=infinity
+16:49:25.589 [info] Application gen_rpc started on node 'gen_rpc_slave@127.0.0.1'
+
+----------------------------------------------------
+2015-12-02 16:49:25.596
+[2015-12-02 16:49:25.595] severity=error module=gen_rpc_client pid="<0.916.0>" function=init event=connecting_to_server server_node="gen_rpc_slave@127.0.0.1" result=failure reason="nodedown"
+
+
+[2015-12-02 16:49:25.595] severity=error module=gen_rpc_client pid="<0.916.0>" function=init event=connecting_to_server server_node="gen_rpc_slave@127.0.0.1" result=failure reason="nodedown"
+[2015-12-02 16:49:25.595] severity=debug module=gen_rpc_client pid="<0.916.0>" function=terminate socket="undefined"
+
+----------------------------------------------------
+2015-12-02 16:49:25.596
+[2015-12-02 16:49:25.596] severity=error module=gen_rpc pid="<0.916.0>" gen_server 'gen_rpc_slave@127.0.0.1' terminated with reason: {badrpc,nodedown}
+
+
+[2015-12-02 16:49:25.596] severity=error module=gen_rpc pid="<0.916.0>" gen_server 'gen_rpc_slave@127.0.0.1' terminated with reason: {badrpc,nodedown}
+[2015-12-02 16:49:25.596] severity=debug module=gen_rpc_client_sup pid="<0.918.0>" function=stop_child event=stopping_client client_pid="<0.916.0>"
+
+----------------------------------------------------
+2015-12-02 16:49:25.597
+[2015-12-02 16:49:25.596] severity=error module=gen_rpc pid="<0.916.0>" CRASH REPORT Process 'gen_rpc_slave@127.0.0.1' with 0 neighbours exited with reason: {badrpc,nodedown} in gen_server:terminate/7 line 826
+
+
+[2015-12-02 16:49:25.596] severity=error module=gen_rpc pid="<0.916.0>" CRASH REPORT Process 'gen_rpc_slave@127.0.0.1' with 0 neighbours exited with reason: {badrpc,nodedown} in gen_server:terminate/7 line 826
+
+----------------------------------------------------
+2015-12-02 16:49:25.597
+[2015-12-02 16:49:25.596] severity=error module=gen_rpc pid="<0.685.0>" Supervisor gen_rpc_client_sup had child undefined started with {gen_rpc_client,start_link,undefined} at <0.916.0> exit with reason {badrpc,nodedown} in context child_terminated
+
+
+[2015-12-02 16:49:25.596] severity=error module=gen_rpc pid="<0.685.0>" Supervisor gen_rpc_client_sup had child undefined started with {gen_rpc_client,start_link,undefined} at <0.916.0> exit with reason {badrpc,nodedown} in context child_terminated
+16:49:26.757 [info] Application lager started on node 'gen_rpc_slave@127.0.0.1'
+16:49:26.757 [info] Application crypto started on node 'gen_rpc_slave@127.0.0.1'
+16:49:26.778 [info] Application asn1 started on node 'gen_rpc_slave@127.0.0.1'
+16:49:26.805 [info] Application public_key started on node 'gen_rpc_slave@127.0.0.1'
+16:49:26.853 [info] Application ssl started on node 'gen_rpc_slave@127.0.0.1'
+16:49:26.886 [info] function=init
+
+----------------------------------------------------
+2015-12-02 16:49:26.893
+Testing [cast_inexistent_node]
+
+[2015-12-02 16:49:26.894] severity=info module=gen_rpc_client pid="<0.920.0>" function=cast event=client_process_not_found server_node="fake_node@127.0.1.1" action=spawning_client
+[2015-12-02 16:49:26.894] severity=debug module=gen_rpc_dispatcher pid="<0.684.0>" function=handle_call message=start_client event=starting_client_server server_node="fake_node@127.0.1.1"
+[2015-12-02 16:49:26.894] severity=debug module=gen_rpc_client_sup pid="<0.684.0>" function=start_child event=starting_new_client server_node="fake_node@127.0.1.1"
+[2015-12-02 16:49:26.894] severity=info module=gen_rpc_client pid="<0.932.0>" function=init event=initializing_client server_node="fake_node@127.0.1.1" connect_timeout=500 send_timeout=500 receive_timeout=15000 inactivity_timeout=infinity
+16:49:26.893 [info] Application gen_rpc started on node 'gen_rpc_slave@127.0.0.1'
+
+----------------------------------------------------
+2015-12-02 16:49:26.896
+[2015-12-02 16:49:26.896] severity=error module=gen_rpc_client pid="<0.932.0>" function=init event=connecting_to_server server_node="fake_node@127.0.1.1" result=failure reason="nodedown"
+
+
+[2015-12-02 16:49:26.896] severity=error module=gen_rpc_client pid="<0.932.0>" function=init event=connecting_to_server server_node="fake_node@127.0.1.1" result=failure reason="nodedown"
+[2015-12-02 16:49:26.896] severity=debug module=gen_rpc_client pid="<0.932.0>" function=terminate socket="undefined"
+
+----------------------------------------------------
+2015-12-02 16:49:26.897
+[2015-12-02 16:49:26.896] severity=error module=gen_rpc pid="<0.932.0>" gen_server 'fake_node@127.0.1.1' terminated with reason: {badrpc,nodedown}
+
+
+[2015-12-02 16:49:26.896] severity=error module=gen_rpc pid="<0.932.0>" gen_server 'fake_node@127.0.1.1' terminated with reason: {badrpc,nodedown}
+
+----------------------------------------------------
+2015-12-02 16:49:26.897
+[2015-12-02 16:49:26.897] severity=error module=gen_rpc pid="<0.932.0>" CRASH REPORT Process 'fake_node@127.0.1.1' with 0 neighbours exited with reason: {badrpc,nodedown} in gen_server:terminate/7 line 826
+
+
+[2015-12-02 16:49:26.897] severity=error module=gen_rpc pid="<0.932.0>" CRASH REPORT Process 'fake_node@127.0.1.1' with 0 neighbours exited with reason: {badrpc,nodedown} in gen_server:terminate/7 line 826
+[2015-12-02 16:49:26.897] severity=debug module=gen_rpc_client_sup pid="<0.936.0>" function=stop_child event=stopping_client client_pid="<0.932.0>"
+
+----------------------------------------------------
+2015-12-02 16:49:26.897
+[2015-12-02 16:49:26.897] severity=error module=gen_rpc pid="<0.685.0>" Supervisor gen_rpc_client_sup had child undefined started with {gen_rpc_client,start_link,undefined} at <0.932.0> exit with reason {badrpc,nodedown} in context child_terminated
+
+
+[2015-12-02 16:49:26.897] severity=error module=gen_rpc pid="<0.685.0>" Supervisor gen_rpc_client_sup had child undefined started with {gen_rpc_client,start_link,undefined} at <0.932.0> exit with reason {badrpc,nodedown} in context child_terminated
+16:49:27.906 [info] Application lager started on node 'gen_rpc_slave@127.0.0.1'
+16:49:27.906 [info] Application crypto started on node 'gen_rpc_slave@127.0.0.1'
+16:49:27.928 [info] Application asn1 started on node 'gen_rpc_slave@127.0.0.1'
+16:49:27.951 [info] Application public_key started on node 'gen_rpc_slave@127.0.0.1'
+16:49:27.977 [info] Application ssl started on node 'gen_rpc_slave@127.0.0.1'
+16:49:28.003 [info] function=init
+
+----------------------------------------------------
+2015-12-02 16:49:28.011
+Testing [pinfo]
+
+[2015-12-02 16:49:28.011] severity=info module=gen_rpc_client pid="<0.938.0>" function=call event=client_process_not_found server_node="gen_rpc_slave@127.0.0.1" action=spawning_client
+[2015-12-02 16:49:28.012] severity=debug module=gen_rpc_dispatcher pid="<0.684.0>" function=handle_call message=start_client event=starting_client_server server_node="gen_rpc_slave@127.0.0.1"
+[2015-12-02 16:49:28.012] severity=debug module=gen_rpc_client_sup pid="<0.684.0>" function=start_child event=starting_new_client server_node="gen_rpc_slave@127.0.0.1"
+[2015-12-02 16:49:28.012] severity=info module=gen_rpc_client pid="<0.950.0>" function=init event=initializing_client server_node="gen_rpc_slave@127.0.0.1" connect_timeout=500 send_timeout=500 receive_timeout=15000 inactivity_timeout=infinity
+16:49:28.011 [info] Application gen_rpc started on node 'gen_rpc_slave@127.0.0.1'
+16:49:28.019 [info] function=init client_node="gen_rpc_master@127.0.0.1"
+16:49:28.023 [info] function=init event=listener_started_successfully client_node="gen_rpc_master@127.0.0.1"
+[2015-12-02 16:49:28.024] severity=debug module=gen_rpc_client pid="<0.950.0>" function=get_remote_node_ip node="gen_rpc_slave@127.0.0.1" ip_address="{127,0,0,1}"
+[2015-12-02 16:49:28.024] severity=debug module=gen_rpc_client pid="<0.950.0>" function=init event=remote_server_started_successfully server_node="gen_rpc_slave@127.0.0.1" server_ip="{127,0,0,1}:60756"
+[2015-12-02 16:49:28.024] severity=debug module=gen_rpc_client pid="<0.950.0>" function=init event=connecting_to_server server_node="gen_rpc_slave@127.0.0.1" server_ip="{127,0,0,1}:60756" result=success
+[2015-12-02 16:49:28.024] severity=debug module=gen_rpc_client pid="<0.950.0>" function=handle_call message=call event=constructing_call_term socket="#Port<0.68363>" call_reference="#Ref<0.0.1.7587>"
+[2015-12-02 16:49:28.025] severity=debug module=gen_rpc_client pid="<0.950.0>" function=handle_call message=call event=transmission_succeeded socket="#Port<0.68363>" call_reference="#Ref<0.0.1.7587>"
+16:49:28.024 [info] function=handle_info event=client_connection_received client_ip="{127,0,0,1}" client_node="gen_rpc_master@127.0.0.1" socket="#Port<0.5192>" action=starting_acceptor
+16:49:28.047 [info] function=init client_node="gen_rpc_master@127.0.0.1" client_ip="{127,0,0,1}"
+[2015-12-02 16:49:28.056] severity=debug module=gen_rpc_client pid="<0.950.0>" function=handle_info message=tcp event=reply_received call_reference="#Ref<0.0.1.7587>" worker_pid="<0.952.0>" action=sending_to_worker
+[2015-12-02 16:49:28.056] severity=debug module=gen_rpc_client pid="<0.952.0>" function=call_worker event=reply_received call_reference="#Ref<0.0.1.7587>" reply="<13510.96.0>"
+
+----------------------------------------------------
+2015-12-02 16:49:28.056
+[2015-12-02 16:49:28.056] severity=error module=gen_rpc_client pid="<0.938.0>" function=call event=client_process_found pid="<0.950.0>" server_node="gen_rpc_slave@127.0.0.1"
+
+
+[2015-12-02 16:49:28.056] severity=error module=gen_rpc_client pid="<0.938.0>" function=call event=client_process_found pid="<0.950.0>" server_node="gen_rpc_slave@127.0.0.1"
+[2015-12-02 16:49:28.056] severity=debug module=gen_rpc_client pid="<0.950.0>" function=handle_call message=call event=constructing_call_term socket="#Port<0.68363>" call_reference="#Ref<0.0.1.7595>"
+[2015-12-02 16:49:28.056] severity=debug module=gen_rpc_client pid="<0.950.0>" function=handle_call message=call event=transmission_succeeded socket="#Port<0.68363>" call_reference="#Ref<0.0.1.7595>"
+[2015-12-02 16:49:28.057] severity=debug module=gen_rpc_client pid="<0.950.0>" function=handle_info message=tcp event=reply_received call_reference="#Ref<0.0.1.7595>" worker_pid="<0.953.0>" action=sending_to_worker
+[2015-12-02 16:49:28.057] severity=debug module=gen_rpc_client pid="<0.953.0>" function=call_worker event=reply_received call_reference="#Ref<0.0.1.7595>" reply="true"
+
+----------------------------------------------------
+2015-12-02 16:49:28.057
+[2015-12-02 16:49:28.057] severity=error module=gen_rpc_client pid="<0.938.0>" function=call event=client_process_found pid="<0.950.0>" server_node="gen_rpc_slave@127.0.0.1"
+
+
+[2015-12-02 16:49:28.057] severity=error module=gen_rpc_client pid="<0.938.0>" function=call event=client_process_found pid="<0.950.0>" server_node="gen_rpc_slave@127.0.0.1"
+[2015-12-02 16:49:28.057] severity=debug module=gen_rpc_client pid="<0.950.0>" function=handle_call message=call event=constructing_call_term socket="#Port<0.68363>" call_reference="#Ref<0.0.1.7604>"
+[2015-12-02 16:49:28.057] severity=debug module=gen_rpc_client pid="<0.950.0>" function=handle_call message=call event=transmission_succeeded socket="#Port<0.68363>" call_reference="#Ref<0.0.1.7604>"
+[2015-12-02 16:49:28.058] severity=debug module=gen_rpc_client pid="<0.950.0>" function=handle_info message=tcp event=reply_received call_reference="#Ref<0.0.1.7604>" worker_pid="<0.954.0>" action=sending_to_worker
+[2015-12-02 16:49:28.058] severity=debug module=gen_rpc_client pid="<0.954.0>" function=call_worker event=reply_received call_reference="#Ref<0.0.1.7604>" reply="[{current_function,{timer,sleep,1}},{initial_call,{erlang,apply,2}},{status,waiting},{message_queue_len,0},{messages,[]},{links,[]},{dictionary,[]},{trap_exit,false},{error_handler,error_handler},{priority,normal},{group_leader,<13510.85.0>},{total_heap_size,233},{heap_size,233},{stack_size,2},{reductions,3},{garbage_collection,[{min_bin_vheap_size,46422},{min_heap_size,233},{fullsweep_after,65535},{minor_gcs,0}]},{suspending,[]}]"
+[2015-12-02 16:49:28.064] severity=warning module=gen_rpc_client pid="<0.950.0>" function=handle_info message=nodedown event=node_down socket="#Port<0.68363>" node=gen_rpc_slave@127.0.0.1 reason="connection_closed" action=stopping
+[2015-12-02 16:49:28.064] severity=debug module=gen_rpc_client pid="<0.950.0>" function=terminate socket="#Port<0.68363>"
+[2015-12-02 16:49:28.065] severity=debug module=gen_rpc_client_sup pid="<0.955.0>" function=stop_child event=stopping_client client_pid="<0.950.0>"
+16:49:29.251 [info] Application lager started on node 'gen_rpc_slave@127.0.0.1'
+16:49:29.252 [info] Application crypto started on node 'gen_rpc_slave@127.0.0.1'
+16:49:29.279 [info] Application asn1 started on node 'gen_rpc_slave@127.0.0.1'
+16:49:29.284 [info] Application public_key started on node 'gen_rpc_slave@127.0.0.1'
+16:49:29.302 [info] Application ssl started on node 'gen_rpc_slave@127.0.0.1'
+16:49:29.326 [info] function=init
+
+----------------------------------------------------
+2015-12-02 16:49:29.331
+Testing [pinfo]
+
+[2015-12-02 16:49:29.332] severity=info module=gen_rpc_client pid="<0.957.0>" function=call event=client_process_not_found server_node="gen_rpc_slave@127.0.0.1" action=spawning_client
+[2015-12-02 16:49:29.332] severity=debug module=gen_rpc_dispatcher pid="<0.684.0>" function=handle_call message=start_client event=starting_client_server server_node="gen_rpc_slave@127.0.0.1"
+[2015-12-02 16:49:29.332] severity=debug module=gen_rpc_client_sup pid="<0.684.0>" function=start_child event=starting_new_client server_node="gen_rpc_slave@127.0.0.1"
+16:49:29.331 [info] Application gen_rpc started on node 'gen_rpc_slave@127.0.0.1'
+[2015-12-02 16:49:29.332] severity=info module=gen_rpc_client pid="<0.969.0>" function=init event=initializing_client server_node="gen_rpc_slave@127.0.0.1" connect_timeout=500 send_timeout=500 receive_timeout=15000 inactivity_timeout=infinity
+16:49:29.339 [info] function=init client_node="gen_rpc_master@127.0.0.1"
+16:49:29.344 [info] function=init event=listener_started_successfully client_node="gen_rpc_master@127.0.0.1"
+[2015-12-02 16:49:29.345] severity=debug module=gen_rpc_client pid="<0.969.0>" function=get_remote_node_ip node="gen_rpc_slave@127.0.0.1" ip_address="{127,0,0,1}"
+[2015-12-02 16:49:29.345] severity=debug module=gen_rpc_client pid="<0.969.0>" function=init event=remote_server_started_successfully server_node="gen_rpc_slave@127.0.0.1" server_ip="{127,0,0,1}:35950"
+[2015-12-02 16:49:29.346] severity=debug module=gen_rpc_client pid="<0.969.0>" function=init event=connecting_to_server server_node="gen_rpc_slave@127.0.0.1" server_ip="{127,0,0,1}:35950" result=success
+[2015-12-02 16:49:29.346] severity=debug module=gen_rpc_client pid="<0.969.0>" function=handle_call message=call event=constructing_call_term socket="#Port<0.68371>" call_reference="#Ref<0.0.1.7697>"
+[2015-12-02 16:49:29.346] severity=debug module=gen_rpc_client pid="<0.969.0>" function=handle_call message=call event=transmission_succeeded socket="#Port<0.68371>" call_reference="#Ref<0.0.1.7697>"
+16:49:29.347 [info] function=handle_info event=client_connection_received client_ip="{127,0,0,1}" client_node="gen_rpc_master@127.0.0.1" socket="#Port<0.5192>" action=starting_acceptor
+16:49:29.360 [info] function=init client_node="gen_rpc_master@127.0.0.1" client_ip="{127,0,0,1}"
+[2015-12-02 16:49:29.368] severity=debug module=gen_rpc_client pid="<0.969.0>" function=handle_info message=tcp event=reply_received call_reference="#Ref<0.0.1.7697>" worker_pid="<0.971.0>" action=sending_to_worker
+[2015-12-02 16:49:29.368] severity=debug module=gen_rpc_client pid="<0.971.0>" function=call_worker event=reply_received call_reference="#Ref<0.0.1.7697>" reply="<13510.96.0>"
+
+----------------------------------------------------
+2015-12-02 16:49:29.369
+[2015-12-02 16:49:29.368] severity=error module=gen_rpc_client pid="<0.957.0>" function=call event=client_process_found pid="<0.969.0>" server_node="gen_rpc_slave@127.0.0.1"
+
+
+[2015-12-02 16:49:29.368] severity=error module=gen_rpc_client pid="<0.957.0>" function=call event=client_process_found pid="<0.969.0>" server_node="gen_rpc_slave@127.0.0.1"
+[2015-12-02 16:49:29.368] severity=debug module=gen_rpc_client pid="<0.969.0>" function=handle_call message=call event=constructing_call_term socket="#Port<0.68371>" call_reference="#Ref<0.0.1.7705>"
+[2015-12-02 16:49:29.369] severity=debug module=gen_rpc_client pid="<0.969.0>" function=handle_call message=call event=transmission_succeeded socket="#Port<0.68371>" call_reference="#Ref<0.0.1.7705>"
+[2015-12-02 16:49:29.371] severity=debug module=gen_rpc_client pid="<0.969.0>" function=handle_info message=tcp event=reply_received call_reference="#Ref<0.0.1.7705>" worker_pid="<0.972.0>" action=sending_to_worker
+[2015-12-02 16:49:29.371] severity=debug module=gen_rpc_client pid="<0.972.0>" function=call_worker event=reply_received call_reference="#Ref<0.0.1.7705>" reply="false"
+
+----------------------------------------------------
+2015-12-02 16:49:29.371
+[2015-12-02 16:49:29.371] severity=error module=gen_rpc_client pid="<0.957.0>" function=call event=client_process_found pid="<0.969.0>" server_node="gen_rpc_slave@127.0.0.1"
+
+
+[2015-12-02 16:49:29.371] severity=error module=gen_rpc_client pid="<0.957.0>" function=call event=client_process_found pid="<0.969.0>" server_node="gen_rpc_slave@127.0.0.1"
+[2015-12-02 16:49:29.371] severity=debug module=gen_rpc_client pid="<0.969.0>" function=handle_call message=call event=constructing_call_term socket="#Port<0.68371>" call_reference="#Ref<0.0.1.7716>"
+[2015-12-02 16:49:29.371] severity=debug module=gen_rpc_client pid="<0.969.0>" function=handle_call message=call event=transmission_succeeded socket="#Port<0.68371>" call_reference="#Ref<0.0.1.7716>"
+[2015-12-02 16:49:29.372] severity=debug module=gen_rpc_client pid="<0.969.0>" function=handle_info message=tcp event=reply_received call_reference="#Ref<0.0.1.7716>" worker_pid="<0.973.0>" action=sending_to_worker
+[2015-12-02 16:49:29.372] severity=debug module=gen_rpc_client pid="<0.973.0>" function=call_worker event=reply_received call_reference="#Ref<0.0.1.7716>" reply="undefined"
+[2015-12-02 16:49:29.375] severity=warning module=gen_rpc_client pid="<0.969.0>" function=handle_info message=nodedown event=node_down socket="#Port<0.68371>" node=gen_rpc_slave@127.0.0.1 reason="connection_closed" action=stopping
+[2015-12-02 16:49:29.375] severity=debug module=gen_rpc_client pid="<0.969.0>" function=terminate socket="#Port<0.68371>"
+[2015-12-02 16:49:29.375] severity=debug module=gen_rpc_client_sup pid="<0.974.0>" function=stop_child event=stopping_client client_pid="<0.969.0>"
+16:49:30.374 [info] Application lager started on node 'gen_rpc_slave@127.0.0.1'
+16:49:30.374 [info] Application crypto started on node 'gen_rpc_slave@127.0.0.1'
+16:49:30.400 [info] Application asn1 started on node 'gen_rpc_slave@127.0.0.1'
+16:49:30.409 [info] Application public_key started on node 'gen_rpc_slave@127.0.0.1'
+16:49:30.425 [info] Application ssl started on node 'gen_rpc_slave@127.0.0.1'
+16:49:30.462 [info] function=init
+
+----------------------------------------------------
+2015-12-02 16:49:30.473
+Testing [pinfo_item]
+
+[2015-12-02 16:49:30.473] severity=info module=gen_rpc_client pid="<0.976.0>" function=call event=client_process_not_found server_node="gen_rpc_slave@127.0.0.1" action=spawning_client
+[2015-12-02 16:49:30.473] severity=debug module=gen_rpc_dispatcher pid="<0.684.0>" function=handle_call message=start_client event=starting_client_server server_node="gen_rpc_slave@127.0.0.1"
+[2015-12-02 16:49:30.474] severity=debug module=gen_rpc_client_sup pid="<0.684.0>" function=start_child event=starting_new_client server_node="gen_rpc_slave@127.0.0.1"
+[2015-12-02 16:49:30.474] severity=info module=gen_rpc_client pid="<0.988.0>" function=init event=initializing_client server_node="gen_rpc_slave@127.0.0.1" connect_timeout=500 send_timeout=500 receive_timeout=15000 inactivity_timeout=infinity
+16:49:30.472 [info] Application gen_rpc started on node 'gen_rpc_slave@127.0.0.1'
+16:49:30.483 [info] function=init client_node="gen_rpc_master@127.0.0.1"
+16:49:30.493 [info] function=init event=listener_started_successfully client_node="gen_rpc_master@127.0.0.1"
+[2015-12-02 16:49:30.494] severity=debug module=gen_rpc_client pid="<0.988.0>" function=get_remote_node_ip node="gen_rpc_slave@127.0.0.1" ip_address="{127,0,0,1}"
+[2015-12-02 16:49:30.494] severity=debug module=gen_rpc_client pid="<0.988.0>" function=init event=remote_server_started_successfully server_node="gen_rpc_slave@127.0.0.1" server_ip="{127,0,0,1}:33887"
+[2015-12-02 16:49:30.494] severity=debug module=gen_rpc_client pid="<0.988.0>" function=init event=connecting_to_server server_node="gen_rpc_slave@127.0.0.1" server_ip="{127,0,0,1}:33887" result=success
+16:49:30.494 [info] function=handle_info event=client_connection_received client_ip="{127,0,0,1}" client_node="gen_rpc_master@127.0.0.1" socket="#Port<0.5192>" action=starting_acceptor
+[2015-12-02 16:49:30.495] severity=debug module=gen_rpc_client pid="<0.988.0>" function=handle_call message=call event=constructing_call_term socket="#Port<0.68379>" call_reference="#Ref<0.0.1.7876>"
+[2015-12-02 16:49:30.495] severity=debug module=gen_rpc_client pid="<0.988.0>" function=handle_call message=call event=transmission_succeeded socket="#Port<0.68379>" call_reference="#Ref<0.0.1.7876>"
+16:49:30.504 [info] function=init client_node="gen_rpc_master@127.0.0.1" client_ip="{127,0,0,1}"
+[2015-12-02 16:49:30.504] severity=debug module=gen_rpc_client pid="<0.988.0>" function=handle_info message=tcp event=reply_received call_reference="#Ref<0.0.1.7876>" worker_pid="<0.990.0>" action=sending_to_worker
+[2015-12-02 16:49:30.504] severity=debug module=gen_rpc_client pid="<0.990.0>" function=call_worker event=reply_received call_reference="#Ref<0.0.1.7876>" reply="<13510.96.0>"
+
+----------------------------------------------------
+2015-12-02 16:49:30.504
+Pid="<13510.96.0>"
+
+
+----------------------------------------------------
+2015-12-02 16:49:30.505
+[2015-12-02 16:49:30.505] severity=error module=gen_rpc_client pid="<0.976.0>" function=call event=client_process_found pid="<0.988.0>" server_node="gen_rpc_slave@127.0.0.1"
+
+
+[2015-12-02 16:49:30.505] severity=error module=gen_rpc_client pid="<0.976.0>" function=call event=client_process_found pid="<0.988.0>" server_node="gen_rpc_slave@127.0.0.1"
+[2015-12-02 16:49:30.505] severity=debug module=gen_rpc_client pid="<0.988.0>" function=handle_call message=call event=constructing_call_term socket="#Port<0.68379>" call_reference="#Ref<0.0.2.5963>"
+[2015-12-02 16:49:30.505] severity=debug module=gen_rpc_client pid="<0.988.0>" function=handle_call message=call event=transmission_succeeded socket="#Port<0.68379>" call_reference="#Ref<0.0.2.5963>"
+[2015-12-02 16:49:30.506] severity=debug module=gen_rpc_client pid="<0.988.0>" function=handle_info message=tcp event=reply_received call_reference="#Ref<0.0.2.5963>" worker_pid="<0.991.0>" action=sending_to_worker
+[2015-12-02 16:49:30.506] severity=debug module=gen_rpc_client pid="<0.991.0>" function=call_worker event=reply_received call_reference="#Ref<0.0.2.5963>" reply="true"
+
+----------------------------------------------------
+2015-12-02 16:49:30.506
+[2015-12-02 16:49:30.506] severity=error module=gen_rpc_client pid="<0.976.0>" function=call event=client_process_found pid="<0.988.0>" server_node="gen_rpc_slave@127.0.0.1"
+
+
+[2015-12-02 16:49:30.506] severity=error module=gen_rpc_client pid="<0.976.0>" function=call event=client_process_found pid="<0.988.0>" server_node="gen_rpc_slave@127.0.0.1"
+[2015-12-02 16:49:30.506] severity=debug module=gen_rpc_client pid="<0.988.0>" function=handle_call message=call event=constructing_call_term socket="#Port<0.68379>" call_reference="#Ref<0.0.1.7892>"
+[2015-12-02 16:49:30.506] severity=debug module=gen_rpc_client pid="<0.988.0>" function=handle_call message=call event=transmission_succeeded socket="#Port<0.68379>" call_reference="#Ref<0.0.1.7892>"
+[2015-12-02 16:49:30.511] severity=debug module=gen_rpc_client pid="<0.988.0>" function=handle_info message=tcp event=reply_received call_reference="#Ref<0.0.1.7892>" worker_pid="<0.992.0>" action=sending_to_worker
+[2015-12-02 16:49:30.511] severity=debug module=gen_rpc_client pid="<0.992.0>" function=call_worker event=reply_received call_reference="#Ref<0.0.1.7892>" reply="[{status,waiting}]"
+[2015-12-02 16:49:30.514] severity=warning module=gen_rpc_client pid="<0.988.0>" function=handle_info message=nodedown event=node_down socket="#Port<0.68379>" node=gen_rpc_slave@127.0.0.1 reason="connection_closed" action=stopping
+[2015-12-02 16:49:30.514] severity=debug module=gen_rpc_client pid="<0.988.0>" function=terminate socket="#Port<0.68379>"
+[2015-12-02 16:49:30.514] severity=debug module=gen_rpc_client_sup pid="<0.993.0>" function=stop_child event=stopping_client client_pid="<0.988.0>"
+16:49:31.688 [info] Application lager started on node 'gen_rpc_slave@127.0.0.1'
+16:49:31.695 [info] Application crypto started on node 'gen_rpc_slave@127.0.0.1'
+16:49:31.714 [info] Application asn1 started on node 'gen_rpc_slave@127.0.0.1'
+16:49:31.720 [info] Application public_key started on node 'gen_rpc_slave@127.0.0.1'
+16:49:31.744 [info] Application ssl started on node 'gen_rpc_slave@127.0.0.1'
+16:49:31.787 [info] function=init
+
+----------------------------------------------------
+2015-12-02 16:49:31.801
+Testing [safe_cast]
+
+[2015-12-02 16:49:31.801] severity=info module=gen_rpc_client pid="<0.995.0>" function=safe_cast event=client_process_not_found server_node="gen_rpc_slave@127.0.0.1" action=spawning_client
+[2015-12-02 16:49:31.801] severity=debug module=gen_rpc_dispatcher pid="<0.684.0>" function=handle_call message=start_client event=starting_client_server server_node="gen_rpc_slave@127.0.0.1"
+[2015-12-02 16:49:31.801] severity=debug module=gen_rpc_client_sup pid="<0.684.0>" function=start_child event=starting_new_client server_node="gen_rpc_slave@127.0.0.1"
+[2015-12-02 16:49:31.801] severity=info module=gen_rpc_client pid="<0.1007.0>" function=init event=initializing_client server_node="gen_rpc_slave@127.0.0.1" connect_timeout=500 send_timeout=500 receive_timeout=15000 inactivity_timeout=infinity
+16:49:31.800 [info] Application gen_rpc started on node 'gen_rpc_slave@127.0.0.1'
+16:49:31.808 [info] function=init client_node="gen_rpc_master@127.0.0.1"
+16:49:31.814 [info] function=init event=listener_started_successfully client_node="gen_rpc_master@127.0.0.1"
+[2015-12-02 16:49:31.815] severity=debug module=gen_rpc_client pid="<0.1007.0>" function=get_remote_node_ip node="gen_rpc_slave@127.0.0.1" ip_address="{127,0,0,1}"
+[2015-12-02 16:49:31.815] severity=debug module=gen_rpc_client pid="<0.1007.0>" function=init event=remote_server_started_successfully server_node="gen_rpc_slave@127.0.0.1" server_ip="{127,0,0,1}:60596"
+[2015-12-02 16:49:31.815] severity=debug module=gen_rpc_client pid="<0.1007.0>" function=init event=connecting_to_server server_node="gen_rpc_slave@127.0.0.1" server_ip="{127,0,0,1}:60596" result=success
+[2015-12-02 16:49:31.815] severity=debug module=gen_rpc_client pid="<0.1007.0>" function=do_cast message=cast event=constructing_cast_term socket="#Port<0.68387>"
+[2015-12-02 16:49:31.815] severity=debug module=gen_rpc_client pid="<0.1007.0>" function=do_cast message=cast event=transmission_succeeded socket="#Port<0.68387>"
+16:49:31.815 [info] function=handle_info event=client_connection_received client_ip="{127,0,0,1}" client_node="gen_rpc_master@127.0.0.1" socket="#Port<0.5192>" action=starting_acceptor
+[2015-12-02 16:49:31.816] severity=warning module=gen_rpc_client pid="<0.1007.0>" function=handle_info message=nodedown event=node_down socket="#Port<0.68387>" node=gen_rpc_slave@127.0.0.1 reason="connection_closed" action=stopping
+[2015-12-02 16:49:31.816] severity=debug module=gen_rpc_client pid="<0.1007.0>" function=terminate socket="#Port<0.68387>"
+[2015-12-02 16:49:31.817] severity=debug module=gen_rpc_client_sup pid="<0.1009.0>" function=stop_child event=stopping_client client_pid="<0.1007.0>"
+16:49:33.049 [info] Application lager started on node 'gen_rpc_slave@127.0.0.1'
+16:49:33.049 [info] Application crypto started on node 'gen_rpc_slave@127.0.0.1'
+16:49:33.064 [info] Application asn1 started on node 'gen_rpc_slave@127.0.0.1'
+16:49:33.072 [info] Application public_key started on node 'gen_rpc_slave@127.0.0.1'
+16:49:33.109 [info] Application ssl started on node 'gen_rpc_slave@127.0.0.1'
+16:49:33.143 [info] function=init
+
+----------------------------------------------------
+2015-12-02 16:49:33.150
+Testing [safe_cast_anonymous_function]
+
+[2015-12-02 16:49:33.150] severity=info module=gen_rpc_client pid="<0.1011.0>" function=safe_cast event=client_process_not_found server_node="gen_rpc_slave@127.0.0.1" action=spawning_client
+[2015-12-02 16:49:33.150] severity=debug module=gen_rpc_dispatcher pid="<0.684.0>" function=handle_call message=start_client event=starting_client_server server_node="gen_rpc_slave@127.0.0.1"
+[2015-12-02 16:49:33.150] severity=debug module=gen_rpc_client_sup pid="<0.684.0>" function=start_child event=starting_new_client server_node="gen_rpc_slave@127.0.0.1"
+[2015-12-02 16:49:33.151] severity=info module=gen_rpc_client pid="<0.1023.0>" function=init event=initializing_client server_node="gen_rpc_slave@127.0.0.1" connect_timeout=500 send_timeout=500 receive_timeout=15000 inactivity_timeout=infinity
+16:49:33.149 [info] Application gen_rpc started on node 'gen_rpc_slave@127.0.0.1'
+16:49:33.160 [info] function=init client_node="gen_rpc_master@127.0.0.1"
+16:49:33.167 [info] function=init event=listener_started_successfully client_node="gen_rpc_master@127.0.0.1"
+[2015-12-02 16:49:33.167] severity=debug module=gen_rpc_client pid="<0.1023.0>" function=get_remote_node_ip node="gen_rpc_slave@127.0.0.1" ip_address="{127,0,0,1}"
+[2015-12-02 16:49:33.167] severity=debug module=gen_rpc_client pid="<0.1023.0>" function=init event=remote_server_started_successfully server_node="gen_rpc_slave@127.0.0.1" server_ip="{127,0,0,1}:55894"
+[2015-12-02 16:49:33.168] severity=debug module=gen_rpc_client pid="<0.1023.0>" function=init event=connecting_to_server server_node="gen_rpc_slave@127.0.0.1" server_ip="{127,0,0,1}:55894" result=success
+[2015-12-02 16:49:33.168] severity=debug module=gen_rpc_client pid="<0.1023.0>" function=do_cast message=cast event=constructing_cast_term socket="#Port<0.68395>"
+[2015-12-02 16:49:33.168] severity=debug module=gen_rpc_client pid="<0.1023.0>" function=do_cast message=cast event=transmission_succeeded socket="#Port<0.68395>"
+[2015-12-02 16:49:33.174] severity=warning module=gen_rpc_client pid="<0.1023.0>" function=handle_info message=nodedown event=node_down socket="#Port<0.68395>" node=gen_rpc_slave@127.0.0.1 reason="connection_closed" action=stopping
+[2015-12-02 16:49:33.174] severity=debug module=gen_rpc_client pid="<0.1023.0>" function=terminate socket="#Port<0.68395>"
+[2015-12-02 16:49:33.174] severity=debug module=gen_rpc_client_sup pid="<0.1025.0>" function=stop_child event=stopping_client client_pid="<0.1023.0>"
+16:49:34.278 [info] Application lager started on node 'gen_rpc_slave@127.0.0.1'
+16:49:34.278 [info] Application crypto started on node 'gen_rpc_slave@127.0.0.1'
+16:49:34.316 [info] Application asn1 started on node 'gen_rpc_slave@127.0.0.1'
+16:49:34.321 [info] Application public_key started on node 'gen_rpc_slave@127.0.0.1'
+16:49:34.337 [info] Application ssl started on node 'gen_rpc_slave@127.0.0.1'
+16:49:34.363 [info] function=init
+
+----------------------------------------------------
+2015-12-02 16:49:34.369
+Testing [safe_cast_mfa_undef]
+
+16:49:34.369 [info] Application gen_rpc started on node 'gen_rpc_slave@127.0.0.1'
+[2015-12-02 16:49:34.369] severity=info module=gen_rpc_client pid="<0.1027.0>" function=safe_cast event=client_process_not_found server_node="gen_rpc_slave@127.0.0.1" action=spawning_client
+[2015-12-02 16:49:34.370] severity=debug module=gen_rpc_dispatcher pid="<0.684.0>" function=handle_call message=start_client event=starting_client_server server_node="gen_rpc_slave@127.0.0.1"
+[2015-12-02 16:49:34.370] severity=debug module=gen_rpc_client_sup pid="<0.684.0>" function=start_child event=starting_new_client server_node="gen_rpc_slave@127.0.0.1"
+[2015-12-02 16:49:34.370] severity=info module=gen_rpc_client pid="<0.1039.0>" function=init event=initializing_client server_node="gen_rpc_slave@127.0.0.1" connect_timeout=500 send_timeout=500 receive_timeout=15000 inactivity_timeout=infinity
+16:49:34.383 [info] function=init client_node="gen_rpc_master@127.0.0.1"
+16:49:34.388 [info] function=init event=listener_started_successfully client_node="gen_rpc_master@127.0.0.1"
+[2015-12-02 16:49:34.389] severity=debug module=gen_rpc_client pid="<0.1039.0>" function=get_remote_node_ip node="gen_rpc_slave@127.0.0.1" ip_address="{127,0,0,1}"
+[2015-12-02 16:49:34.389] severity=debug module=gen_rpc_client pid="<0.1039.0>" function=init event=remote_server_started_successfully server_node="gen_rpc_slave@127.0.0.1" server_ip="{127,0,0,1}:38144"
+[2015-12-02 16:49:34.390] severity=debug module=gen_rpc_client pid="<0.1039.0>" function=init event=connecting_to_server server_node="gen_rpc_slave@127.0.0.1" server_ip="{127,0,0,1}:38144" result=success
+[2015-12-02 16:49:34.390] severity=debug module=gen_rpc_client pid="<0.1039.0>" function=do_cast message=cast event=constructing_cast_term socket="#Port<0.68403>"
+[2015-12-02 16:49:34.390] severity=debug module=gen_rpc_client pid="<0.1039.0>" function=do_cast message=cast event=transmission_succeeded socket="#Port<0.68403>"
+[2015-12-02 16:49:34.395] severity=warning module=gen_rpc_client pid="<0.1039.0>" function=handle_info message=nodedown event=node_down socket="#Port<0.68403>" node=gen_rpc_slave@127.0.0.1 reason="connection_closed" action=stopping
+[2015-12-02 16:49:34.395] severity=debug module=gen_rpc_client pid="<0.1039.0>" function=terminate socket="#Port<0.68403>"
+[2015-12-02 16:49:34.396] severity=debug module=gen_rpc_client_sup pid="<0.1041.0>" function=stop_child event=stopping_client client_pid="<0.1039.0>"
+16:49:35.577 [info] Application lager started on node 'gen_rpc_slave@127.0.0.1'
+16:49:35.577 [info] Application crypto started on node 'gen_rpc_slave@127.0.0.1'
+16:49:35.594 [info] Application asn1 started on node 'gen_rpc_slave@127.0.0.1'
+16:49:35.624 [info] Application public_key started on node 'gen_rpc_slave@127.0.0.1'
+16:49:35.660 [info] Application ssl started on node 'gen_rpc_slave@127.0.0.1'
+16:49:35.692 [info] function=init
+
+----------------------------------------------------
+2015-12-02 16:49:35.699
+Testing [safe_cast_mfa_exit]
+
+16:49:35.699 [info] Application gen_rpc started on node 'gen_rpc_slave@127.0.0.1'
+[2015-12-02 16:49:35.700] severity=info module=gen_rpc_client pid="<0.1043.0>" function=safe_cast event=client_process_not_found server_node="gen_rpc_slave@127.0.0.1" action=spawning_client
+[2015-12-02 16:49:35.700] severity=debug module=gen_rpc_dispatcher pid="<0.684.0>" function=handle_call message=start_client event=starting_client_server server_node="gen_rpc_slave@127.0.0.1"
+[2015-12-02 16:49:35.700] severity=debug module=gen_rpc_client_sup pid="<0.684.0>" function=start_child event=starting_new_client server_node="gen_rpc_slave@127.0.0.1"
+[2015-12-02 16:49:35.700] severity=info module=gen_rpc_client pid="<0.1055.0>" function=init event=initializing_client server_node="gen_rpc_slave@127.0.0.1" connect_timeout=500 send_timeout=500 receive_timeout=15000 inactivity_timeout=infinity
+16:49:35.708 [info] function=init client_node="gen_rpc_master@127.0.0.1"
+16:49:35.715 [info] function=init event=listener_started_successfully client_node="gen_rpc_master@127.0.0.1"
+[2015-12-02 16:49:35.716] severity=debug module=gen_rpc_client pid="<0.1055.0>" function=get_remote_node_ip node="gen_rpc_slave@127.0.0.1" ip_address="{127,0,0,1}"
+[2015-12-02 16:49:35.716] severity=debug module=gen_rpc_client pid="<0.1055.0>" function=init event=remote_server_started_successfully server_node="gen_rpc_slave@127.0.0.1" server_ip="{127,0,0,1}:38298"
+[2015-12-02 16:49:35.716] severity=debug module=gen_rpc_client pid="<0.1055.0>" function=init event=connecting_to_server server_node="gen_rpc_slave@127.0.0.1" server_ip="{127,0,0,1}:38298" result=success
+[2015-12-02 16:49:35.716] severity=debug module=gen_rpc_client pid="<0.1055.0>" function=do_cast message=cast event=constructing_cast_term socket="#Port<0.68411>"
+[2015-12-02 16:49:35.717] severity=debug module=gen_rpc_client pid="<0.1055.0>" function=do_cast message=cast event=transmission_succeeded socket="#Port<0.68411>"
+16:49:35.716 [info] function=handle_info event=client_connection_received client_ip="{127,0,0,1}" client_node="gen_rpc_master@127.0.0.1" socket="#Port<0.5192>" action=starting_acceptor
+[2015-12-02 16:49:35.720] severity=warning module=gen_rpc_client pid="<0.1055.0>" function=handle_info message=nodedown event=node_down socket="#Port<0.68411>" node=gen_rpc_slave@127.0.0.1 reason="connection_closed" action=stopping
+[2015-12-02 16:49:35.720] severity=debug module=gen_rpc_client pid="<0.1055.0>" function=terminate socket="#Port<0.68411>"
+[2015-12-02 16:49:35.721] severity=debug module=gen_rpc_client_sup pid="<0.1057.0>" function=stop_child event=stopping_client client_pid="<0.1055.0>"
+16:49:36.692 [info] Application lager started on node 'gen_rpc_slave@127.0.0.1'
+16:49:36.692 [info] Application crypto started on node 'gen_rpc_slave@127.0.0.1'
+16:49:36.708 [info] Application asn1 started on node 'gen_rpc_slave@127.0.0.1'
+16:49:36.725 [info] Application public_key started on node 'gen_rpc_slave@127.0.0.1'
+16:49:36.742 [info] Application ssl started on node 'gen_rpc_slave@127.0.0.1'
+16:49:36.786 [info] function=init
+
+----------------------------------------------------
+2015-12-02 16:49:36.793
+Testing [safe_cast_mfa_throw]
+
+[2015-12-02 16:49:36.793] severity=info module=gen_rpc_client pid="<0.1059.0>" function=safe_cast event=client_process_not_found server_node="gen_rpc_slave@127.0.0.1" action=spawning_client
+16:49:36.792 [info] Application gen_rpc started on node 'gen_rpc_slave@127.0.0.1'
+[2015-12-02 16:49:36.793] severity=debug module=gen_rpc_dispatcher pid="<0.684.0>" function=handle_call message=start_client event=starting_client_server server_node="gen_rpc_slave@127.0.0.1"
+[2015-12-02 16:49:36.793] severity=debug module=gen_rpc_client_sup pid="<0.684.0>" function=start_child event=starting_new_client server_node="gen_rpc_slave@127.0.0.1"
+[2015-12-02 16:49:36.793] severity=info module=gen_rpc_client pid="<0.1071.0>" function=init event=initializing_client server_node="gen_rpc_slave@127.0.0.1" connect_timeout=500 send_timeout=500 receive_timeout=15000 inactivity_timeout=infinity
+16:49:36.802 [info] function=init client_node="gen_rpc_master@127.0.0.1"
+16:49:36.808 [info] function=init event=listener_started_successfully client_node="gen_rpc_master@127.0.0.1"
+[2015-12-02 16:49:36.809] severity=debug module=gen_rpc_client pid="<0.1071.0>" function=get_remote_node_ip node="gen_rpc_slave@127.0.0.1" ip_address="{127,0,0,1}"
+[2015-12-02 16:49:36.809] severity=debug module=gen_rpc_client pid="<0.1071.0>" function=init event=remote_server_started_successfully server_node="gen_rpc_slave@127.0.0.1" server_ip="{127,0,0,1}:43688"
+[2015-12-02 16:49:36.809] severity=debug module=gen_rpc_client pid="<0.1071.0>" function=init event=connecting_to_server server_node="gen_rpc_slave@127.0.0.1" server_ip="{127,0,0,1}:43688" result=success
+[2015-12-02 16:49:36.809] severity=debug module=gen_rpc_client pid="<0.1071.0>" function=do_cast message=cast event=constructing_cast_term socket="#Port<0.68419>"
+[2015-12-02 16:49:36.809] severity=debug module=gen_rpc_client pid="<0.1071.0>" function=do_cast message=cast event=transmission_succeeded socket="#Port<0.68419>"
+[2015-12-02 16:49:36.812] severity=warning module=gen_rpc_client pid="<0.1071.0>" function=handle_info message=nodedown event=node_down socket="#Port<0.68419>" node=gen_rpc_slave@127.0.0.1 reason="connection_closed" action=stopping
+[2015-12-02 16:49:36.812] severity=debug module=gen_rpc_client pid="<0.1071.0>" function=terminate socket="#Port<0.68419>"
+[2015-12-02 16:49:36.812] severity=debug module=gen_rpc_client_sup pid="<0.1073.0>" function=stop_child event=stopping_client client_pid="<0.1071.0>"
+16:49:37.788 [info] Application lager started on node 'gen_rpc_slave@127.0.0.1'
+16:49:37.789 [info] Application crypto started on node 'gen_rpc_slave@127.0.0.1'
+16:49:37.814 [info] Application asn1 started on node 'gen_rpc_slave@127.0.0.1'
+16:49:37.830 [info] Application public_key started on node 'gen_rpc_slave@127.0.0.1'
+16:49:37.867 [info] Application ssl started on node 'gen_rpc_slave@127.0.0.1'
+16:49:37.903 [info] function=init
+
+----------------------------------------------------
+2015-12-02 16:49:37.911
+Testing [safe_cast_inexistent_node]
+
+[2015-12-02 16:49:37.912] severity=info module=gen_rpc_client pid="<0.1075.0>" function=safe_cast event=client_process_not_found server_node="fake_node@127.0.1.1" action=spawning_client
+[2015-12-02 16:49:37.912] severity=debug module=gen_rpc_dispatcher pid="<0.684.0>" function=handle_call message=start_client event=starting_client_server server_node="fake_node@127.0.1.1"
+[2015-12-02 16:49:37.912] severity=debug module=gen_rpc_client_sup pid="<0.684.0>" function=start_child event=starting_new_client server_node="fake_node@127.0.1.1"
+16:49:37.911 [info] Application gen_rpc started on node 'gen_rpc_slave@127.0.0.1'
+[2015-12-02 16:49:37.912] severity=info module=gen_rpc_client pid="<0.1087.0>" function=init event=initializing_client server_node="fake_node@127.0.1.1" connect_timeout=500 send_timeout=500 receive_timeout=15000 inactivity_timeout=infinity
+
+----------------------------------------------------
+2015-12-02 16:49:37.921
+[2015-12-02 16:49:37.921] severity=error module=gen_rpc_client pid="<0.1087.0>" function=init event=connecting_to_server server_node="fake_node@127.0.1.1" result=failure reason="nodedown"
+
+
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+remote_functional_SUITE:safe_cast_inexistent_node failed on line 218
+Reason: {badmatch,{badrpc,{{badrpc,nodedown},{gen_server,call,[<0.10...}
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+[2015-12-02 16:49:37.921] severity=error module=gen_rpc_client pid="<0.1087.0>" function=init event=connecting_to_server server_node="fake_node@127.0.1.1" result=failure reason="nodedown"
+[2015-12-02 16:49:37.921] severity=debug module=gen_rpc_client pid="<0.1087.0>" function=terminate socket="undefined"
+[2015-12-02 16:49:37.921] severity=debug module=gen_rpc_client_sup pid="<0.1091.0>" function=stop_child event=stopping_client client_pid="<0.1087.0>"
+
+----------------------------------------------------
+2015-12-02 16:49:37.923
+[2015-12-02 16:49:37.921] severity=error module=gen_rpc pid="<0.1087.0>" gen_server 'fake_node@127.0.1.1' terminated with reason: {badrpc,nodedown}
+
+
+[2015-12-02 16:49:37.921] severity=error module=gen_rpc pid="<0.1087.0>" gen_server 'fake_node@127.0.1.1' terminated with reason: {badrpc,nodedown}
+
+----------------------------------------------------
+2015-12-02 16:49:37.923
+[2015-12-02 16:49:37.922] severity=error module=gen_rpc pid="<0.1087.0>" CRASH REPORT Process 'fake_node@127.0.1.1' with 0 neighbours exited with reason: {badrpc,nodedown} in gen_server:terminate/7 line 826
+
+
+[2015-12-02 16:49:37.922] severity=error module=gen_rpc pid="<0.1087.0>" CRASH REPORT Process 'fake_node@127.0.1.1' with 0 neighbours exited with reason: {badrpc,nodedown} in gen_server:terminate/7 line 826
+
+----------------------------------------------------
+2015-12-02 16:49:37.923
+[2015-12-02 16:49:37.922] severity=error module=gen_rpc pid="<0.685.0>" Supervisor gen_rpc_client_sup had child undefined started with {gen_rpc_client,start_link,undefined} at <0.1087.0> exit with reason {badrpc,nodedown} in context child_terminated
+
+
+[2015-12-02 16:49:37.922] severity=error module=gen_rpc pid="<0.685.0>" Supervisor gen_rpc_client_sup had child undefined started with {gen_rpc_client,start_link,undefined} at <0.1087.0> exit with reason {badrpc,nodedown} in context child_terminated
+Testing lib.gen_rpc.remote_functional_SUITE: *** FAILED test case 22 of 24 ***
+16:49:39.076 [info] Application lager started on node 'gen_rpc_slave@127.0.0.1'
+16:49:39.076 [info] Application crypto started on node 'gen_rpc_slave@127.0.0.1'
+16:49:39.095 [info] Application asn1 started on node 'gen_rpc_slave@127.0.0.1'
+16:49:39.110 [info] Application public_key started on node 'gen_rpc_slave@127.0.0.1'
+16:49:39.129 [info] Application ssl started on node 'gen_rpc_slave@127.0.0.1'
+16:49:39.180 [info] function=init
+[2015-12-02 16:49:39.192] severity=debug module=gen_rpc_dispatcher pid="<0.684.0>" function=terminate reason="shutdown"
+[2015-12-02 16:49:39.193] severity=info module=gen_rpc pid="<0.6.0>" Application gen_rpc exited with reason: stopped
+[2015-12-02 16:49:39.195] severity=debug module=gen_rpc pid="<0.1108.0>" Supervisor gen_rpc_sup started gen_rpc_server_sup:start_link() at pid <0.1109.0>
+[2015-12-02 16:49:39.195] severity=debug module=gen_rpc pid="<0.1108.0>" Supervisor gen_rpc_sup started gen_rpc_acceptor_sup:start_link() at pid <0.1110.0>
+[2015-12-02 16:49:39.195] severity=info module=gen_rpc_dispatcher pid="<0.1111.0>" function=init
+[2015-12-02 16:49:39.195] severity=debug module=gen_rpc pid="<0.1108.0>" Supervisor gen_rpc_sup started gen_rpc_dispatcher:start_link() at pid <0.1111.0>
+[2015-12-02 16:49:39.195] severity=debug module=gen_rpc pid="<0.1108.0>" Supervisor gen_rpc_sup started gen_rpc_client_sup:start_link() at pid <0.1112.0>
+[2015-12-02 16:49:39.196] severity=info module=gen_rpc pid="<0.6.0>" Application gen_rpc started on node 'gen_rpc_master@127.0.0.1'
+16:49:39.191 [info] Application gen_rpc started on node 'gen_rpc_slave@127.0.0.1'
+
+----------------------------------------------------
+2015-12-02 16:49:39.196
+Testing [client_inactivity_timeout]
+
+[2015-12-02 16:49:39.196] severity=info module=gen_rpc_client pid="<0.1093.0>" function=call event=client_process_not_found server_node="gen_rpc_slave@127.0.0.1" action=spawning_client
+[2015-12-02 16:49:39.196] severity=debug module=gen_rpc_dispatcher pid="<0.1111.0>" function=handle_call message=start_client event=starting_client_server server_node="gen_rpc_slave@127.0.0.1"
+[2015-12-02 16:49:39.196] severity=debug module=gen_rpc_client_sup pid="<0.1111.0>" function=start_child event=starting_new_client server_node="gen_rpc_slave@127.0.0.1"
+[2015-12-02 16:49:39.196] severity=info module=gen_rpc_client pid="<0.1113.0>" function=init event=initializing_client server_node="gen_rpc_slave@127.0.0.1" connect_timeout=500 send_timeout=500 receive_timeout=15000 inactivity_timeout=infinity
+16:49:39.215 [info] function=init client_node="gen_rpc_master@127.0.0.1"
+16:49:39.225 [info] function=init event=listener_started_successfully client_node="gen_rpc_master@127.0.0.1"
+[2015-12-02 16:49:39.226] severity=debug module=gen_rpc_client pid="<0.1113.0>" function=get_remote_node_ip node="gen_rpc_slave@127.0.0.1" ip_address="{127,0,0,1}"
+[2015-12-02 16:49:39.226] severity=debug module=gen_rpc_client pid="<0.1113.0>" function=init event=remote_server_started_successfully server_node="gen_rpc_slave@127.0.0.1" server_ip="{127,0,0,1}:40855"
+16:49:39.226 [info] function=handle_info event=client_connection_received client_ip="{127,0,0,1}" client_node="gen_rpc_master@127.0.0.1" socket="#Port<0.5192>" action=starting_acceptor
+[2015-12-02 16:49:39.226] severity=debug module=gen_rpc_client pid="<0.1113.0>" function=init event=connecting_to_server server_node="gen_rpc_slave@127.0.0.1" server_ip="{127,0,0,1}:40855" result=success
+[2015-12-02 16:49:39.226] severity=debug module=gen_rpc_client pid="<0.1113.0>" function=handle_call message=call event=constructing_call_term socket="#Port<0.68473>" call_reference="#Ref<0.0.1.8329>"
+[2015-12-02 16:49:39.226] severity=debug module=gen_rpc_client pid="<0.1113.0>" function=handle_call message=call event=transmission_succeeded socket="#Port<0.68473>" call_reference="#Ref<0.0.1.8329>"
+16:49:39.243 [info] function=init client_node="gen_rpc_master@127.0.0.1" client_ip="{127,0,0,1}"
+[2015-12-02 16:49:39.245] severity=debug module=gen_rpc_client pid="<0.1113.0>" function=handle_info message=tcp event=reply_received call_reference="#Ref<0.0.1.8329>" worker_pid="<0.1115.0>" action=sending_to_worker
+[2015-12-02 16:49:39.246] severity=debug module=gen_rpc_client pid="<0.1115.0>" function=call_worker event=reply_received call_reference="#Ref<0.0.1.8329>" reply="{1449,103779,244754}"
+[2015-12-02 16:49:39.848] severity=warning module=gen_rpc_client pid="<0.1113.0>" function=handle_info message=nodedown event=node_down socket="#Port<0.68473>" node=gen_rpc_slave@127.0.0.1 reason="connection_closed" action=stopping
+[2015-12-02 16:49:39.848] severity=debug module=gen_rpc_client pid="<0.1113.0>" function=terminate socket="#Port<0.68473>"
+[2015-12-02 16:49:39.848] severity=debug module=gen_rpc_client_sup pid="<0.1116.0>" function=stop_child event=stopping_client client_pid="<0.1113.0>"
+[2015-12-02 16:49:39.855] severity=debug module=gen_rpc_dispatcher pid="<0.1111.0>" function=terminate reason="shutdown"
+[2015-12-02 16:49:39.856] severity=info module=gen_rpc pid="<0.6.0>" Application gen_rpc exited with reason: stopped
+[2015-12-02 16:49:39.859] severity=debug module=gen_rpc pid="<0.1120.0>" Supervisor gen_rpc_sup started gen_rpc_server_sup:start_link() at pid <0.1121.0>
+[2015-12-02 16:49:39.859] severity=debug module=gen_rpc pid="<0.1120.0>" Supervisor gen_rpc_sup started gen_rpc_acceptor_sup:start_link() at pid <0.1122.0>
+[2015-12-02 16:49:39.859] severity=info module=gen_rpc_dispatcher pid="<0.1123.0>" function=init
+[2015-12-02 16:49:39.859] severity=debug module=gen_rpc pid="<0.1120.0>" Supervisor gen_rpc_sup started gen_rpc_dispatcher:start_link() at pid <0.1123.0>
+[2015-12-02 16:49:39.859] severity=debug module=gen_rpc pid="<0.1120.0>" Supervisor gen_rpc_sup started gen_rpc_client_sup:start_link() at pid <0.1124.0>
+[2015-12-02 16:49:39.859] severity=info module=gen_rpc pid="<0.6.0>" Application gen_rpc started on node 'gen_rpc_master@127.0.0.1'
+16:49:41.008 [info] Application lager started on node 'gen_rpc_slave@127.0.0.1'
+16:49:41.015 [info] Application crypto started on node 'gen_rpc_slave@127.0.0.1'
+16:49:41.038 [info] Application asn1 started on node 'gen_rpc_slave@127.0.0.1'
+16:49:41.043 [info] Application public_key started on node 'gen_rpc_slave@127.0.0.1'
+16:49:41.061 [info] Application ssl started on node 'gen_rpc_slave@127.0.0.1'
+16:49:41.108 [info] function=init
+[2015-12-02 16:49:41.115] severity=debug module=gen_rpc_dispatcher pid="<0.1123.0>" function=terminate reason="shutdown"
+[2015-12-02 16:49:41.115] severity=info module=gen_rpc pid="<0.6.0>" Application gen_rpc exited with reason: stopped
+[2015-12-02 16:49:41.117] severity=debug module=gen_rpc pid="<0.1141.0>" Supervisor gen_rpc_sup started gen_rpc_server_sup:start_link() at pid <0.1142.0>
+[2015-12-02 16:49:41.117] severity=debug module=gen_rpc pid="<0.1141.0>" Supervisor gen_rpc_sup started gen_rpc_acceptor_sup:start_link() at pid <0.1143.0>
+[2015-12-02 16:49:41.117] severity=info module=gen_rpc_dispatcher pid="<0.1144.0>" function=init
+[2015-12-02 16:49:41.117] severity=debug module=gen_rpc pid="<0.1141.0>" Supervisor gen_rpc_sup started gen_rpc_dispatcher:start_link() at pid <0.1144.0>
+[2015-12-02 16:49:41.117] severity=debug module=gen_rpc pid="<0.1141.0>" Supervisor gen_rpc_sup started gen_rpc_client_sup:start_link() at pid <0.1145.0>
+[2015-12-02 16:49:41.117] severity=info module=gen_rpc pid="<0.6.0>" Application gen_rpc started on node 'gen_rpc_master@127.0.0.1'
+
+----------------------------------------------------
+2015-12-02 16:49:41.118
+Testing [server_inactivity_timeout]
+
+[2015-12-02 16:49:41.118] severity=info module=gen_rpc_client pid="<0.1126.0>" function=call event=client_process_not_found server_node="gen_rpc_slave@127.0.0.1" action=spawning_client
+[2015-12-02 16:49:41.118] severity=debug module=gen_rpc_dispatcher pid="<0.1144.0>" function=handle_call message=start_client event=starting_client_server server_node="gen_rpc_slave@127.0.0.1"
+[2015-12-02 16:49:41.118] severity=debug module=gen_rpc_client_sup pid="<0.1144.0>" function=start_child event=starting_new_client server_node="gen_rpc_slave@127.0.0.1"
+[2015-12-02 16:49:41.118] severity=info module=gen_rpc_client pid="<0.1146.0>" function=init event=initializing_client server_node="gen_rpc_slave@127.0.0.1" connect_timeout=500 send_timeout=500 receive_timeout=15000 inactivity_timeout=infinity
+16:49:41.114 [info] Application gen_rpc started on node 'gen_rpc_slave@127.0.0.1'
+16:49:41.129 [info] function=init client_node="gen_rpc_master@127.0.0.1"
+16:49:41.135 [info] function=init event=listener_started_successfully client_node="gen_rpc_master@127.0.0.1"
+[2015-12-02 16:49:41.135] severity=debug module=gen_rpc_client pid="<0.1146.0>" function=get_remote_node_ip node="gen_rpc_slave@127.0.0.1" ip_address="{127,0,0,1}"
+[2015-12-02 16:49:41.135] severity=debug module=gen_rpc_client pid="<0.1146.0>" function=init event=remote_server_started_successfully server_node="gen_rpc_slave@127.0.0.1" server_ip="{127,0,0,1}:57451"
+[2015-12-02 16:49:41.136] severity=debug module=gen_rpc_client pid="<0.1146.0>" function=init event=connecting_to_server server_node="gen_rpc_slave@127.0.0.1" server_ip="{127,0,0,1}:57451" result=success
+[2015-12-02 16:49:41.136] severity=debug module=gen_rpc_client pid="<0.1146.0>" function=handle_call message=call event=constructing_call_term socket="#Port<0.68557>" call_reference="#Ref<0.0.2.7118>"
+[2015-12-02 16:49:41.136] severity=debug module=gen_rpc_client pid="<0.1146.0>" function=handle_call message=call event=transmission_succeeded socket="#Port<0.68557>" call_reference="#Ref<0.0.2.7118>"
+16:49:41.137 [info] function=handle_info event=client_connection_received client_ip="{127,0,0,1}" client_node="gen_rpc_master@127.0.0.1" socket="#Port<0.5192>" action=starting_acceptor
+16:49:41.148 [info] function=init client_node="gen_rpc_master@127.0.0.1" client_ip="{127,0,0,1}"
+[2015-12-02 16:49:41.149] severity=debug module=gen_rpc_client pid="<0.1146.0>" function=handle_info message=tcp event=reply_received call_reference="#Ref<0.0.2.7118>" worker_pid="<0.1148.0>" action=sending_to_worker
+[2015-12-02 16:49:41.149] severity=debug module=gen_rpc_client pid="<0.1148.0>" function=call_worker event=reply_received call_reference="#Ref<0.0.2.7118>" reply="{1449,103781,149577}"
+[2015-12-02 16:49:41.754] severity=warning module=gen_rpc_client pid="<0.1146.0>" function=handle_info message=nodedown event=node_down socket="#Port<0.68557>" node=gen_rpc_slave@127.0.0.1 reason="connection_closed" action=stopping
+[2015-12-02 16:49:41.754] severity=debug module=gen_rpc_client pid="<0.1146.0>" function=terminate socket="#Port<0.68557>"
+[2015-12-02 16:49:41.754] severity=debug module=gen_rpc_client_sup pid="<0.1149.0>" function=stop_child event=stopping_client client_pid="<0.1146.0>"
+[2015-12-02 16:49:41.754] severity=debug module=gen_rpc_dispatcher pid="<0.1144.0>" function=terminate reason="shutdown"
+[2015-12-02 16:49:41.755] severity=info module=gen_rpc pid="<0.6.0>" Application gen_rpc exited with reason: stopped
+[2015-12-02 16:49:41.764] severity=debug module=gen_rpc pid="<0.1153.0>" Supervisor gen_rpc_sup started gen_rpc_server_sup:start_link() at pid <0.1154.0>
+[2015-12-02 16:49:41.764] severity=debug module=gen_rpc pid="<0.1153.0>" Supervisor gen_rpc_sup started gen_rpc_acceptor_sup:start_link() at pid <0.1155.0>
+[2015-12-02 16:49:41.764] severity=info module=gen_rpc_dispatcher pid="<0.1156.0>" function=init
+[2015-12-02 16:49:41.764] severity=debug module=gen_rpc pid="<0.1153.0>" Supervisor gen_rpc_sup started gen_rpc_dispatcher:start_link() at pid <0.1156.0>
+[2015-12-02 16:49:41.764] severity=debug module=gen_rpc pid="<0.1153.0>" Supervisor gen_rpc_sup started gen_rpc_client_sup:start_link() at pid <0.1157.0>
+[2015-12-02 16:49:41.764] severity=info module=gen_rpc pid="<0.6.0>" Application gen_rpc started on node 'gen_rpc_master@127.0.0.1'
+Testing lib.gen_rpc.remote_functional_SUITE: TEST COMPLETE, 23 ok, 1 failed of 24 test cases
+
+Cover analysing... done
+
+Updating /opt/test/benchtest/clean/gen_rpc/log/ct/index.html... done
+Updating /opt/test/benchtest/clean/gen_rpc/log/ct/all_runs.html... done
+[0;31m===> Failures occured running tests: 3
+[0mmake: *** [test] Error 1

@@ -26,16 +26,24 @@ start_link() ->
 -spec start_child(Node::node()) -> {'ok', inet:port_number()} | {ok, _}.
 start_child(Node) when is_atom(Node) ->
     ok = lager:debug("function=start_child event=starting_new_server client_node=\"~s\"", [Node]),
-    {ok, Pid} = case supervisor:start_child(?MODULE, [Node]) of
-        {error, {already_started, CPid}} ->
-            %% If we've already started the child, terminate it and start anew
-            ok = stop_child(CPid),
-            supervisor:start_child(?MODULE, [Node]);
-        {error, OtherError} ->
-            {error, OtherError};
-        {ok, TPid} ->
-            {ok, TPid}
+    {ok, Pid} = try supervisor:start_child(?MODULE, [Node])
+    catch 
+        error:{already_started, CPid} -> ok = stop_child(CPid),
+                                         supervisor:start_child(?MODULE, [Node]);
+        error:Reason -> {badrpc, Reason};
+        throw:Term -> Term;
+        exit:Reason -> {badrpc, Reason}
     end,
+%    {ok, Pid} = case supervisor:start_child(?MODULE, [Node]) of
+%        {error, {already_started, CPid}} ->
+            %% If we've already started the child, terminate it and start anew
+%            ok = stop_child(CPid),
+%            supervisor:start_child(?MODULE, [Node]);
+%        {error, OtherError} ->
+%            {error, OtherError};
+%        {ok, TPid} ->
+%            {ok, TPid}
+%    end,
     {ok, Port} = gen_rpc_server:get_port(Pid),
     {ok, Port}.
 
