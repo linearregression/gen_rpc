@@ -12,9 +12,13 @@
 %%% Include this library's name macro
 -include("app.hrl").
 
+%-define().
+
 -behaviour(gen_rpc_transport).
 
--export([name/0, accept/2, accept_ack/2, close/1, controlling_process/2, connect/3, is_secure/0, listen/0, listen/1, peername/1, port/1, recv/3, send/2, getopts/2, setopts/2, set_sockopt/2]).
+-export([name/0, accept/2, accept_ack/2, close/1, controlling_process/2, connect/3,
+         is_secure/0, listen/0, listen/1, peername/1, port/1, recv/3, send/2, getopts/2,
+         setopts/2, set_sockopt/2]).
 
 -spec name() -> atom().
 name() -> ssl.
@@ -24,10 +28,13 @@ is_secure() -> true.
 
 -spec accept(ssl:sslsocket(), timeout()) -> {ok, ssl:sslsocket()} | {error, closed | timeout | atom()}.
 accept(Socket, Timeout) ->
+	% Take care of socket from a listen then do the ssl handshake
 	ssl:transport_accept(Socket, Timeout).
 
 -spec accept_ack(ssl:sslsocket(), timeout()) -> {ok, ssl:sslsocket()} | {error, closed | timeout | atom()}.
 accept_ack(Socket, Timeout) ->
+	% For upgrade tcp socket to a ssl one.
+	% Need the handshake has been finished or an error occurred
 	case ssl:ssl_accept(Socket, Timeout) of
 		ok -> ok;
 		%% Garbage was most likely sent to the socket, don't error out.
@@ -58,8 +65,7 @@ controlling_process(Socket, Pid) ->
 	ssl:controlling_process(Socket, Pid).
 
 -spec listen() -> {ok, ssl:sslsocket()} | {error, atom()}.
-listen() ->
-	ssl:listen(0, gen_rpc_helper:default_tcp_opts(?DEFAULT_TCP_OPTS)).
+listen() -> listen(0).
 
 -spec listen(inet:port_number()) -> {ok, ssl:sslsocket()} | {error, atom()}.
 listen(Port) ->
