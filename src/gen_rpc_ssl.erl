@@ -53,7 +53,7 @@ accept_ack(Socket, Timeout) ->
 -spec connect(inet:ip_address(), inet:port_number(), timeout())
 	-> {ok, ssl:sslsocket()} | {error, atom()}.
 connect(Address, Port, ConnTimeout) ->
-	ssl:connect(Address, Port, gen_rpc_helper:default_tcp_opts(?DEFAULT_TCP_OPTS), ConnTimeout).
+	ssl:connect(Address, Port, gen_rpc_helper:default_tcp_opts(?DEFAULT_SSL_OPTS), ConnTimeout).
 
 -spec close(ssl:sslsocket()) -> ok.
 close(Socket) ->
@@ -93,15 +93,15 @@ set_sockopt(ListSock, AccSocket) ->
     case prim_inet:getopts(ListSock, ?DEFAULT_TCP_OPTS) of
         {ok, Opts} -> prim_inet:setopts(AccSocket, Opts), 
                       % Do an tcp to ssl upgrade 
-                      upgrade_tcp(AccSocket) ;
+                      ok = upgrade_tcp_socket(AccSocket) ;
         Error ->
             (catch gen_tcp:close(AccSocket)),
             Error
     end.
 
--spec upgrade_tcp(inet:socket()) -> ok | term().
-upgrade_tcp(TcpSocket) ->
-     case ssl:ssl_accept(TcpSocket, ?DEFAULT_TCP_OPTS) of
+-spec upgrade_tcp_socket(inet:socket()) -> ok | term().
+upgrade_tcp_socket(TcpSocket) ->
+     case accept_ack(TcpSocket, ?DEFAULT_SSL_OPTS) of
         {ok, AcceptSocket} -> 
              {ok, _Upgraded} = ssl:negotiated_protocol(AcceptSocket),
              ok;
