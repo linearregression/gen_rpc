@@ -13,11 +13,13 @@ cache:
   - _plt
 install: "true"
 script: "make test xref dialyzer"
+after-sucess: "make coverage-report"
 branches:
   only:
     - master
     - develop
     - new_master
+
 notifications:
   email:
     - priestjim@gmail.com
