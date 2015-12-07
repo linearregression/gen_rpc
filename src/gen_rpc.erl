@@ -43,7 +43,6 @@
 %%% ===================================================
 %% All functions are GUARD-ed in the sender module, no
 %% need for the overhead here
-<<<<<<< HEAD
 -spec async_call(Node::node(), M::module(), F::atom()|function()) -> term() | {'badrpc', term()} | {'badtcp' | term()}.
 async_call(Node, M, F) ->
     gen_rpc_client:async_call(Node, M, F).

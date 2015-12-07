@@ -393,7 +393,7 @@ async_call_inexistent_node(_Config) ->
     YieldKey1 = gen_rpc:async_call(?FAKE_NODE, os, timestamp, []),
     {badrpc, nodedown} = gen_rpc:yield(YieldKey1),
     YieldKey2 = gen_rpc:async_call(?FAKE_NODE, os, timestamp, []),
-    {value, {badrpc, nodedown}} = gen_rpc:nb_yield(YieldKey2, 5000).
+    {value, {badrpc, nodedown}} = gen_rpc:nb_yield(YieldKey2, 5000),
     ok = ct:pal("Result [async_call_yield_infinity]: signal=sleep Reason={ok}").
 
 client_inactivity_timeout(_Config) ->

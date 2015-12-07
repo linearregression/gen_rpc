@@ -184,19 +184,12 @@ terminate(_Reason, _StateName, #state{socket=Socket}) ->
 %%% Private functions
 %%% ===================================================
 
-<<<<<<< HEAD
-=======
-make_process_name(Node) ->
-    NodeBin = atom_to_binary(Node, latin1),
-    binary_to_atom(<<"gen_rpc_acceptor_", NodeBin/binary>>, latin1).
-
 process_call(Socket, Node, ClientPid, Ref, M, F, A) ->
     WorkerPid = erlang:spawn(?MODULE, call_worker, [self(), ClientPid, Ref, M, F, A]),
     ok = lager:debug("function=waiting_for_data event=call_received socket=\"~p\" node=\"~s\" call_reference=\"~p\" client_pid=\"~p\" worker_pid=\"~p\"",
                              [Socket, Node, Ref, ClientPid, WorkerPid]),
     ok = inet:setopts(Socket, [{active, once}]).
 
->>>>>>> block_call
 %% Process an RPC call request outside of the FSM
 call_worker(Parent, WorkerPid, Ref, M, F, A) ->
     ok = lager:debug("function=call_worker event=call_received call_reference=\"~p\" module=~s function=~s args=\"~p\"", [Ref, M, F, A]),

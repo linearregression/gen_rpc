@@ -15,7 +15,6 @@
 
 %%% Testing functions
 -export([supervisor_black_box/1,
-<<<<<<< HEAD
         multi_call/1,
         multi_call_timeout/1,
         multi_call_mfa_undef/1,
@@ -23,23 +22,21 @@
         multi_call_mfa_throw/1,
         multi_call_inexistent_node/1,
         multi_call_no_node/1,
-        multi_call_multiple_nodes/1]).
-=======
-         eval_everywhere_mfa_no_node/1,
-         eval_everywhere_mfa_one_node/1,
-         eval_everywhere_mfa_multiple_nodes/1,
-         eval_everywhere_mfa_multiple_nodes_timeout/1,
-         eval_everywhere_mfa_exit_multiple_nodes/1,
-         eval_everywhere_mfa_throw_multiple_nodes/1,
-         eval_everywhere_mfa_timeout_multiple_nodes/1,
-         safe_eval_everywhere_mfa_no_node/1,
-         safe_eval_everywhere_mfa_one_node/1,
-         safe_eval_everywhere_mfa_multiple_nodes/1,
-         safe_eval_everywhere_mfa_multiple_nodes_timeout/1,
-         safe_eval_everywhere_mfa_exit_multiple_nodes/1,
-         safe_eval_everywhere_mfa_throw_multiple_nodes/1,
-         safe_eval_everywhere_mfa_timeout_multiple_nodes/1]).
->>>>>>> evaleverywhere
+        multi_call_multiple_nodes/1,
+        eval_everywhere_mfa_no_node/1,
+        eval_everywhere_mfa_one_node/1,
+        eval_everywhere_mfa_multiple_nodes/1,
+        eval_everywhere_mfa_multiple_nodes_timeout/1,
+        eval_everywhere_mfa_exit_multiple_nodes/1,
+        eval_everywhere_mfa_throw_multiple_nodes/1,
+        eval_everywhere_mfa_timeout_multiple_nodes/1,
+        safe_eval_everywhere_mfa_no_node/1,
+        safe_eval_everywhere_mfa_one_node/1,
+        safe_eval_everywhere_mfa_multiple_nodes/1,
+        safe_eval_everywhere_mfa_multiple_nodes_timeout/1,
+        safe_eval_everywhere_mfa_exit_multiple_nodes/1,
+        safe_eval_everywhere_mfa_throw_multiple_nodes/1,
+        safe_eval_everywhere_mfa_timeout_multiple_nodes/1]).
 
 -export([start_slaves/0, stop_slaves/0]).
 
@@ -94,7 +91,6 @@ supervisor_black_box(_Config) ->
     ok.
 
 %% Test main functions
-<<<<<<< HEAD
 multi_call(_Config) ->
     ok = ct:pal("Testing [multi_call]"),
     [[?SLAVE1,?SLAVE2], []] = gen_rpc:multicall([?SLAVE1, ?SLAVE2], erlang, node, 5000, 100).
@@ -126,7 +122,7 @@ multi_call_no_node(_Config) ->
 multi_call_multiple_nodes(_Config) ->
     ok = ct:pal("Testing [multi_call_multiple_nodes]"),
     [[_,_],[?FAKE_NODE]] = gen_rpc:multicall([?SLAVE1, ?SLAVE2, ?FAKE_NODE], os, timestamp, 5000, 100).
-=======
+
 eval_everywhere_mfa_no_node(_Config) ->
     ok = ct:pal("Testing [eval_everywhere_mfa_no_node]"),
     ConnectedNodes = [],
@@ -264,7 +260,6 @@ safe_eval_everywhere_mfa_timeout_multiple_nodes(_Config) ->
     ConnectedNodes = [?SLAVE1, ?SLAVE2],
     [true, []] = gen_rpc:safe_eval_everywhere(ConnectedNodes, erlang, throw, ['throwXup']),
     ok = ct:pal("erlang:throw only]. Verify the crash log from ct. You should see {{nocatch,throwXup}, ....} on the target node").
->>>>>>> evaleverywhere
 
 %%% ===================================================
 %%% Auxiliary functions for test cases
@@ -290,8 +285,6 @@ stop_slaves() ->
         ok = slave:stop(Node)
      end || Node <- Slaves],
     ok = ct:pal("Slaves stopped").
-<<<<<<< HEAD
-=======
 
 %% This is the middleman process listening for messages from slave nodes
 %% Then relay back to test case Pid for check.
@@ -382,4 +375,4 @@ clean_process(Name, Reason) ->
 kill_it(undefined, _Reason) -> true;
 kill_it(Pid, Reason) ->
     true = exit(Pid, Reason).
->>>>>>> evaleverywhere
+
