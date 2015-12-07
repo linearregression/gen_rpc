@@ -14,6 +14,8 @@
         call/4,
         call/5,
         call/6,
+        multicall/5,
+        multicall/6,
         cast/3,
         cast/4,
         cast/5,
@@ -51,6 +53,14 @@ call(Node, M, F, A) ->
 -spec call(Node::node(), M::module(), F::atom()|function(), A::list(), RecvTO::timeout()) -> term() | {'badrpc', term()} | {'badtcp' | term()}.
 call(Node, M, F, A, RecvTO) ->
     gen_rpc_client:call(Node, M, F, A, RecvTO).
+
+-spec multicall(Nodes::[node()], M::module(), F::atom()|function(), RecvTO::timeout(), SendTO::timeout()) -> term() | {badrpc, term()}.
+multicall(Nodes, M, F, RecvTO, SendTO) ->
+    gen_rpc_client:multicall(Nodes, M, F, RecvTO, SendTO).
+
+-spec multicall(Nodes::[node()], M::module(), F::atom()|function(), A::list(), RecvTO::timeout(), SendTO::timeout()) -> term() | {badrpc, term()}.
+multicall(Nodes, M, F, A, RecvTO, SendTO) ->
+    gen_rpc_client:multicall(Nodes, M, F, A, RecvTO, SendTO).
 
 -spec call(Node::node(), M::module(), F::atom()|function(), A::list(), RecvTO::timeout(), SendTO::timeout()) -> term() | {'badrpc', term()} | {'badtcp' | term()}.
 call(Node, M, F, A, RecvTO, SendTO) ->

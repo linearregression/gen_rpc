@@ -17,6 +17,7 @@ branches:
   only:
     - master
     - develop
+    - new_master
 notifications:
   email:
     - priestjim@gmail.com

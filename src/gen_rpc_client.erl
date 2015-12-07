@@ -27,7 +27,8 @@
 
 %%% FSM functions
 -export([call/3, call/4, call/5, call/6, cast/3, cast/4, cast/5, safe_cast/3, safe_cast/4, safe_cast/5]).
--export([async_call/3, async_call/4, yield/1, yield/2, nb_yield/1, nb_yield/2]).
+-export([multicall/5, multicall/6]).
+-export([async_call/3, async_call/4, async_call/6, yield/1, yield/2, nb_yield/1, nb_yield/2]).
 -export([pinfo/1, pinfo/2]).
 
 %%% Behaviour callbacks
@@ -36,6 +37,7 @@
 
 %%% Process exports
 -export([call_worker/3]).
+-export([yield_results/1]).
 
 %%% ===================================================
 %%% Supervisor functions
@@ -56,10 +58,19 @@ async_call(Node, M, F) when is_atom(Node), is_atom(M), is_atom(F) ->
     async_call(Node, M, F, []).
 
 %% Simple server async_call with args
-async_call(Node, M, F, A) when is_atom(Node), is_atom(M), is_atom(F), is_list(A) ->
+async_call(Node, M, F, A) ->
     ReplyTo = self(),
     spawn(fun()-> 
               Reply = call(Node, M, F, A, undefined, undefined),
+              ReplyTo ! {self(), {promise_reply, Reply}}
+          end).
+
+%% Simple server async_call with args
+async_call(Node, M, F, A, RecvTO, SendTO) ->
+    ReplyTo = self(),
+    ok = lager:info("function=async_call event=spawning_call_process server_node=\"~s\" action=spawning_call_process", [Node]),
+    spawn(fun()-> 
+              Reply = call(Node, M, F, A, RecvTO, SendTO),
               ReplyTo ! {self(), {promise_reply, Reply}}
           end).
 
@@ -98,6 +109,21 @@ call(Node, M, F, A, RecvTO, SendTO) when is_atom(Node), is_atom(M), is_atom(F), 
             gen_server:call(Pid, {{call,M,F,A},RecvTO,SendTO}, infinity)
     end.
 
+multicall(Nodes, M, F, RecvTO, SendTO) ->
+    multicall(Nodes, M, F, [], RecvTO, SendTO).
+
+multicall([], _M, _F, _A, _RecvTO, _SendTO) -> [[],[]];
+%% multicall with args and custom send timeout values
+multicall(Nodes, M, F, A, RecvTO, SendTO) when is_list(Nodes), is_atom(M), is_atom(F), is_list(A),
+                                         RecvTO =:= undefined orelse is_integer(RecvTO) orelse RecvTO =:= infinity,
+                                         SendTO =:= undefined orelse is_integer(SendTO) orelse SendTO =:= infinity ->
+    % Can't use gen_server:multicall which requires all peer process having the same name
+    NodeKeyList  = lists:map(fun(Node)->
+                                Key = async_call(Node, M, F, A, RecvTO, SendTO),
+                                {Node, Key}
+                             end, Nodes),
+    yield_results(NodeKeyList).
+
 %% Simple server cast with no args and default timeout values
 cast(Node, M, F) when is_atom(Node), is_atom(M), is_atom(F) ->
     cast(Node, M, F, [], undefined).
@@ -132,7 +158,7 @@ cast(Node, M, F, A, SendTO) when is_atom(Node), is_atom(M), is_atom(F), is_list(
     end.
 
 %% @doc Location transparent version of the BIF process_info/2.
-%% P
+%% 
 -spec pinfo(Pid::pid()) -> [{Item::atom(), Info::term()}] | undefined.
 pinfo(Pid) when is_pid(Pid) ->
     call(node(Pid), erlang, process_info, [Pid]).
@@ -173,29 +199,37 @@ safe_cast(Node, M, F, A, SendTO) when is_atom(Node), is_atom(M), is_atom(F), is_
             ok = lager:debug("function=safe_cast event=client_process_found pid=\"~p\" server_node=\"~s\"", [Pid, Node]),
             gen_server:call(Pid, {{cast,M,F,A},SendTO}, infinity)
     end.
-%% Simple server yield with key. Delegate to nb_yield. Default timeout form configuation.
 
-%% Simple server yield with key. Delegate to nb_yield. Default timeout form configuration.
+%% @doc Simple server yield with key. Delegate to nb_yield. Default timeout value of infinity.
 yield(Key)-> 
     yield(Key, infinity).
 
+%% @doc Simple server yield with key. Delegate to nb_yield. Custom timeout value in msec.
 yield(Key, YieldTO) when is_pid(Key) -> 
     case nb_yield(Key, YieldTO) of
         {value, R} -> R;
         {badrpc, Reason} -> {badrpc, Reason}
     end.
 
-%% Simple server non-blocking yield with key, default timeout value of 0
+%% @doc Simple server non-blocking yield with key, default timeout value of 0
 nb_yield(Key) when is_pid(Key) ->
     nb_yield(Key, 0).
 
-%% Simple server non-blocking yield with key and custom timeout value
+%% @doc Simple server non-blocking yield with key and custom timeout value
 nb_yield(Key, Timeout) when is_pid(Key), is_integer(Timeout) orelse Timeout =:= infinity ->
     receive 
+<<<<<<< HEAD
             {Key, {promise_reply, Reply}} -> {value, Reply};
             UnknownMsg -> 
                     ok = lager:notice("function=nb_yield event=unknown_msg yield_key=\"~p\" message=\"~p\"", [Key, UnknownMsg]),
                     {value, {badrpc, timeout}}
+=======
+           % original rpc wants it this way
+           % {Key, {promise_reply, {badrpc, Reason}}} -> {badrpc, Reason}; 
+           % {Key, {promise_reply, {badtcp, Reason}}} -> {badtcp, Reason}; 
+            {Key, {promise_reply, Reply}} -> {value, Reply};
+            {badtcp, Reason} -> {value, {badtcp, Reason}}
+>>>>>>> multicall
     after Timeout ->
             ok = lager:notice("function=nb_yield event=call_timeout yield_key=\"~p\"", [Key]),
             {value, {badrpc, timeout}}
@@ -433,6 +467,25 @@ call_worker(Ref, Caller, Timeout) when is_tuple(Caller), is_reference(Ref) ->
             _Ign = gen_server:reply(Caller, {badrpc, timeout})
     end.
 
+yield_results([]) -> [[],[]];
+yield_results(Keys) ->
+    Results = lists:map(fun({Node, Key}) -> 
+                              Reply = nb_yield(Key, infinity),
+                              case normalize_result(Reply) of 
+                                   bad -> {bad, Node};
+                                   {value, Result} -> {value, Result};
+                                   _Ign -> _Ign
+                              end
+                        end, Keys), 
+    BadNodes = [Node || {bad, Node}  <- Results],
+    GoodResults = [Result || {value, Result}  <- Results],
+    [GoodResults, BadNodes]. 
+
+normalize_result({value, {badrpc, _}}) -> bad;
+normalize_result({value, {badtcp, _}}) -> bad;
+normalize_result({value, Result}) -> {value, Result}; 
+normalize_result(_Else) -> _Else.
+
 %% Merges user-define timeout values with state timeout values
 merge_timeout_values(SRecvTO, undefined, SSendTO, undefined) ->
     {SRecvTO, SSendTO};
@@ -442,3 +495,4 @@ merge_timeout_values(SRecvTO, undefined, _SSendTO, USendTO) ->
     {SRecvTO, USendTO};
 merge_timeout_values(_SRecvTO, URecvTO, _SSendTO, USendTO) ->
     {URecvTO, USendTO}.
+
