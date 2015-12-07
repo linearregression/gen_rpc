@@ -27,8 +27,15 @@
 
 %%% FSM functions
 -export([call/3, call/4, call/5, call/6, cast/3, cast/4, cast/5, safe_cast/3, safe_cast/4, safe_cast/5]).
+<<<<<<< HEAD
 -export([multicall/5, multicall/6]).
 -export([async_call/3, async_call/4, async_call/6, yield/1, yield/2, nb_yield/1, nb_yield/2]).
+=======
+
+-export([eval_everywhere/3, eval_everywhere/4, eval_everywhere/5,
+         safe_eval_everywhere/3, safe_eval_everywhere/4, safe_eval_everywhere/5]).
+
+>>>>>>> evaleverywhere
 -export([pinfo/1, pinfo/2]).
 
 %%% Behaviour callbacks
@@ -157,6 +164,20 @@ cast(Node, M, F, A, SendTO) when is_atom(Node), is_atom(M), is_atom(F), is_list(
             true
     end.
 
+%% Evaluate Module:Function:Arguments on connected nodes including sender. Custom sender timeout.
+eval_everywhere(Nodes, M, F) ->
+    eval_everywhere(Nodes, M, F, [], 'undefined').
+
+%% Evaluate Module:Function:Arguments on connected nodes including sender. Custom sender timeout.
+eval_everywhere(Nodes, M, F, A) ->
+    eval_everywhere(Nodes, M, F, A, 'undefined').
+
+%% Evaluate Module:Function:Arguments on custom list of nodes.
+eval_everywhere(Nodes, M, F, A, SendTO) ->
+    ok = lager:debug("function=eval_everywhere_mfa_to event=eval_on_nodes nodes=\"~p\"", [Nodes]),
+    [cast(Node, M, F, A, SendTO) || Node <- Nodes],
+    'abcast'.
+
 %% @doc Location transparent version of the BIF process_info/2.
 %% 
 -spec pinfo(Pid::pid()) -> [{Item::atom(), Info::term()}] | undefined.
@@ -167,7 +188,7 @@ pinfo(Pid) when is_pid(Pid) ->
 %% 
 -spec pinfo(Pid::pid(), Iterm::atom()) -> {Item::atom(), Info::term()} | undefined | [].
 pinfo(Pid, Item) when is_pid(Pid), is_atom(Item) ->
-    call(node(Pid), erlang, process_info, [Pid, Item]).    
+    call(node(Pid), erlang, process_info, [Pid, Item]).
 
 %% Safe server cast with no args and default timeout values
 safe_cast(Node, M, F) when is_atom(Node), is_atom(M), is_atom(F) ->
@@ -218,22 +239,33 @@ nb_yield(Key) when is_pid(Key) ->
 %% @doc Simple server non-blocking yield with key and custom timeout value
 nb_yield(Key, Timeout) when is_pid(Key), is_integer(Timeout) orelse Timeout =:= infinity ->
     receive 
-<<<<<<< HEAD
             {Key, {promise_reply, Reply}} -> {value, Reply};
             UnknownMsg -> 
                     ok = lager:notice("function=nb_yield event=unknown_msg yield_key=\"~p\" message=\"~p\"", [Key, UnknownMsg]),
                     {value, {badrpc, timeout}}
-=======
            % original rpc wants it this way
            % {Key, {promise_reply, {badrpc, Reason}}} -> {badrpc, Reason}; 
            % {Key, {promise_reply, {badtcp, Reason}}} -> {badtcp, Reason}; 
             {Key, {promise_reply, Reply}} -> {value, Reply};
             {badtcp, Reason} -> {value, {badtcp, Reason}}
->>>>>>> multicall
     after Timeout ->
             ok = lager:notice("function=nb_yield event=call_timeout yield_key=\"~p\"", [Key]),
             {value, {badrpc, timeout}}
     end.
+
+%% Safe evaluate Module:Function:Arguments on implicit connected nodes. Custom sender timeout.
+safe_eval_everywhere(Nodes, M, F) ->
+    safe_eval_everywhere(Nodes, M, F, [], 'undefined').
+
+%% Safe evaluate Module:Function:Arguments on implicit connected nodes. Custom sender timeout.
+safe_eval_everywhere(Nodes, M, F, A) ->
+    safe_eval_everywhere(Nodes, M, F, A, 'undefined').
+
+%% Safe evaluate Module:Function:Arguments on custom list of nodes.
+safe_eval_everywhere(Nodes, M, F, A, SendTO) ->
+    ok = lager:debug("function=safe_eval_everywhere_mfa_to event=eval_on_nodes nodes=\"~p\"", [Nodes]),
+    Ret = [{Node, safe_cast(Node, M, F, A, SendTO)} || Node <- Nodes],
+    transform_result(Ret, Nodes).
 
 %%% ===================================================
 %%% Behaviour callbacks
@@ -495,4 +527,17 @@ merge_timeout_values(SRecvTO, undefined, _SSendTO, USendTO) ->
     {SRecvTO, USendTO};
 merge_timeout_values(_SRecvTO, URecvTO, _SSendTO, USendTO) ->
     {URecvTO, USendTO}.
+
+%% Transform result for safe_eval_everywhere to look like multicall
+transform_result(Result, Nodes) ->
+    BadNodes = get_badnodes(Result),
+    GoodNodes = Nodes -- BadNodes,
+    ok = lager:debug("function=transform_result good_nodes=\"~p\" bad_nodes=\"~p\"", [GoodNodes, BadNodes]),
+    case GoodNodes =/= [] of
+        true -> [true, BadNodes];
+        false -> BadNodes
+    end.
+
+get_badnodes(Nodes) ->
+    [ X || {X, {_,_}} <- Nodes]. 
 
