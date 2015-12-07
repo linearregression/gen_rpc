@@ -121,6 +121,8 @@ multi_call_no_node(_Config) ->
 
 multi_call_multiple_nodes(_Config) ->
     ok = ct:pal("Testing [multi_call_multiple_nodes]"),
+    pong = verify_node_up(?SLAVE1),
+    pong = verify_node_up(?SLAVE2),
     [[_,_],[?FAKE_NODE]] = gen_rpc:multicall([?SLAVE1, ?SLAVE2, ?FAKE_NODE], os, timestamp, 5000, 100).
 
 eval_everywhere_mfa_no_node(_Config) ->
@@ -375,4 +377,7 @@ clean_process(Name, Reason) ->
 kill_it(undefined, _Reason) -> true;
 kill_it(Pid, Reason) ->
     true = exit(Pid, Reason).
+
+verify_node_up(Node)->
+    pong = net_adm:ping(Node).
 
