@@ -10,6 +10,9 @@
 %%% Library interface
 -export([async_call/3,
         async_call/4,
+        block_call/4,
+        block_call/5,
+        block_call/6,
         call/3,
         call/4,
         call/5,
@@ -40,6 +43,7 @@
 %%% ===================================================
 %% All functions are GUARD-ed in the sender module, no
 %% need for the overhead here
+<<<<<<< HEAD
 -spec async_call(Node::node(), M::module(), F::atom()|function()) -> term() | {'badrpc', term()} | {'badtcp' | term()}.
 async_call(Node, M, F) ->
     gen_rpc_client:async_call(Node, M, F).
@@ -47,6 +51,18 @@ async_call(Node, M, F) ->
 -spec async_call(Node::node(), M::module(), F::atom()|function(), A::list()) -> term() | {'badrpc', term()} | {'badtcp' | term()}.
 async_call(Node, M, F, A) ->
     gen_rpc_client:async_call(Node, M, F, A).
+
+-spec block_call(Node::node(), M::module(), F::atom()|function(),  RecvTO::timeout()) -> term() | {badrpc, term()}.
+block_call(Node, M, F, RecvTO) ->
+    gen_rpc_client:block_call(Node, M, F, RecvTO).
+
+-spec block_call(Node::node(), M::module(), F::atom()|function(), A::list(), RecvTO::timeout()) -> term() | {badrpc, term()}.
+block_call(Node, M, F, A, RecvTO) ->
+    gen_rpc_client:block_call(Node, M, F, A, RecvTO).
+
+-spec block_call(Node::node(), M::module(), F::atom()|function(), A::list(), RecvTO::timeout(), SendTO::timeout()) -> term() | {badrpc, term()}.
+block_call(Node, M, F, A, RecvTO, SendTO) ->
+    gen_rpc_client:block_call(Node, M, F, A, RecvTO, SendTO).
 
 -spec call(Node::node(), M::module(), F::atom()|function()) -> term() | {'badrpc', term()} | {'badtcp' | term()}.
 call(Node, M, F) ->

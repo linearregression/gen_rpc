@@ -88,12 +88,12 @@ waiting_for_data({data, Data}, #state{socket=Socket,client_node=Node} = State) -
     %% The meat of the whole project: process a function call and return
     %% the data
     try erlang:binary_to_term(Data) of
+        {Node, ClientPid, Ref, {block_call, M, F, A}} ->
+             process_call(Socket, Node, ClientPid, Ref, M, F, A),
+             {next_state, waiting_for_data, State, State#state.inactivity_timeout}; 
         {Node, ClientPid, Ref, {call, M, F, A}} ->
-            WorkerPid = erlang:spawn(?MODULE, call_worker, [self(), ClientPid, Ref, M, F, A]),
-            ok = lager:debug("function=waiting_for_data event=call_received socket=\"~p\" node=\"~s\" call_reference=\"~p\" client_pid=\"~p\" worker_pid=\"~p\"",
-                             [Socket, Node, Ref, ClientPid, WorkerPid]),
-            ok = inet:setopts(Socket, [{active, once}]),
-            {next_state, waiting_for_data, State, State#state.inactivity_timeout};
+             process_call(Socket, Node, ClientPid, Ref, M, F, A),
+             {next_state, waiting_for_data, State, State#state.inactivity_timeout}; 
         {Node, {cast, M, F, A}} ->
             ok = lager:debug("function=waiting_for_data event=cast_received socket=\"~p\" node=\"~s\" module=~s function=~s args=\"~p\"",
                              [Socket, Node, M, F, A]),
@@ -115,7 +115,7 @@ waiting_for_data(timeout, State) ->
     {stop, normal, State}.
 
 handle_event(Event, StateName, State) ->
-    ok = lager:critical("function=handle_event socket=\"~p\" event=uknown_event payload=\"~p\" action=stopping", [State#state.socket, Event]),
+    ok = lager:critical("function=handle_event socket=\"~p\" event=unkown_event payload=\"~p\" action=stopping", [State#state.socket, Event]),
     {stop, {StateName, undefined_event, Event}, State}.
 
 %% Gracefully terminate
@@ -124,7 +124,7 @@ handle_sync_event(stop, _From, _StateName, State) ->
     {stop, normal, ok, State};
 
 handle_sync_event(Event, _From, StateName, State) ->
-    ok = lager:critical("function=handle_sync_event event=uknown_event socket=\"~p\" payload=\"~p\" action=stopping", [State#state.socket, Event]),
+    ok = lager:critical("function=handle_sync_event event=unkown_event socket=\"~p\" payload=\"~p\" action=stopping", [State#state.socket, Event]),
     {stop, {StateName, undefined_event, Event}, State}.
 
 %% Incoming data handlers
@@ -164,7 +164,7 @@ handle_info({NodeEvent, _Node, _InfoList}, StateName, State) when NodeEvent =:= 
 
 %% Catch-all for info - our protocol is strict so die!
 handle_info(Msg, StateName, State) ->
-    ok = lager:critical("function=handle_info socket=\"~p\" event=uknown_event action=stopping", [State#state.socket]),
+    ok = lager:critical("function=handle_info socket=\"~p\" event=unkown_event action=stopping", [State#state.socket]),
     {stop, {StateName, unknown_message, Msg}, State}.
 
 code_change(_OldVsn, StateName, State, _Extra) ->
@@ -184,6 +184,19 @@ terminate(_Reason, _StateName, #state{socket=Socket}) ->
 %%% Private functions
 %%% ===================================================
 
+<<<<<<< HEAD
+=======
+make_process_name(Node) ->
+    NodeBin = atom_to_binary(Node, latin1),
+    binary_to_atom(<<"gen_rpc_acceptor_", NodeBin/binary>>, latin1).
+
+process_call(Socket, Node, ClientPid, Ref, M, F, A) ->
+    WorkerPid = erlang:spawn(?MODULE, call_worker, [self(), ClientPid, Ref, M, F, A]),
+    ok = lager:debug("function=waiting_for_data event=call_received socket=\"~p\" node=\"~s\" call_reference=\"~p\" client_pid=\"~p\" worker_pid=\"~p\"",
+                             [Socket, Node, Ref, ClientPid, WorkerPid]),
+    ok = inet:setopts(Socket, [{active, once}]).
+
+>>>>>>> block_call
 %% Process an RPC call request outside of the FSM
 call_worker(Parent, WorkerPid, Ref, M, F, A) ->
     ok = lager:debug("function=call_worker event=call_received call_reference=\"~p\" module=~s function=~s args=\"~p\"", [Ref, M, F, A]),
