@@ -61,22 +61,21 @@ async_call(Node, M, F) when is_atom(Node), is_atom(M), is_atom(F) ->
     async_call(Node, M, F, []).
 
 %% Simple server async_call with args
-async_call(Node, M, F, A) ->
-    ReplyTo = self(),
-    spawn(fun()-> 
-              Reply = call(Node, M, F, A, undefined, undefined),
-              ReplyTo ! {self(), {promise_reply, Reply}}
-          end).
+async_call(Node, M, F, A) -> async_call(Node, M, F, A, undefined, undefined).
 
 %% Simple server async_call with args
 async_call(Node, M, F, A, RecvTO, SendTO) ->
     ReplyTo = self(),
     ok = lager:info("function=async_call event=spawning_call_process server_node=\"~s\" action=spawning_call_process", [Node]),
     spawn(fun()-> 
-              Reply = call(Node, M, F, A, RecvTO, SendTO),
+              Reply = try call(Node, M, F, A, RecvTO, SendTO) 
+                      catch 
+                          throw:Term -> Term;
+                          exit:Reason -> {badrpc, Reason};
+                          error:Reason -> {badrpc, Reason}
+                      end,
               ReplyTo ! {self(), {promise_reply, Reply}}
           end).
-%%%
 
 %% Blocking server call with no args and custom send timeout values
 block_call(Node, M, F, RecvTO) ->
@@ -155,8 +154,20 @@ multicall(Nodes, M, F, A, RecvTO, SendTO) when is_list(Nodes), is_atom(M), is_at
                                          RecvTO =:= undefined orelse is_integer(RecvTO) orelse RecvTO =:= infinity,
                                          SendTO =:= undefined orelse is_integer(SendTO) orelse SendTO =:= infinity ->
     % Can't use gen_server:multicall which requires all peer process having the same name
+    ok = lager:info("function=multicall event=spawning_call_processes server_nodes=\"~p\" action=spawning_call_process", [Nodes]),
     NodeKeyList  = lists:map(fun(Node)->
-                                Key = async_call(Node, M, F, A, RecvTO, SendTO),
+                                process_flag(trap_exit, true),
+                                ReplyTo = self(),
+                                Key = spawn(fun()-> 
+                                              Reply = try call(Node, M, F, A, RecvTO, SendTO) 
+                                                      catch 
+                                                          throw:Term -> Term;
+                                                          exit:Reason -> {badrpc, Reason};
+                                                          error:Reason -> {badrpc, Reason}
+                                                      end,
+                                              ReplyTo ! {self(), {promise_reply, Reply}}
+                                end),
+    ok = lager:info("function=multicall event=spawning_call_processes node_key=\"~p\"", [{Node, Key}]),
                                 {Node, Key}
                              end, Nodes),
     yield_results(NodeKeyList).
@@ -270,6 +281,8 @@ nb_yield(Key) when is_pid(Key) ->
 nb_yield(Key, Timeout) when is_pid(Key), is_integer(Timeout) orelse Timeout =:= infinity ->
     receive 
             {Key, {promise_reply, Reply}} -> {value, Reply};
+            {badrpc, Reason} -> {value, {badrpc, Reason}};
+            {badtcp, Reason} -> {value, {badtcp, Reason}};
             UnknownMsg -> 
                     ok = lager:notice("function=nb_yield event=unknown_msg yield_key=\"~p\" message=\"~p\"", [Key, UnknownMsg]),
                     {value, {badrpc, timeout}}
