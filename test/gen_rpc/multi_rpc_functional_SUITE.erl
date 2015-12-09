@@ -126,7 +126,7 @@ multi_call_multiple_nodes(_Config) ->
     [[{_A,_B,_C},{_A0,_B0,_C0}],[]] = gen_rpc:multicall([?SLAVE1, ?SLAVE2], os, timestamp, [], 5000, 100),
     [[{_A1,_B1,_C1},{_A2,_B2,_C2}, {_A3,_B3,_C3}],[]] = gen_rpc:multicall([?SLAVE1, ?SLAVE2, ?SLAVE2], os, timestamp, [], 5000, 100),
  %   [[_,_],[?FAKE_NODE]] = gen_rpc:multicall([?SLAVE1, ?SLAVE2, ?FAKE_NODE], os, timestamp, [],5000, 100),
- `   [[_,_],[?FAKE_NODE]] = gen_rpc:multicall([?FAKE_NODE, ?SLAVE1, ?SLAVE2], os, timestamp, [], 5000, 100),
+    [[_,_],[?FAKE_NODE]] = gen_rpc:multicall([?FAKE_NODE, ?SLAVE1, ?SLAVE2], os, timestamp, [], 5000, 100),
     [[{_A4,_B4,_C4},{_A5,_B5,_C5}],[?FAKE_NODE,?FAKE_NODE]] = gen_rpc:multicall([?FAKE_NODE, ?SLAVE1, ?SLAVE2, ?FAKE_NODE], os, timestamp,[], 5000, 100).
 
 eval_everywhere_mfa_no_node(_Config) ->

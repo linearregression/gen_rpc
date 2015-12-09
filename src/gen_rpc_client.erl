@@ -41,6 +41,7 @@
 %%% Process exports
 -export([call_worker/3]).
 -export([yield_results/1]).
+-export([try_call/7]).
 
 %%% ===================================================
 %%% Supervisor functions
@@ -156,21 +157,22 @@ multicall(Nodes, M, F, A, RecvTO, SendTO) when is_list(Nodes), is_atom(M), is_at
     % Can't use gen_server:multicall which requires all peer process having the same name
     ok = lager:info("function=multicall event=spawning_call_processes server_nodes=\"~p\" action=spawning_call_process", [Nodes]),
     NodeKeyList  = lists:map(fun(Node)->
-                                process_flag(trap_exit, true),
                                 ReplyTo = self(),
-                                Key = spawn(fun()-> 
-                                              Reply = try call(Node, M, F, A, RecvTO, SendTO) 
-                                                      catch 
-                                                          throw:Term -> Term;
-                                                          exit:Reason -> {badrpc, Reason};
-                                                          error:Reason -> {badrpc, Reason}
-                                                      end,
-                                              ReplyTo ! {self(), {promise_reply, Reply}}
-                                end),
+                                Key = spawn(?MODULE, try_call, [ReplyTo, Node, M, F, A, RecvTO, SendTO]),
     ok = lager:info("function=multicall event=spawning_call_processes node_key=\"~p\"", [{Node, Key}]),
                                 {Node, Key}
                              end, Nodes),
+    ok = lager:info("function=multicall event=spawning_call_processes node_key_list=\"~p\"", [NodeKeyList]),
     yield_results(NodeKeyList).
+
+try_call(ReplyTo, Node, M, F, A, RecvTO, SendTO) ->
+    Reply = try call(Node, M, F, A, RecvTO, SendTO) 
+    catch 
+        throw:Term -> Term;
+        exit:Reason -> {badrpc, Reason};
+        error:Reason -> {badrpc, Reason}
+    end,
+    ReplyTo ! {self(), {promise_reply, Reply}}.
 
 %% Simple server cast with no args and default timeout values
 cast(Node, M, F) when is_atom(Node), is_atom(M), is_atom(F) ->
@@ -283,6 +285,7 @@ nb_yield(Key, Timeout) when is_pid(Key), is_integer(Timeout) orelse Timeout =:= 
             {Key, {promise_reply, Reply}} -> {value, Reply};
             {badrpc, Reason} -> {value, {badrpc, Reason}};
             {badtcp, Reason} -> {value, {badtcp, Reason}};
+       %     {'DOWN',_, process,_,normal} -> _Ign;
             UnknownMsg -> 
                     ok = lager:notice("function=nb_yield event=unknown_msg yield_key=\"~p\" message=\"~p\"", [Key, UnknownMsg]),
                     {value, {badrpc, timeout}}
