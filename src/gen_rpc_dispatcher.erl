@@ -32,10 +32,10 @@ start_link() ->
     gen_server:start_link({local,?MODULE}, ?MODULE, [], []).
 
 stop() ->
-    gen_server:call(?MODULE, stop).
+    gen_server:call(?MODULE, stop, infinity).
 
 start_client(Node) when is_atom(Node) ->
-    gen_server:call(?MODULE, {start_client,Node}).
+    gen_server:call(?MODULE, {start_client,Node}, infinity).
 
 %%% ===================================================
 %%% Behaviour callbacks

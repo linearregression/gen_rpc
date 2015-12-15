@@ -1,0 +1,26 @@
+sudo: false
+language: erlang
+otp_release:  # travisci complains 17.1 of a 'filelib bug', so excluded
+  - 18.1
+  - 18.0
+  - 17.5
+  - 17.4
+  - 17.3
+  - 17.0
+cache:
+  directories:
+  - $HOME/.cache/rebar3
+  - _plt
+install: "true"
+script: "make test xref dialyzer"
+after-sucess: "make coverage-report"
+branches:
+  only:
+    - master
+    - develop
+    - new_master
+
+notifications:
+  email:
+    - priestjim@gmail.com
+

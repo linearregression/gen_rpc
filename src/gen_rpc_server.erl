@@ -12,23 +12,15 @@
 %%% Behaviour
 -behaviour(gen_server).
 
+%%% Include this library's name macro
+-include("app.hrl").
+
 %%% Local state
 -record(state, {client_ip :: tuple(),
-        client_node :: atom(),
+        client_node :: node(),
         socket :: port(),
         acceptor_pid :: pid(),
         acceptor :: non_neg_integer()}).
-
-%%% Default TCP options
--define(DEFAULT_TCP_OPTS, [binary, {packet,4},
-        {nodelay,true}, % Send our requests immediately
-        {send_timeout_close,true}, % When the socket times out, close the connection
-        {delay_send,true}, % Scheduler should favor big batch requests
-        {linger,{true,2}}, % Allow the socket to flush outgoing data for 2" before closing it - useful for casts
-        {reuseaddr,true}, % Reuse local port numbers
-        {keepalive,true}, % Keep our channel open
-        {tos,72}, % Deliver immediately
-        {active,false}]). % Retrieve data from socket upon request
 
 %%% The TCP options that should be copied from the listener to the acceptor
 -define(ACCEPTOR_TCP_OPTS, [nodelay,
@@ -54,7 +46,7 @@
 %%% Supervisor functions
 %%% ===================================================
 start_link(Node) when is_atom(Node) ->
-    Name = make_process_name(Node),
+    Name = gen_rpc_helper:make_process_name(<<"gen_rpc_server_">>, Node),
     gen_server:start_link({local,Name}, ?MODULE, {Node}, [{spawn_opt, [{priority, high}]}]).
 
 stop(Pid) when is_pid(Pid) ->
@@ -63,6 +55,7 @@ stop(Pid) when is_pid(Pid) ->
 %%% ===================================================
 %%% Server functions
 %%% ===================================================
+-spec get_port(pid()) -> {'ok', inet:port_number()} | {'error', term()} | term(). %dialyzer complains without term().
 get_port(Pid) when is_pid(Pid) ->
     gen_server:call(Pid, get_port).
 
@@ -73,7 +66,7 @@ init({Node}) ->
     ok = lager:info("function=init client_node=\"~s\"", [Node]),
     process_flag(trap_exit, true),
     ClientIp = get_remote_node_ip(Node),
-    case gen_tcp:listen(0, default_tcp_opts()) of
+    case gen_tcp:listen(0, gen_rpc_helper:default_tcp_opts(?DEFAULT_TCP_OPTS)) of
         {ok, Socket} ->
             ok = lager:info("function=init event=listener_started_successfully client_node=\"~s\"", [Node]),
             {ok, Ref} = prim_inet:async_accept(Socket, -1),
@@ -160,7 +153,6 @@ handle_info(Msg, State) ->
 %% Terminate cleanly by closing the listening socket
 terminate(_Reason, #state{socket=Socket}) ->
     ok = lager:debug("function=terminate socket=\"~p\"", [Socket]),
-    (catch gen_tcp:close(Socket)),
     _Pid = erlang:spawn(gen_rpc_server_sup, stop_child, [self()]),
     ok.
 
@@ -170,29 +162,14 @@ code_change(_OldVsn, State, _Extra) ->
 %%% ===================================================
 %%% Private functions
 %%% ===================================================
-otp_release() ->
-    erlang:list_to_integer(erlang:system_info(otp_release)).
-
-default_tcp_opts() ->
-    case otp_release() >= 18 of
-        true ->
-            [{show_econnreset, true}|?DEFAULT_TCP_OPTS];
-        false ->
-            ?DEFAULT_TCP_OPTS
-    end.
 
 acceptor_tcp_opts() ->
-    case otp_release() >= 18 of
+    case gen_rpc_helper:otp_release() >= 18 of
         true ->
             [show_econnreset|?ACCEPTOR_TCP_OPTS];
         false ->
             ?ACCEPTOR_TCP_OPTS
     end.
-
-
-make_process_name(Node) ->
-    NodeBin = atom_to_binary(Node, latin1),
-    binary_to_atom(<<"gen_rpc_server_", NodeBin/binary>>, latin1).
 
 %% Taken from prim_inet.  We are merely copying some socket options from the
 %% listening socket to the new acceptor socket.

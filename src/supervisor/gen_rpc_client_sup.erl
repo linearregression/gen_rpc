@@ -4,7 +4,7 @@
 %%% Copyright 2015 Panagiotis Papadomitsos. All Rights Reserved.
 %%%
 
--module(gen_rpc_server_sup).
+-module(gen_rpc_client_sup).
 -author("Panagiotis Papadomitsos <pj@ezgr.net>").
 
 %%% Behaviour
@@ -22,22 +22,31 @@
 start_link() ->
     supervisor:start_link({local, ?MODULE}, ?MODULE, []).
 
-%% Launch a local receiver and return the port
+-spec start_child(Node::node()) ->  supervisor:startchild_ret().
 start_child(Node) when is_atom(Node) ->
-    ok = lager:debug("function=start_child event=starting_new_server client_node=\"~s\"", [Node]),
-    {ok, Pid} = supervisor:start_child(?MODULE, [Node]),
-    {ok, Port} = gen_rpc_server:get_port(Pid),
-    {ok, Port}.
+    ok = lager:debug("function=start_child event=starting_new_client server_node=\"~s\"", [Node]),
+    case supervisor:start_child(?MODULE, [Node]) of
+        {error, {already_started, CPid}} ->
+            %% If we've already started the child, terminate it and start anew
+            ok = stop_child(CPid),
+            supervisor:start_child(?MODULE, [Node]);
+        {error, OtherError} ->
+            {error, OtherError};
+        {ok, Pid} ->
+            {ok, Pid}
+    end.
 
-%% Terminate and unregister a child server
+-spec stop_child(Pid::pid()) ->  'ok'.
 stop_child(Pid) when is_pid(Pid) ->
-    ok = lager:debug("function=stop_child event=stopping_server server_pid=\"~p\"", [Pid]),
-    supervisor:terminate_child(?MODULE, Pid).
+    ok = lager:debug("function=stop_child event=stopping_client client_pid=\"~p\"", [Pid]),
+    _ = supervisor:terminate_child(?MODULE, Pid),
+    _ = supervisor:delete_child(?MODULE, Pid),
+    ok.
 
 %%% ===================================================
 %%% Supervisor callbacks
 %%% ===================================================
 init([]) ->
     {ok, {{simple_one_for_one, 100, 1}, [
-        {gen_rpc_server, {gen_rpc_server,start_link,[]}, transient, 5000, worker, [gen_rpc_server]}
+        {gen_rpc_client, {gen_rpc_client,start_link,[]}, temporary, 5000, worker, [gen_rpc_client]}
     ]}}.
