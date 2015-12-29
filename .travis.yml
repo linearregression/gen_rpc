@@ -1,22 +1,25 @@
 sudo: false
 language: erlang
-otp_release:  # travisci complains 17.1 of a 'filelib bug', so excluded
+otp_release:
+  - 18.2
   - 18.1
   - 18.0
   - 17.5
-  - 17.4
-  - 17.3
-  - 17.0
 cache:
   directories:
+  - $HOME/otp/18.2
+  - $HOME/otp/18.1
+  - $HOME/otp/18.0
+  - $HOME/otp/17.5
   - $HOME/.cache/rebar3
   - _plt
 install: "true"
-script: "make test xref dialyzer"
+script: "make testclean dist coveralls"
 branches:
   only:
     - master
     - develop
+
 notifications:
   email:
     - priestjim@gmail.com

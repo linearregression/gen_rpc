@@ -14,20 +14,27 @@
 
 %%% Include this library's name macro
 -include("app.hrl").
+%%% Include helpful guard macros
+-include("guards.hrl").
 
 %%% Local state
 -record(state, {socket :: port(),
         server_node :: atom(),
-        send_timeout :: non_neg_integer(),
-        receive_timeout :: non_neg_integer(),
-        inactivity_timeout :: non_neg_integer() | infinity}).
+        send_timeout :: timeout(),
+        receive_timeout :: timeout(),
+        inactivity_timeout :: timeout()}).
 
 %%% Supervisor functions
 -export([start_link/1, stop/1]).
 
 %%% FSM functions
 -export([call/3, call/4, call/5, call/6, cast/3, cast/4, cast/5, safe_cast/3, safe_cast/4, safe_cast/5]).
+
 -export([async_call/3, async_call/4, yield/1, yield/2, nb_yield/1, nb_yield/2]).
+
+-export([eval_everywhere/3, eval_everywhere/4, eval_everywhere/5,
+         safe_eval_everywhere/3, safe_eval_everywhere/4, safe_eval_everywhere/5]).
+
 -export([pinfo/1, pinfo/2]).
 
 %%% Behaviour callbacks
@@ -52,7 +59,7 @@ stop(Node) when is_atom(Node) ->
 %%% Server functions
 %%% ===================================================
 %% Simple server async_call with no args
-async_call(Node, M, F) when is_atom(Node), is_atom(M), is_atom(F) ->
+async_call(Node, M, F)->
     async_call(Node, M, F, []).
 
 %% Simple server async_call with args
@@ -64,23 +71,22 @@ async_call(Node, M, F, A) when is_atom(Node), is_atom(M), is_atom(F), is_list(A)
           end).
 
 %% Simple server call with no args and default timeout values
-call(Node, M, F) when is_atom(Node), is_atom(M), is_atom(F) ->
+call(Node, M, F) ->
     call(Node, M, F, [], undefined, undefined).
 
 %% Simple server call with args and default timeout values
-call(Node, M, F, A) when is_atom(Node), is_atom(M), is_atom(F), is_list(A) ->
+call(Node, M, F, A) ->
     call(Node, M, F, A, undefined, undefined).
 
 %% Simple server call with custom receive timeout value
-call(Node, M, F, A, RecvTO) when is_atom(Node), is_atom(M), is_atom(F), is_list(A),
-                                 is_integer(RecvTO) orelse RecvTO =:= infinity ->
+call(Node, M, F, A, RecvTO) ->
     call(Node, M, F, A, RecvTO, undefined).
 
 %% Simple server call with custom receive and send timeout values
 %% This is the function that all of the above call
 call(Node, M, F, A, RecvTO, SendTO) when is_atom(Node), is_atom(M), is_atom(F), is_list(A),
-                                         RecvTO =:= undefined orelse is_integer(RecvTO) orelse RecvTO =:= infinity,
-                                         SendTO =:= undefined orelse is_integer(SendTO) orelse SendTO =:= infinity ->
+                                         RecvTO =:= undefined orelse ?is_timeout(RecvTO),
+                                         SendTO =:= undefined orelse ?is_timeout(SendTO) ->
     case whereis(Node) of
         undefined ->
             ok = lager:info("function=call event=client_process_not_found server_node=\"~s\" action=spawning_client", [Node]),
@@ -99,17 +105,17 @@ call(Node, M, F, A, RecvTO, SendTO) when is_atom(Node), is_atom(M), is_atom(F), 
     end.
 
 %% Simple server cast with no args and default timeout values
-cast(Node, M, F) when is_atom(Node), is_atom(M), is_atom(F) ->
+cast(Node, M, F) ->
     cast(Node, M, F, [], undefined).
 
 %% Simple server cast with args and default timeout values
-cast(Node, M, F, A) when is_atom(Node), is_atom(M), is_atom(F), is_list(A) ->
+cast(Node, M, F, A) ->
     cast(Node, M, F, A, undefined).
 
 %% Simple server cast with custom send timeout value
 %% This is the function that all of the above casts call
 cast(Node, M, F, A, SendTO) when is_atom(Node), is_atom(M), is_atom(F), is_list(A),
-                                 SendTO =:= undefined orelse is_integer(SendTO) orelse SendTO =:= infinity ->
+                                 SendTO =:= undefined orelse ?is_timeout(SendTO) ->
     %% Naming our gen_server as the node we're calling as it is extremely efficent:
     %% We'll never deplete atoms because all connected node names are already atoms in this VM
     case whereis(Node) of
@@ -131,24 +137,36 @@ cast(Node, M, F, A, SendTO) when is_atom(Node), is_atom(M), is_atom(F), is_list(
             true
     end.
 
+%% Evaluate {M, F, A} on connected nodes.
+eval_everywhere(Nodes, M, F) ->
+    eval_everywhere(Nodes, M, F, [], undefined).
+
+%% Evaluate {M, F, A} on connected nodes.
+eval_everywhere(Nodes, M, F, A) ->
+    eval_everywhere(Nodes, M, F, A, undefined).
+
+%% Evaluate {M, F, A} on connected nodes.
+eval_everywhere(Nodes, M, F, A, SendTO) when is_list(Nodes), is_atom(M), is_atom(F), is_list(A),
+                                             SendTO =:= undefined orelse ?is_timeout(SendTO) ->
+    [cast(Node, M, F, A, SendTO) || Node <- Nodes],
+    abcast.
+
 %% @doc Location transparent version of the BIF process_info/2.
-%% P
 -spec pinfo(Pid::pid()) -> [{Item::atom(), Info::term()}] | undefined.
 pinfo(Pid) when is_pid(Pid) ->
     call(node(Pid), erlang, process_info, [Pid]).
 
 %% @doc Location transparent version of the BIF process_info/2.
-%% 
 -spec pinfo(Pid::pid(), Iterm::atom()) -> {Item::atom(), Info::term()} | undefined | [].
 pinfo(Pid, Item) when is_pid(Pid), is_atom(Item) ->
-    call(node(Pid), erlang, process_info, [Pid, Item]).    
+    call(node(Pid), erlang, process_info, [Pid, Item]).
 
 %% Safe server cast with no args and default timeout values
-safe_cast(Node, M, F) when is_atom(Node), is_atom(M), is_atom(F) ->
+safe_cast(Node, M, F) ->
     safe_cast(Node, M, F, [], undefined).
 
 %% Safe server cast with args and default timeout values
-safe_cast(Node, M, F, A) when is_atom(Node), is_atom(M), is_atom(F), is_list(A) ->
+safe_cast(Node, M, F, A) ->
     safe_cast(Node, M, F, A, undefined).
 
 %% Safe server cast with custom send timeout value
@@ -173,20 +191,33 @@ safe_cast(Node, M, F, A, SendTO) when is_atom(Node), is_atom(M), is_atom(F), is_
             ok = lager:debug("function=safe_cast event=client_process_found pid=\"~p\" server_node=\"~s\"", [Pid, Node]),
             gen_server:call(Pid, {{cast,M,F,A},SendTO}, infinity)
     end.
-%% Simple server yield with key. Delegate to nb_yield. Default timeout form configuation.
+
+%% Safely evaluate {M, F, A} on connected nodes.
+safe_eval_everywhere(Nodes, M, F) ->
+    safe_eval_everywhere(Nodes, M, F, [], undefined).
+
+%% Safely evaluate{M, F, A} on implicit connected nodes
+safe_eval_everywhere(Nodes, M, F, A) ->
+    safe_eval_everywhere(Nodes, M, F, A, undefined).
+
+%% Safe evaluate{M, F, A} on custom list of nodes.
+safe_eval_everywhere(Nodes, M, F, A, SendTO) when is_list(Nodes), is_atom(M), is_atom(F), is_list(A),
+                                             SendTO =:= undefined orelse ?is_timeout(SendTO) ->
+    Ret = [{Node, safe_cast(Node, M, F, A, SendTO)} || Node <- Nodes],
+    parse_safe_eval_everywhere_result(Ret, Nodes).
 
 %% Simple server yield with key. Delegate to nb_yield. Default timeout form configuration.
 yield(Key)-> 
     yield(Key, infinity).
 
-yield(Key, YieldTO) when is_pid(Key) -> 
+yield(Key, YieldTO)-> 
     case nb_yield(Key, YieldTO) of
         {value, R} -> R;
         {badrpc, Reason} -> {badrpc, Reason}
     end.
 
 %% Simple server non-blocking yield with key, default timeout value of 0
-nb_yield(Key) when is_pid(Key) ->
+nb_yield(Key)->
     nb_yield(Key, 0).
 
 %% Simple server non-blocking yield with key and custom timeout value
@@ -200,6 +231,7 @@ nb_yield(Key, Timeout) when is_pid(Key), is_integer(Timeout) orelse Timeout =:= 
             ok = lager:notice("function=nb_yield event=call_timeout yield_key=\"~p\"", [Key]),
             {value, {badrpc, timeout}}
     end.
+
 
 %%% ===================================================
 %%% Behaviour callbacks
@@ -442,3 +474,12 @@ merge_timeout_values(SRecvTO, undefined, _SSendTO, USendTO) ->
     {SRecvTO, USendTO};
 merge_timeout_values(_SRecvTO, URecvTO, _SSendTO, USendTO) ->
     {URecvTO, USendTO}.
+
+%% Transform result for safe_eval_everywhere to look like multicall
+parse_safe_eval_everywhere_result(ResultNodes, AllNodes) ->
+    BadNodes = [ X || {X, {_,_}} <- ResultNodes],
+    GoodNodes = AllNodes -- BadNodes,
+    case GoodNodes =/= [] of
+        true -> [true, BadNodes];
+        false -> BadNodes
+    end.
