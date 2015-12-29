@@ -241,8 +241,7 @@ yield(Key)->
 %% @doc Simple server yield with key. Delegate to nb_yield. Custom timeout value in msec.
 yield(Key, YieldTO) when is_pid(Key) -> 
     case nb_yield(Key, YieldTO) of
-        {value, R} -> R;
-        {badrpc, Reason} -> {badrpc, Reason}
+        {value, R} -> R
     end.
 
 %% @doc Simple server non-blocking yield with key, default timeout value of 0
@@ -500,8 +499,7 @@ yield_results(Keys) ->
                               Reply = nb_yield(Key, infinity),
                               case normalize_result(Reply) of 
                                    bad -> {bad, Node};
-                                   {value, Result} -> {value, Result};
-                                   _Ign -> _Ign
+                                   Else -> Else
                               end
                         end, Keys), 
     BadNodes = [Node || {bad, Node}  <- Results],
@@ -510,8 +508,7 @@ yield_results(Keys) ->
 
 normalize_result({value, {badrpc, _}}) -> bad;
 normalize_result({value, {badtcp, _}}) -> bad;
-normalize_result({value, Result}) -> {value, Result}; 
-normalize_result(_Else) -> _Else.
+normalize_result({value, Result}) -> {value, Result}.
 
 %% Merges user-define timeout values with state timeout values
 merge_timeout_values(SRecvTO, undefined, SSendTO, undefined) ->
