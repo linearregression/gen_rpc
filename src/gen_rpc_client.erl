@@ -62,11 +62,11 @@ stop(Node) when is_atom(Node) ->
 %%% Server functions
 %%% ===================================================
 %% Simple server async_call with no args
-async_call(Node, M, F) when is_atom(Node), is_atom(M), is_atom(F) ->
+async_call(Node, M, F)->
     async_call(Node, M, F, []).
 
 %% Simple server async_call with args
-async_call(Node, M, F, A) ->
+async_call(Node, M, F, A) when is_atom(Node), is_atom(M), is_atom(F), is_list(A) ->
     ReplyTo = self(),
     ok = lager:info("function=async_call event=spawning_call_process server_node=\"~s\" action=spawning_call_process", [Node]),
     spawn(fun()-> 
@@ -234,28 +234,29 @@ safe_eval_everywhere(Nodes, M, F, A, SendTO) when is_list(Nodes), is_atom(M), is
     Ret = [{Node, safe_cast(Node, M, F, A, SendTO)} || Node <- Nodes],
     parse_safe_eval_everywhere_result(Ret, Nodes).
 
-%% @doc Simple server yield with key. Delegate to nb_yield. Default timeout value of infinity.
+%% @doc Simple server yield with key. Delegate to nb_yield. Default timeout form configuration.
 yield(Key)-> 
     yield(Key, infinity).
 
-%% @doc Simple server yield with key. Delegate to nb_yield. Custom timeout value in msec.
-yield(Key, YieldTO) when is_pid(Key) -> 
+yield(Key, YieldTO)-> 
     case nb_yield(Key, YieldTO) of
         {value, R} -> R
     end.
 
 %% @doc Simple server non-blocking yield with key, default timeout value of 0
-nb_yield(Key) when is_pid(Key) ->
+nb_yield(Key)->
     nb_yield(Key, 0).
 
 %% @doc Simple server non-blocking yield with key and custom timeout value
-nb_yield(Key, Timeout) when is_pid(Key), is_integer(Timeout) orelse Timeout =:= infinity ->
+nb_yield(Key, Timeout) when is_pid(Key), ?is_timeout(Timeout) ->
     receive 
-           % original rpc wants it this way
-           % {Key, {promise_reply, {badrpc, Reason}}} -> {badrpc, Reason}; 
-           % {Key, {promise_reply, {badtcp, Reason}}} -> {badtcp, Reason}; 
             {Key, {promise_reply, Reply}} -> {value, Reply};
-            {badtcp, Reason} -> {value, {badtcp, Reason}}
+            {badtcp, Reason} ->
+                    ok = lager:notice("function=nb_yield event=call_bad_tcp yield_key=\"~p\" reason=\"~p\"", [Key, Reason]),
+                    {value, {badtcp, Reason}};
+            UnknownMsg -> 
+                    ok = lager:notice("function=nb_yield event=unknown_msg yield_key=\"~p\" message=\"~p\"", [Key, UnknownMsg]),
+                    {value, {badrpc, timeout}}
     after Timeout ->
             ok = lager:notice("function=nb_yield event=call_timeout yield_key=\"~p\"", [Key]),
             {value, {badrpc, timeout}}

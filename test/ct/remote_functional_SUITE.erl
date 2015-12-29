@@ -180,7 +180,26 @@ async_call(_Config) ->
     YieldKey = gen_rpc:async_call(?SLAVE, io_lib, print, [yield_key]),
     "yield_key" = gen_rpc:yield(YieldKey),
     NbYieldKey = gen_rpc:async_call(?SLAVE, io_lib, print, [nb_yield_key]),
-    {value, "nb_yield_key"} = gen_rpc:nb_yield(NbYieldKey, 1000).
+    {value, "nb_yield_key"} = gen_rpc:nb_yield(NbYieldKey, 10).
+
+async_call_yield_reentrant(_Config) ->
+    ok = ct:pal("Testing [async_call_yield_reentrant]"),
+    YieldKey0 = gen_rpc:async_call(?SLAVE, os, timestamp, []),
+    {_Mega, _Sec, _Micro} = gen_rpc:yield(YieldKey0),
+    Pid = proc_lib:spawn(fun()->
+                                {value, {badrpc, timeout}} = gen_rpc:yield(YieldKey0),
+                                ok = ct:pal("yield/1 waits forever. Should never see this.")
+                         end),
+    {ok, _} = timer:kill_after(5000, Pid),
+    NbYieldKey0 = gen_rpc:async_call(?SLAVE, os, timestamp, []),
+    % Verify not able to reuse Key again. Key is one time use.
+    {_,_,_} = gen_rpc:yield(NbYieldKey0, 100),
+    {value, {badrpc, timeout}} = gen_rpc:nb_yield(NbYieldKey0, 10),
+    YieldKey = gen_rpc:async_call(?SLAVE, io_lib, print, [yield_key]),
+    "yield_key" = gen_rpc:yield(YieldKey),
+    {badrpc, timeout} = gen_rpc:yield(YieldKey, 100),
+    NbYieldKey = gen_rpc:async_call(?SLAVE, io_lib, print, [nb_yield_key]),
+    {value, "nb_yield_key"} = gen_rpc:nb_yield(NbYieldKey, 10).
 
 async_call_mfa_undef(_Config) ->
     ok = ct:pal("Testing [async_call_mfa_undef]"),
