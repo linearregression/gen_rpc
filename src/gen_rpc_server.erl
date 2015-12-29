@@ -46,7 +46,7 @@
 %%% Supervisor functions
 %%% ===================================================
 start_link(Node) when is_atom(Node) ->
-    Name = make_process_name(Node),
+    Name = gen_rpc_helper:make_process_name(server, Node),
     gen_server:start_link({local,Name}, ?MODULE, {Node}, [{spawn_opt, [{priority, high}]}]).
 
 stop(Pid) when is_pid(Pid) ->
@@ -62,9 +62,10 @@ get_port(Pid) when is_pid(Pid) ->
 %%% ===================================================
 %%% Behaviour callbacks
 %%% ===================================================
+-spec init({node()}) -> {'ok', #state{}} | {'stop', any()}.
 init({Node}) ->
     ok = lager:info("function=init client_node=\"~s\"", [Node]),
-    process_flag(trap_exit, true),
+    _ = process_flag(trap_exit, true),
     ClientIp = get_remote_node_ip(Node),
     case gen_tcp:listen(0, gen_rpc_helper:default_tcp_opts(?DEFAULT_TCP_OPTS)) of
         {ok, Socket} ->
@@ -162,7 +163,6 @@ code_change(_OldVsn, State, _Extra) ->
 %%% ===================================================
 %%% Private functions
 %%% ===================================================
-
 acceptor_tcp_opts() ->
     case gen_rpc_helper:otp_release() >= 18 of
         true ->
@@ -170,11 +170,6 @@ acceptor_tcp_opts() ->
         false ->
             ?ACCEPTOR_TCP_OPTS
     end.
-
-
-make_process_name(Node) ->
-    NodeBin = atom_to_binary(Node, latin1),
-    binary_to_atom(<<"gen_rpc_server_", NodeBin/binary>>, latin1).
 
 %% Taken from prim_inet.  We are merely copying some socket options from the
 %% listening socket to the new acceptor socket.

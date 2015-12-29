@@ -43,7 +43,7 @@
 %%% Supervisor functions
 %%% ===================================================
 start_link(ClientIp, Node) when is_tuple(ClientIp), is_atom(Node) ->
-    Name = make_process_name(Node),
+    Name = gen_rpc_helper:make_process_name(acceptor, Node),
     gen_fsm:start_link({local,Name}, ?MODULE, {ClientIp, Node}, [{spawn_opt, [{priority, high}]}]).
 
 stop(Pid) when is_pid(Pid) ->
@@ -89,11 +89,17 @@ waiting_for_data({data, Data}, #state{socket=Socket,client_node=Node} = State) -
     %% the data
     try erlang:binary_to_term(Data) of
         {Node, ClientPid, Ref, {block_call, M, F, A}} ->
-             process_call(Socket, Node, ClientPid, Ref, M, F, A),
-             {next_state, waiting_for_data, State, State#state.inactivity_timeout}; 
+            WorkerPid = erlang:spawn(?MODULE, call_worker, [self(), ClientPid, Ref, M, F, A]),
+            ok = lager:debug("function=waiting_for_data event=block_call_received socket=\"~p\" node=\"~s\" call_reference=\"~p\" client_pid=\"~p\" worker_pid=\"~p\"",
+                             [Socket, Node, Ref, ClientPid, WorkerPid]),
+            ok = inet:setopts(Socket, [{active, once}]),
+            {next_state, waiting_for_data, State, State#state.inactivity_timeout};
         {Node, ClientPid, Ref, {call, M, F, A}} ->
-             process_call(Socket, Node, ClientPid, Ref, M, F, A),
-             {next_state, waiting_for_data, State, State#state.inactivity_timeout}; 
+            WorkerPid = erlang:spawn(?MODULE, call_worker, [self(), ClientPid, Ref, M, F, A]),
+            ok = lager:debug("function=waiting_for_data event=call_received socket=\"~p\" node=\"~s\" call_reference=\"~p\" client_pid=\"~p\" worker_pid=\"~p\"",
+                             [Socket, Node, Ref, ClientPid, WorkerPid]),
+            ok = inet:setopts(Socket, [{active, once}]),
+            {next_state, waiting_for_data, State, State#state.inactivity_timeout};
         {Node, {cast, M, F, A}} ->
             ok = lager:debug("function=waiting_for_data event=cast_received socket=\"~p\" node=\"~s\" module=~s function=~s args=\"~p\"",
                              [Socket, Node, M, F, A]),
@@ -184,16 +190,6 @@ terminate(_Reason, _StateName, #state{socket=Socket}) ->
 %%% Private functions
 %%% ===================================================
 
-make_process_name(Node) ->
-    NodeBin = atom_to_binary(Node, latin1),
-    binary_to_atom(<<"gen_rpc_acceptor_", NodeBin/binary>>, latin1).
-
-process_call(Socket, Node, ClientPid, Ref, M, F, A) ->
-    WorkerPid = erlang:spawn(?MODULE, call_worker, [self(), ClientPid, Ref, M, F, A]),
-    ok = lager:debug("function=waiting_for_data event=call_received socket=\"~p\" node=\"~s\" call_reference=\"~p\" client_pid=\"~p\" worker_pid=\"~p\"",
-                             [Socket, Node, Ref, ClientPid, WorkerPid]),
-    ok = inet:setopts(Socket, [{active, once}]).
-
 %% Process an RPC call request outside of the FSM
 call_worker(Parent, WorkerPid, Ref, M, F, A) ->
     ok = lager:debug("function=call_worker event=call_received call_reference=\"~p\" module=~s function=~s args=\"~p\"", [Ref, M, F, A]),
@@ -202,8 +198,8 @@ call_worker(Parent, WorkerPid, Ref, M, F, A) ->
     % and manifest as timeout. Wrap inside anonymous function with catch
     % will crash the worker quickly not manifest as a timeout.
     % See call_MFA_undef test.
-    Ret = try erlang:apply(M, F, A) 
-          catch 
+    Ret = try erlang:apply(M, F, A)
+          catch
                throw:Term -> Term;
                exit:Reason -> {badrpc, {'EXIT', Reason}};
                error:Reason -> {badrpc, {'EXIT', {Reason, erlang:get_stacktrace()}}}
