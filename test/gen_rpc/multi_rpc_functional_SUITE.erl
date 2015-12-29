@@ -96,9 +96,21 @@ multi_call_no_node(_Config) ->
     ok = ct:pal("Testing [multi_call_no_node]"),
     [[],[]] = gen_rpc:multicall([], os, timestamp, 10, 10).
 
-multi_call_multiple_nodes(_Config) ->
+multi_call_multiple_nodes_fail_end(_Config) ->
     ok = ct:pal("Testing [multi_call_multiple_nodes]"),
+    ok = ct:pal("Case 1: Failed node at end of list"),
     [[_,_],[?FAKE_NODE]] = gen_rpc:multicall([?SLAVE1, ?SLAVE2, ?FAKE_NODE], os, timestamp, 5000, 100).
+
+multi_call_multiple_nodes_fail_middle(_Config) ->
+    ok = ct:pal("Testing [multi_call_multiple_nodes]"),
+    ok = ct:pal("Case 2: Failed node at end of list"),
+    [[_,_],[?FAKE_NODE]] = gen_rpc:multicall([?SLAVE1, ?FAKE_NODE, ?SLAVE2], os, timestamp, 5000, 100).
+
+multi_call_multiple_nodes_fail_start(_Config) ->
+    ok = ct:pal("Testing [multi_call_multiple_nodes]"),
+    ok = ct:pal("Case 3: Failed node at start of list"),
+    [[_,_],[?FAKE_NODE]] = gen_rpc:multicall([?FAKE_NODE, ?SLAVE1, ?SLAVE2], os, timestamp, 5000, 100).
+
 
 %%% ===================================================
 %%% Auxiliary functions for test cases
