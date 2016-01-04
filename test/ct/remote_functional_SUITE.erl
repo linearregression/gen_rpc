@@ -81,7 +81,7 @@ block_call_mfa(_Config) ->
 block_call_mfa_undef(_Config) ->
     ok = ct:pal("Testing [block_call_mfa_undef]"),
     RevTO = 200,
-    {badrpc, {'EXIT', {undef,[{os,timestamp_undef,_,_},_]}}} = gen_rpc:block_call(?SLAVE, os, timestamp_undef, RevTO),
+    {badrpc, {'EXIT',{undef, [{os,timestamp_undef,_,_},_,_,_,_]}}} = gen_rpc:block_call(?SLAVE, os, timestamp_undef, RevTO),
     ok = ct:pal("Result [block_call_mfa_undef]: signal=EXIT Reason={os,timestamp_undef}").
 
 block_call_mfa_exit(_Config) ->

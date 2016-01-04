@@ -97,13 +97,13 @@ block_call_anonymous_undef(_Config) ->
     ok = ct:pal("Testing [block_call_anonymous_undef]"),
     ok = ct:pal("Testing [block_call_anonymous_undef] Assumping stackstack depth is 5"),
     RevTO = 200,
-    {badrpc, {'EXIT', {undef,[{os,timestamp_undef,[],[]},_]}}}  = gen_rpc:block_call(?NODE, erlang, apply, [fun() -> os:timestamp_undef() end, []], RevTO),
+    {badrpc, {'EXIT',{undef, [{os,timestamp_undef,_,_},_,_,_,_]}}} = gen_rpc:block_call(?NODE, erlang, apply, [fun() -> os:timestamp_undef() end, []], RevTO),
    ok = ct:pal("Result [block_call_anonymous_undef]: signal=EXIT Reason={os,timestamp_undef}").
 
 block_call_mfa_undef(_Config) ->
     ok = ct:pal("Testing [block_call_mfa_undef]"),
     RevTO = 200,
-    {badrpc, {'EXIT', {undef,[{os,timestamp_undef,_,_},_]}}} = gen_rpc:block_call(?NODE, os, timestamp_undef, RevTO),
+    {badrpc, {'EXIT',{undef, [{os,timestamp_undef,_,_},_,_,_,_]}}} = gen_rpc:block_call(?NODE, erlang, apply, [fun() -> os:timestamp_undef() end, []], RevTO),
     ok = ct:pal("Result [block_call_mfa_undef]: signal=EXIT Reason={os,timestamp_undef}").
 
 block_call_mfa_exit(_Config) ->

@@ -512,7 +512,7 @@ normalize_timeout(E) -> E.
 
 normalize_reply({'EXIT', {timeout,_}}) -> {badrpc, timeout};
 normalize_reply({'EXIT', {{nodedown,_},_}}) -> {badrpc, nodedown};
-normalize_reply({'EXIT', X}) -> exit(X);
+normalize_reply({'EXIT', X}) -> {badrpc, X};
 normalize_reply(X) -> X.
 
 %% Transform result for safe_eval_everywhere to look like multicall

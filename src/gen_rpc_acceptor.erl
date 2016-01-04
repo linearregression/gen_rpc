@@ -89,9 +89,9 @@ waiting_for_data({data, Data}, #state{socket=Socket,client_node=Node} = State) -
     %% the data
     try erlang:binary_to_term(Data) of
         {Node, ClientPid, Ref, {block_call, M, F, A}} ->
-            WorkerPid = erlang:spawn(?MODULE, call_worker, [self(), ClientPid, Ref, M, F, A]),
-            ok = lager:debug("function=waiting_for_data event=block_call_received socket=\"~p\" node=\"~s\" call_reference=\"~p\" client_pid=\"~p\" worker_pid=\"~p\"",
-                             [Socket, Node, Ref, ClientPid, WorkerPid]),
+            ok = call_worker(self(), ClientPid, Ref, M, F, A),
+            ok = lager:debug("function=waiting_for_data event=block_call_received socket=\"~p\" node=\"~s\" call_reference=\"~p\" client_pid=\"~p\"",
+                             [Socket, Node, Ref, ClientPid]),
             ok = inet:setopts(Socket, [{active, once}]),
             {next_state, waiting_for_data, State, State#state.inactivity_timeout};
         {Node, ClientPid, Ref, {call, M, F, A}} ->
